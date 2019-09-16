@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import ca.gc.aafc.objectstore.api.fileupload.payload.FileUploadResponse;
+
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -30,12 +33,11 @@ public class FileUploadIT {
 		ClassPathResource resource = new ClassPathResource("testUpload.txt", getClass());
 		MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
 		map.add("file", resource);
-		ResponseEntity<String> response = this.restTemplate.postForEntity("/", map,
-				String.class);
+		ResponseEntity<FileUploadResponse> response = this.restTemplate.postForEntity("/api/v1/uploadFile", map,
+		    FileUploadResponse.class);
 
-		assertThat(response.getStatusCode()).isEqualByComparingTo(HttpStatus.FOUND);
-		assertThat(response.getHeaders().getLocation().toString())
-				.startsWith("http://localhost:" + this.port + "/");
+		assertThat(response.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
+		assertThat(response.getBody()).hasFieldOrProperty("fileName");
 	}
 
 }
