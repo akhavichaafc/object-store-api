@@ -3,3 +3,11 @@ spring:
     multipart:
       max-file-size:  128KB   
       max-request-size:  128KB
+
+minio:
+  host:  172.17.0.2
+  port:  9000
+  accessKey:  admin	
+  secretKey:  password  
+  protocol:  http
+  bucket:  media-store
