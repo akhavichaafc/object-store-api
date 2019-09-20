@@ -1,38 +1,27 @@
 package ca.gc.aafc.objectstore.api.fileupload.payload;
 
 public class FileUploadResponse {
-      private String fileName;
-      public String getFileName() {
-        return fileName;
-      }
 
-      public void setFileName(String fileName) {
-        this.fileName = fileName;
-      }
+  private final String fileName;
+  private final String fileType;
+  private final long size;
 
-      public String getFileType() {
-        return fileType;
-      }
+  public FileUploadResponse(String fileName, String fileType, long size) {
+    this.fileName = fileName;
+    this.fileType = fileType;
+    this.size = size;
+  }
 
-      public void setFileType(String fileType) {
-        this.fileType = fileType;
-      }
+  public String getFileName() {
+    return fileName;
+  }
 
-      public long getSize() {
-        return size;
-      }
+  public String getFileType() {
+    return fileType;
+  }
 
-      public void setSize(long size) {
-        this.size = size;
-      }
-
-      private String fileType;
-      private long size;
-
-      public FileUploadResponse(String fileName,String fileType, long size) {
-          this.fileName = fileName;
-          this.fileType = fileType;
-          this.size = size;
-      }
+  public long getSize() {
+    return size;
+  }
 
 }

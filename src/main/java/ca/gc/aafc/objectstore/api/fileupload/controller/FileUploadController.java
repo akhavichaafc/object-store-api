@@ -11,11 +11,10 @@ import ca.gc.aafc.objectstore.api.fileupload.payload.FileUploadResponse;
 @RestController
 @RequestMapping("/api/v1")
 public class FileUploadController {
-   
-    @PostMapping("/uploadFile")
-    public FileUploadResponse handleFileUpload(@RequestParam("file") MultipartFile file) {
 
-      return new FileUploadResponse(file.getName(),file.getContentType(),file.getSize());
-    }
+  @PostMapping("/file")
+  public FileUploadResponse handleFileUpload(@RequestParam("file") MultipartFile file) {
+    return new FileUploadResponse(file.getOriginalFilename(), file.getContentType(), file.getSize());
+  }
 
 }
