@@ -2,11 +2,12 @@ package ca.gc.aafc.objectstore.api.minio;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ import io.minio.errors.InvalidPortException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
+
 
 @Service
 public class MinioFileService{
@@ -47,6 +49,8 @@ public class MinioFileService{
   @Value("${minio.bucket:}")  
   private String bucket ;  
   
+  private MinioClient minioClient ;
+  
   public String getBucket() {
     return bucket;
   }
@@ -54,8 +58,6 @@ public class MinioFileService{
   public void setBucket(String bucket) {
     this.bucket = bucket;
   }
-
-  private MinioClient minioClient ;
   
   public MinioClient getMinioClient() {
     return minioClient;
@@ -65,6 +67,7 @@ public class MinioFileService{
     this.minioClient = minioClient;
   }
 
+  @PostConstruct
   public void initializeMinioClient() throws MalformedURLException, URISyntaxException,
   InvalidEndpointException, InvalidPortException {
     
@@ -83,8 +86,6 @@ public class MinioFileService{
     InvalidKeyException, InvalidBucketNameException, NoResponseException, ErrorResponseException, 
     InternalException, InvalidArgumentException, InsufficientDataException, InvalidResponseException, 
     XmlPullParserException, RegionConflictException, InvalidEndpointException, InvalidPortException, URISyntaxException {
-    
-    initializeMinioClient();
     
     boolean isExist = minioClient.bucketExists(bucket);
     if(!isExist) {
