@@ -5,8 +5,6 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.inject.Inject;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,27 +29,24 @@ import io.minio.errors.RegionConflictException;
 @RequestMapping("/api/v1")
 public class FileUploadController {
 
-  @Inject
-  private MinioFileService minioService;
-  
-  public MinioFileService getMinioService() {
-    return minioService;
-  }
+  private final MinioFileService minioService;
 
-  public void setMinioService(MinioFileService minioService) {
+  public FileUploadController(MinioFileService minioService) {
     this.minioService = minioService;
   }
 
   @PostMapping("/file")
-  public FileUploadResponse handleFileUpload(@RequestParam("file") MultipartFile file,@RequestParam("bucket") String bucket) 
-      throws InvalidKeyException, NoSuchAlgorithmException, InvalidBucketNameException,
-      NoResponseException, ErrorResponseException, InternalException, InvalidArgumentException, 
-      InsufficientDataException, InvalidResponseException, RegionConflictException,
-      InvalidEndpointException, InvalidPortException, IOException, 
+  public FileUploadResponse handleFileUpload(@RequestParam("file") MultipartFile file,
+      @RequestParam("bucket") String bucket) throws InvalidKeyException, NoSuchAlgorithmException,
+      InvalidBucketNameException, NoResponseException, ErrorResponseException, InternalException,
+      InvalidArgumentException, InsufficientDataException, InvalidResponseException,
+      RegionConflictException, InvalidEndpointException, InvalidPortException, IOException,
       XmlPullParserException, URISyntaxException {
+
+    minioService.storeFile(file.getOriginalFilename(), file.getInputStream(), bucket);
     
-    minioService.storeFile(file.getOriginalFilename(),file.getInputStream(), bucket);
-    return new FileUploadResponse(file.getOriginalFilename(), file.getContentType(), file.getSize());
+    return new FileUploadResponse(file.getOriginalFilename(), file.getContentType(),
+        file.getSize());
   }
 
 }
