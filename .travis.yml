@@ -8,11 +8,11 @@ cache:
   - $HOME/.m2
 
 before_script:
-  - psql -c "CREATE DATABASE objectstore_test_db;" -U postgres
-  - psql -c "CREATE USER test WITH PASSWORD 'test';" -U postgres
+  - psql -c "CREATE DATABASE object_store_test;" -U postgres
+  - psql -f src/test/resources/create-test-users.sql -U postgres
 
 script: 
-  - mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/objectstore_test_db -Dspring.datasource.username=test -Dspring.datasource.password=test checkstyle:check com.github.spotbugs:spotbugs-maven-plugin:check jacoco:check
+  - mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/object_store_test -Dspring.datasource.username=test -Dspring.datasource.password=test checkstyle:check com.github.spotbugs:spotbugs-maven-plugin:check jacoco:check
  
 jdk:
   - openjdk8
