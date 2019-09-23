@@ -8,7 +8,8 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.inject.Inject;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -56,6 +57,17 @@ public class MinioFileService{
   public MinioFileService(MinioClient minioClient) {
     this.minioClient = minioClient;
   }
+  
+  public MinioFileService(
+      @Value("${minio.scheme:}") String protocol, 
+      @Value("${minio.host:}") String host,
+      @Value("${minio.port:}") int port, 
+      @Value("${minio.accessKey:}") String accessKey, 
+      @Value("${minio.secretKey:}") String secretKey)
+      throws InvalidEndpointException, InvalidPortException {
+    String endpoint = protocol + "://"+host;
+    this.minioClient =  new MinioClient(endpoint, port, accessKey, secretKey);
+  }    
       
   @SuppressWarnings("deprecation")
   public void storeFile(String fileName, InputStream iStream, String bucket) throws NoSuchAlgorithmException, IOException,
