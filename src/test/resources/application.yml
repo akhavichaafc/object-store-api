@@ -1,5 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost/objectstore_test_db
-    username: test
-    password: test

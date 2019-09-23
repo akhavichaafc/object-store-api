@@ -12,7 +12,7 @@ before_script:
   - psql -c "CREATE USER test WITH PASSWORD 'test';" -U postgres
 
 script: 
-  - mvn verify checkstyle:check com.github.spotbugs:spotbugs-maven-plugin:check jacoco:check
+  - mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/objectstore_test_db -D -Dspring.datasource.username=test -D-Dspring.datasource.password=test checkstyle:check com.github.spotbugs:spotbugs-maven-plugin:check jacoco:check
  
 jdk:
   - openjdk8
