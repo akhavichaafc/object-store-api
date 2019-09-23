@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.inject.Inject;
 
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.xmlpull.v1.XmlPullParserException;
@@ -34,8 +35,10 @@ public class MinioFileService {
   }
 
   @Inject
-  public MinioFileService(@Value("${minio.scheme:}") String protocol,
-      @Value("${minio.host:}") String host, @Value("${minio.port:}") int port,
+  public MinioFileService(
+      @Value("${minio.scheme:}") String protocol,
+      @Value("${minio.host:}") String host,
+      @Value("${minio.port:}") int port,
       @Value("${minio.accessKey:}") String accessKey,
       @Value("${minio.secretKey:}") String secretKey)
       throws InvalidEndpointException, InvalidPortException {
@@ -53,9 +56,9 @@ public class MinioFileService {
     if (!isExist) {
       minioClient.makeBucket(bucket);
     }
+    
     // Upload the file to the bucket
-    // minioClient.putObject("my-bucketname", "my-objectname", bais, Long.valueOf(bais.available()), null, null, "application/octet-stream");
-    minioClient.putObject(bucket, fileName, iStream, "multipart");
+    minioClient.putObject(bucket, fileName, iStream, null, null, null, ContentType.APPLICATION_OCTET_STREAM.getMimeType());
   }
 
 }

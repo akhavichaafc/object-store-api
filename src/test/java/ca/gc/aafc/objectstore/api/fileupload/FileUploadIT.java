@@ -31,7 +31,6 @@ public class FileUploadIT {
         .param("bucket", "testbucket"+ Math.random()))
         .andExpect(status().is(200))
         .andExpect(content().string(containsString("testfile")));
-    
  }
 
 }
