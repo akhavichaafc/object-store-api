@@ -5,9 +5,8 @@ spring:
       max-request-size:  128KB
 
 minio:
+  scheme:  http
   host:  172.17.0.2
   port:  9000
   accessKey:  admin	
-  secretKey:  password  
-  protocol:  http
-  bucket:  media-store
+  secretKey:  password
