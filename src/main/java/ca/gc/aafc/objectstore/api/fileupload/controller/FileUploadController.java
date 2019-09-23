@@ -32,8 +32,16 @@ import io.minio.errors.RegionConflictException;
 public class FileUploadController {
 
   @Inject
-  MinioFileService minioService;
+  private MinioFileService minioService;
   
+  public MinioFileService getMinioService() {
+    return minioService;
+  }
+
+  public void setMinioService(MinioFileService minioService) {
+    this.minioService = minioService;
+  }
+
   @PostMapping("/file")
   public FileUploadResponse handleFileUpload(@RequestParam("file") MultipartFile file,@RequestParam("bucket") String bucket) 
       throws InvalidKeyException, NoSuchAlgorithmException, InvalidBucketNameException,

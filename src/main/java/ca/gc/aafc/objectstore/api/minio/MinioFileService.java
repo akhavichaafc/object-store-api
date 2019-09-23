@@ -9,7 +9,6 @@ import java.security.NoSuchAlgorithmException;
 import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -30,7 +29,7 @@ import io.minio.errors.RegionConflictException;
 public class MinioFileService{
   
   @Inject
-  MinioClient minioClient;
+  private MinioClient minioClient;
  
   private String bucket ;  
   
