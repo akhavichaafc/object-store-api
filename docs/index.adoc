@@ -1,0 +1,9 @@
+:sectnums:
+
+= object-store-api Developer Documentation
+
+:leveloffset: 1
+
+include::design.adoc[]
+
+
