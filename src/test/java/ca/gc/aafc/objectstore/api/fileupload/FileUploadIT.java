@@ -8,19 +8,23 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@ActiveProfiles("test")
+import ca.gc.aafc.objectstore.api.minio.MinioFileService;
+
 @SpringBootTest
 public class FileUploadIT {
 
   @Autowired
   protected WebApplicationContext wac;
   
-  @Test
+  @MockBean
+  private MinioFileService fileService;
+  
+   @Test
   public void fileUpload_onMultipartRequest_acceptFile() throws Exception {
 
     MockMultipartFile file = new MockMultipartFile("file", "testfile", null,
