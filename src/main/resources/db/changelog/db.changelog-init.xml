@@ -1,0 +1,39 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
+	context="schema-change">
+
+	<!-- Create the PreLibraryPrep ENUM. -->
+	<changeSet context="schema-change" id="init-1" author="gendreauc">
+		<sql>
+			CREATE TYPE dctype AS ENUM (
+			'IMAGE',
+			'MOVING_IMAGE',
+			'SOUND',
+			'TEXT'
+			);
+		</sql>
+	</changeSet>
+
+	<changeSet context="schema-change" id="init-2" author="gendreauc">
+		<createTable tableName="metadata">
+			<column autoIncrement="true" name="id" type="SERIAL">
+				<constraints primaryKey="true" primaryKeyName="pk_metadata_id" />
+			</column>
+			<column name="uuid" type="uuid">
+			    <constraints nullable="false" unique="true" />
+			</column>
+			<column name="dc_format" type="VARCHAR(50)" />
+			<column name="dc_type" type="dctype">
+				<constraints nullable="false" />
+			</column>
+			<column name="ac_digitization_date" type="timestamptz" />
+			<column name="xmp_metadata_date" type="timestamptz" />
+			<column name="ac_hash_function" type="VARCHAR(50)" />
+			<column name="ac_hash_value" type="VARCHAR(128)" />
+		</createTable>
+	</changeSet>
+</databaseChangeLog>

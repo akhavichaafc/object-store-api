@@ -1,11 +1,18 @@
 language: java
 
+addons:
+  postgresql: "9.6"
+
 cache:
   directories:
   - $HOME/.m2
 
+before_script:
+  - psql -c "CREATE DATABASE object_store_test;" -U postgres
+  - psql -f src/test/resources/create-test-users.sql -U postgres
+
 script: 
-  - mvn verify checkstyle:check com.github.spotbugs:spotbugs-maven-plugin:check jacoco:check
+  - mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/object_store_test -Dspring.datasource.username=test -Dspring.datasource.password=test checkstyle:check com.github.spotbugs:spotbugs-maven-plugin:check jacoco:check
  
 jdk:
   - openjdk8
