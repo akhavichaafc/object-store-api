@@ -16,7 +16,7 @@ import ca.gc.aafc.objectstore.api.test.TestConfig;
  * This base class with run a single test (see testCRUDOperations) to control to order of testing of save/find/remove.
  *
  */
-@SpringBootTest(classes = TestConfig.class)
+@SpringBootTest
 @Transactional
 public abstract class BaseEntityCRUDIT extends DBBackedIntegrationTest {
 
