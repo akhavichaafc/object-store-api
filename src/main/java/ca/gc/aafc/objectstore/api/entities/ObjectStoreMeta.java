@@ -158,6 +158,16 @@ public class ObjectStoreMeta  implements java.io.Serializable {
     this.acHashValue = acHashValue;
   }
   
+  /**
+   * 
+   * @param uuid     The uuid of the object
+   * @param dcFormat The format of the resource
+   * @param dcType   The nature or genre of the resource
+   * @param acDigitizationDate The date the meta data was acquired/created
+   * @param xmpMetadataDate    The date and time that meta data was last changed 
+   * @param acHashFunction     The hash function
+   * @param acHashValue        The hash value 
+   */
   @Builder
   public ObjectStoreMeta(UUID uuid, String dcFormat, DcType dcType, 
       Timestamp acDigitizationDate, Timestamp xmpMetadataDate,
