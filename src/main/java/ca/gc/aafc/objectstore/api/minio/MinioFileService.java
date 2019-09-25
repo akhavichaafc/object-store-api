@@ -2,12 +2,14 @@ package ca.gc.aafc.objectstore.api.minio;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.inject.Inject;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,14 +38,16 @@ public class MinioFileService {
 
   @Inject
   public MinioFileService(
-      @Value("${minio.scheme:}") String protocol,
+      @Value("${minio.scheme:}") String scheme,
       @Value("${minio.host:}") String host,
       @Value("${minio.port:}") int port,
       @Value("${minio.accessKey:}") String accessKey,
       @Value("${minio.secretKey:}") String secretKey)
-      throws InvalidEndpointException, InvalidPortException {
-    String endpoint = protocol + "://" + host;
-    this.minioClient = new MinioClient(endpoint, port, accessKey, secretKey);
+      throws InvalidEndpointException, InvalidPortException, URISyntaxException {
+    
+    URI uri = new URIBuilder().setScheme(scheme).setHost(host).build();
+    
+    this.minioClient = new MinioClient(uri.toString(), port, accessKey, secretKey);
   }
 
   public void storeFile(String fileName, InputStream iStream, String bucket)
