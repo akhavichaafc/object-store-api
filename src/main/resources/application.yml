@@ -10,3 +10,9 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
     contexts: schema-change
+minio:
+  scheme:  http
+  host:  localhost
+  port:  9000
+  accessKey:  minio	
+  secretKey:  minio123
