@@ -20,21 +20,19 @@ public class FileUploadIT {
 
   @Autowired
   protected WebApplicationContext wac;
-  
+
   @MockBean
   private MinioFileService fileService;
-  
-   @Test
+
+  @Test
   public void fileUpload_onMultipartRequest_acceptFile() throws Exception {
 
     MockMultipartFile file = new MockMultipartFile("file", "testfile", null,
         "Test Content".getBytes());
-    
+
     webAppContextSetup(this.wac).build()
-        .perform(MockMvcRequestBuilders.multipart("/api/v1/file").file(file)
-        .param("bucket", "testbucket"+ Math.random()))
-        .andExpect(status().is(200))
-        .andExpect(content().string(containsString("testfile")));
- }
+        .perform(MockMvcRequestBuilders.multipart("/api/v1/file").file(file).param("bucket", "testbucket"))
+        .andExpect(status().is(200)).andExpect(content().string(containsString("testfile")));
+  }
 
 }

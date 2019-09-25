@@ -32,10 +32,6 @@ public class MinioFileService {
 
   private final MinioClient minioClient;
 
-  public MinioFileService(MinioClient minioClient) {
-    this.minioClient = minioClient;
-  }
-
   @Inject
   public MinioFileService(
       @Value("${minio.scheme:}") String scheme,
@@ -46,10 +42,36 @@ public class MinioFileService {
       throws InvalidEndpointException, InvalidPortException, URISyntaxException {
     
     URI uri = new URIBuilder().setScheme(scheme).setHost(host).build();
-    
     this.minioClient = new MinioClient(uri.toString(), port, accessKey, secretKey);
   }
+  
+  public MinioFileService(MinioClient minioClient) {
+    this.minioClient = minioClient;
+  }
 
+  /**
+   * Store a file (received as a InputStream) on Minio into a specific bucket.
+   * If the bucket doesn't exist, it will be created.
+   * 
+   * @param fileName filename to be used in Minio
+   * @param iStream inputstream to send through Minio client (won't be closed)
+   * @param bucket name of the bucket (will eb created if doesn't exist)
+   * @throws NoSuchAlgorithmException
+   * @throws IOException
+   * @throws InvalidKeyException
+   * @throws InvalidBucketNameException
+   * @throws NoResponseException
+   * @throws ErrorResponseException
+   * @throws InternalException
+   * @throws InvalidArgumentException
+   * @throws InsufficientDataException
+   * @throws InvalidResponseException
+   * @throws XmlPullParserException
+   * @throws RegionConflictException
+   * @throws InvalidEndpointException
+   * @throws InvalidPortException
+   * @throws URISyntaxException
+   */
   public void storeFile(String fileName, InputStream iStream, String bucket)
       throws NoSuchAlgorithmException, IOException, InvalidKeyException, InvalidBucketNameException,
       NoResponseException, ErrorResponseException, InternalException, InvalidArgumentException,
