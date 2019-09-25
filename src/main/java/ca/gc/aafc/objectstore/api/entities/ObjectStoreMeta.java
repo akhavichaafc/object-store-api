@@ -20,6 +20,7 @@ import org.hibernate.annotations.TypeDef;
 
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Builder;
 
 /**
@@ -30,6 +31,7 @@ import lombok.Builder;
 @Table(name = "metadata")
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="SAGESDataCache")
+@SuppressFBWarnings({"EI_EXPOSE_REP","EI_EXPOSE_REP2"})
 public class ObjectStoreMeta  implements java.io.Serializable {
 
   /** The Constant serialVersionUID. */
