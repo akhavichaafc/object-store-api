@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
-import ca.gc.aafc.objectstore.api.entities.ObjectStoreMeta;
-import ca.gc.aafc.objectstore.api.entities.ObjectStoreMeta.DcType;
+import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
+import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
 
-public class ObjectStoreMetaFactory implements TestableEntityFactory<ObjectStoreMeta> {
+public class ObjectStoreMetadataFactory implements TestableEntityFactory<ObjectStoreMetadata> {
 
   @Override
-  public ObjectStoreMeta getEntityInstance() {
-    return newObjectStoreMeta().build();
+  public ObjectStoreMetadata getEntityInstance() {
+    return newObjectStoreMetadata().build();
   }
   
   /**
@@ -20,9 +20,9 @@ public class ObjectStoreMetaFactory implements TestableEntityFactory<ObjectStore
    * 
    * @return Pre-configured builder with all mandatory fields set
    */
-  public static ObjectStoreMeta.ObjectStoreMetaBuilder newObjectStoreMeta() {
+  public static ObjectStoreMetadata.ObjectStoreMetadataBuilder newObjectStoreMetadata() {
     
-    return  ObjectStoreMeta.builder()
+    return  ObjectStoreMetadata.builder()
         .uuid(UUID.randomUUID())
         .dcFormat("dc_format")
         .dcType(DcType.IMAGE)
@@ -36,7 +36,7 @@ public class ObjectStoreMetaFactory implements TestableEntityFactory<ObjectStore
    * @param qty The number of Chains populated in the list
    * @return List of Chain
    */
-  public static List<ObjectStoreMeta> newListOf(int qty) {
+  public static List<ObjectStoreMetadata> newListOf(int qty) {
     return newListOf(qty, null);
   }
 
@@ -50,11 +50,11 @@ public class ObjectStoreMetaFactory implements TestableEntityFactory<ObjectStore
    *                      the list.
    * @return List of Chain
    */
-  public static List<ObjectStoreMeta> newListOf(int qty,
-      BiFunction<ObjectStoreMeta.ObjectStoreMetaBuilder, Integer, ObjectStoreMeta.ObjectStoreMetaBuilder> configuration) {
+  public static List<ObjectStoreMetadata> newListOf(int qty,
+      BiFunction<ObjectStoreMetadata.ObjectStoreMetadataBuilder, Integer, ObjectStoreMetadata.ObjectStoreMetadataBuilder> configuration) {
     
-    return TestableEntityFactory.newEntity(qty, ObjectStoreMetaFactory::newObjectStoreMeta, configuration,
-        ObjectStoreMeta.ObjectStoreMetaBuilder::build);
+    return TestableEntityFactory.newEntity(qty, ObjectStoreMetadataFactory::newObjectStoreMetadata, configuration,
+        ObjectStoreMetadata.ObjectStoreMetadataBuilder::build);
   }
   
 }

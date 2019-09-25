@@ -4,13 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import ca.gc.aafc.objectstore.api.entities.ObjectStoreMeta;
-import ca.gc.aafc.objectstore.api.testsupport.factories.ObjectStoreMetaFactory;
+import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
+import ca.gc.aafc.objectstore.api.testsupport.factories.ObjectStoreMetadataFactory;
 
-public class ObjectStoreEntityCRUDIT extends BaseEntityCRUDIT{
+public class ObjectStoreMetadataEntityCRUDIT extends BaseEntityCRUDIT{
 
 
-    private ObjectStoreMeta ObjectStoreMetaUnderTest = ObjectStoreMetaFactory.newObjectStoreMeta().build();
+    private ObjectStoreMetadata ObjectStoreMetaUnderTest = ObjectStoreMetadataFactory.newObjectStoreMetadata().build();
 
     @Override
     public void testSave() {
@@ -21,15 +21,15 @@ public class ObjectStoreEntityCRUDIT extends BaseEntityCRUDIT{
 
     @Override
     public void testFind() {
-      ObjectStoreMeta fetchedObjectStoreMeta = find(ObjectStoreMeta.class, ObjectStoreMetaUnderTest.getId());
+      ObjectStoreMetadata fetchedObjectStoreMeta = find(ObjectStoreMetadata.class, ObjectStoreMetaUnderTest.getId());
       assertEquals(ObjectStoreMetaUnderTest.getId(), fetchedObjectStoreMeta.getId());
     }
 
     @Override
     public void testRemove() {
       Integer id = ObjectStoreMetaUnderTest.getId();
-      remove(ObjectStoreMeta.class, id);
-      assertNull(find(ObjectStoreMeta.class, id));
+      remove(ObjectStoreMetadata.class, id);
+      assertNull(find(ObjectStoreMetadata.class, id));
     }
 
  }

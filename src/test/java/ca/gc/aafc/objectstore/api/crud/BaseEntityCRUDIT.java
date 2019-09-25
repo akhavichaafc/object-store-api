@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.gc.aafc.objecstore.api.testsupport.DBBackedIntegrationTest;
-import ca.gc.aafc.objectstore.api.test.TestConfig;
 
 
 /**

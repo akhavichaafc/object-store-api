@@ -24,7 +24,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Builder;
 
 /**
-* The Class ObjectStoreMeta.
+* The Class ObjectStoreMetadata.
 */
 
 @Entity
@@ -32,7 +32,7 @@ import lombok.Builder;
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="SAGESDataCache")
 @SuppressFBWarnings({"EI_EXPOSE_REP","EI_EXPOSE_REP2"})
-public class ObjectStoreMeta  implements java.io.Serializable {
+public class ObjectStoreMetadata  implements java.io.Serializable {
 
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -5655824300348079540L;
@@ -169,7 +169,7 @@ public class ObjectStoreMeta  implements java.io.Serializable {
    * @param acHashValue        The hash value 
    */
   @Builder
-  public ObjectStoreMeta(UUID uuid, String dcFormat, DcType dcType, 
+  public ObjectStoreMetadata(UUID uuid, String dcFormat, DcType dcType, 
       Timestamp acDigitizationDate, Timestamp xmpMetadataDate,
       String acHashFunction, String acHashValue) {
     this.uuid = uuid;
@@ -180,7 +180,7 @@ public class ObjectStoreMeta  implements java.io.Serializable {
     
   }
   
-  public ObjectStoreMeta() {
+  public ObjectStoreMetadata() {
     
   }
   
