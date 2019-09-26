@@ -3,6 +3,7 @@ package ca.gc.aafc.objectstore.api;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 
 import io.minio.MinioClient;
@@ -14,6 +15,7 @@ import io.minio.errors.InvalidPortException;
  */
 //CHECKSTYLE:OFF HideUtilityClassConstructor (Configuration class can not have invisible constructor, ignore the check style error for this case)
 @SpringBootApplication
+@EntityScan("ca.gc.aafc.objectstore.api.entities")
 public class ObjectStoreApiLauncher {
 
   public static void main(String[] args) {
