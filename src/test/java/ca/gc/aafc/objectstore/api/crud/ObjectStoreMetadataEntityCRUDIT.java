@@ -13,8 +13,8 @@ import ca.gc.aafc.objectstore.api.testsupport.factories.ObjectStoreMetadataFacto
 
 public class ObjectStoreMetadataEntityCRUDIT extends BaseEntityCRUDIT {
 
-  private final ZonedDateTime TEST_ZONED_DT = ZonedDateTime.of(2019, 1, 2, 3, 4, 5, 0,
-      ZoneId.of("America/Montreal"));
+  private static final ZoneId MTL_TZ = ZoneId.of("America/Montreal");
+  private final ZonedDateTime TEST_ZONED_DT = ZonedDateTime.of(2019, 1, 2, 3, 4, 5, 0, MTL_TZ);
   private final OffsetDateTime TEST_OFFSET_DT = TEST_ZONED_DT.toOffsetDateTime();
 
   private ObjectStoreMetadata objectStoreMetaUnderTest = ObjectStoreMetadataFactory
@@ -32,8 +32,12 @@ public class ObjectStoreMetadataEntityCRUDIT extends BaseEntityCRUDIT {
     ObjectStoreMetadata fetchedObjectStoreMeta = find(ObjectStoreMetadata.class,
         objectStoreMetaUnderTest.getId());
     assertEquals(objectStoreMetaUnderTest.getId(), fetchedObjectStoreMeta.getId());
+    
+    // the returned acDigitizationDate will use the timezone of the server
     assertEquals(objectStoreMetaUnderTest.getAcDigitizationDate(),
-        fetchedObjectStoreMeta.getAcDigitizationDate());
+        fetchedObjectStoreMeta.getAcDigitizationDate()
+        .atZoneSameInstant(MTL_TZ)
+        .toOffsetDateTime());
   }
 
   @Override
