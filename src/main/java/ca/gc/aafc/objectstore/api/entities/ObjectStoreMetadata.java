@@ -13,8 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -26,54 +24,52 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
 /**
-* The Class ObjectStoreMetadata.
-*/
+ * The Class ObjectStoreMetadata.
+ */
 
 @Entity
 @Table(name = "metadata")
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="SAGESDataCache")
-@SuppressFBWarnings({"EI_EXPOSE_REP","EI_EXPOSE_REP2"})
-@Builder(toBuilder = true)
+@SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
+@Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class ObjectStoreMetadata  implements java.io.Serializable {
+public class ObjectStoreMetadata implements java.io.Serializable {
 
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -5655824300348079540L;
 
   private Integer id;
-  
+
   private UUID uuid;
-  
 
   private String dcFormat;
   private DcType dcType;
-    
+
   private OffsetDateTime acDigitizationDate;
   private OffsetDateTime xmpMetadataDdate;
-  
+
   private String acHashFunction;
   private String acHashValue;
-  
+
   public enum DcType {
-    IMAGE ("Image"),
-    MOVING_IMAGE ("Moving Image"),
-    SOUND ("Sound"),
-    TEXT ("Text");
-    
-    /** The value. */
+    IMAGE("Image"),
+    MOVING_IMAGE("Moving Image"),
+    SOUND("Sound"),
+    TEXT("Text");
+
     private final String value;
-    
+
     /**
-     * Instantiates a new dc_type.
+     * Instantiates a new DcType.
      *
-     * @param value the value
+     * @param value
+     *          the value
      */
-    DcType (String value){
+    DcType(String value) {
       this.value = value;
     }
-    
+
     /**
      * Gets the value.
      *
@@ -85,8 +81,8 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
   }
 
   @Id
-  @GeneratedValue( strategy = GenerationType.IDENTITY )
-  @Column( name = "id" )  
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
   public Integer getId() {
     return id;
   }
@@ -94,7 +90,7 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
   public void setId(Integer id) {
     this.id = id;
   }
-  
+
   @NotNull
   @Column(name = "uuid", unique = true)
   public UUID getUuid() {
@@ -105,7 +101,6 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
     this.uuid = uuid;
   }
 
-  
   @Column(name = "dc_format")
   public String getDcFormat() {
     return dcFormat;
@@ -116,9 +111,9 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
   }
 
   @NotNull
-  @Type( type = "pgsql_enum" )
-  @Enumerated( EnumType.STRING )
-  @Column( name = "dc_type" )  
+  @Type(type = "pgsql_enum")
+  @Enumerated(EnumType.STRING)
+  @Column(name = "dc_type")
   public DcType getDcType() {
     return dcType;
   }
@@ -126,8 +121,8 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
   public void setDcType(DcType dcType) {
     this.dcType = dcType;
   }
-  
-  @Column( name = "ac_digitization_date" )
+
+  @Column(name = "ac_digitization_date")
   public OffsetDateTime getAcDigitizationDate() {
     return acDigitizationDate;
   }
@@ -135,7 +130,7 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
   public void setAcDigitizationDate(OffsetDateTime acDigitizationDate) {
     this.acDigitizationDate = acDigitizationDate;
   }
-  
+
   @Column(name = "xmp_metadata_date")
   public OffsetDateTime getXmpMetadataDdate() {
     return xmpMetadataDdate;
@@ -145,7 +140,7 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
     this.xmpMetadataDdate = xmpMetadataDdate;
   }
 
-  @Column(name = "ac_hash_function")  
+  @Column(name = "ac_hash_function")
   public String getAcHashFunction() {
     return acHashFunction;
   }
@@ -154,7 +149,7 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
     this.acHashFunction = acHashFunction;
   }
 
-  @Column(name = "ac_hash_value")  
+  @Column(name = "ac_hash_value")
   public String getAcHashValue() {
     return acHashValue;
   }
@@ -162,7 +157,5 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
   public void setAcHashValue(String acHashValue) {
     this.acHashValue = acHashValue;
   }
-  
-}
 
-  
+}
