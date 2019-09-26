@@ -1,6 +1,6 @@
 package ca.gc.aafc.objectstore.api.entities;
 
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -45,8 +45,8 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
   private String dcFormat;
   private DcType dcType;
     
-  private Timestamp acDigitizationDate;
-  private Timestamp xmpMetadataDdate;
+  private OffsetDateTime acDigitizationDate;
+  private OffsetDateTime xmpMetadataDdate;
   
   private String acHashFunction;
   private String acHashValue;
@@ -123,20 +123,20 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
   }
   
   @Column( name = "ac_digitization_date" )
-  public Timestamp getAcDigitizationDate() {
+  public OffsetDateTime getAcDigitizationDate() {
     return acDigitizationDate;
   }
 
-  public void setAcDigitizationDate(Timestamp acDigitizationDate) {
+  public void setAcDigitizationDate(OffsetDateTime acDigitizationDate) {
     this.acDigitizationDate = acDigitizationDate;
   }
   
   @Column(name = "xmp_metadata_date")
-  public Timestamp getXmpMetadataDdate() {
+  public OffsetDateTime getXmpMetadataDdate() {
     return xmpMetadataDdate;
   }
 
-  public void setXmpMetadataDdate(Timestamp xmpMetadataDdate) {
+  public void setXmpMetadataDdate(OffsetDateTime xmpMetadataDdate) {
     this.xmpMetadataDdate = xmpMetadataDdate;
   }
 
@@ -170,7 +170,7 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
    */
   @Builder
   public ObjectStoreMetadata(UUID uuid, String dcFormat, DcType dcType, 
-      Timestamp acDigitizationDate, Timestamp xmpMetadataDate,
+      OffsetDateTime acDigitizationDate, OffsetDateTime xmpMetadataDate,
       String acHashFunction, String acHashValue) {
     this.uuid = uuid;
     this.dcFormat = dcFormat;

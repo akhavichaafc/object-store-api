@@ -9,10 +9,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 /**
+ * The class is ported from seqdb.dbi as is, will be moved to a common package later.
+ * 
  * Provides database access for Integration tests.
  * All transactions are rollbacked at the end of a test.
  * Session is not exposed by design to ensure constant behaviors with transactions and caching.
- *
+ * * 
  */
 public class DBBackedIntegrationTest {
 
@@ -31,7 +33,6 @@ public class DBBackedIntegrationTest {
    * @param obj
    */
   protected void save(Object obj) {
-    System.out.println("entitymanager , obj " + entityManager + "," + obj);
     entityManager.persist(obj);
     entityManager.flush();
     entityManager.detach(obj);

@@ -10,8 +10,9 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.RandomStringUtils;
 
 /**
- * Base class for all the entity factories to extend from. Factories are located inside the
- * ca.gc.aafc.factory package where EntityFactoryTest will scan for them and test for validation.
+ * The class is ported from seqdb.dbi as is, will be moved to a common package later.
+ * 
+ * Base class for all the entity factories to extend from.
  * 
  */
 public interface TestableEntityFactory<T> {
