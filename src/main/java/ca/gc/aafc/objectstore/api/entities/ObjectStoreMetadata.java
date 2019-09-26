@@ -21,7 +21,9 @@ import org.hibernate.annotations.TypeDef;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 
 /**
 * The Class ObjectStoreMetadata.
@@ -32,6 +34,9 @@ import lombok.Builder;
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region="SAGESDataCache")
 @SuppressFBWarnings({"EI_EXPOSE_REP","EI_EXPOSE_REP2"})
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class ObjectStoreMetadata  implements java.io.Serializable {
 
   /** The Constant serialVersionUID. */
@@ -156,32 +161,6 @@ public class ObjectStoreMetadata  implements java.io.Serializable {
 
   public void setAcHashValue(String acHashValue) {
     this.acHashValue = acHashValue;
-  }
-  
-  /**
-   * 
-   * @param uuid     The uuid of the object
-   * @param dcFormat The format of the resource
-   * @param dcType   The nature or genre of the resource
-   * @param acDigitizationDate The date the meta data was acquired/created
-   * @param xmpMetadataDate    The date and time that meta data was last changed 
-   * @param acHashFunction     The hash function
-   * @param acHashValue        The hash value 
-   */
-  @Builder
-  public ObjectStoreMetadata(UUID uuid, String dcFormat, DcType dcType, 
-      OffsetDateTime acDigitizationDate, OffsetDateTime xmpMetadataDate,
-      String acHashFunction, String acHashValue) {
-    this.uuid = uuid;
-    this.dcFormat = dcFormat;
-    this.dcType = dcType;
-    this.acHashFunction = acHashFunction;
-    this.acHashValue = acHashValue;   
-    
-  }
-  
-  public ObjectStoreMetadata() {
-    
   }
   
 }

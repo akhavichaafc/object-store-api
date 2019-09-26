@@ -24,10 +24,7 @@ public class ObjectStoreMetadataFactory implements TestableEntityFactory<ObjectS
     
     return  ObjectStoreMetadata.builder()
         .uuid(UUID.randomUUID())
-        .dcFormat("dc_format")
-        .dcType(DcType.IMAGE)
-        .acHashFunction("MD5")
-        .acHashValue("9, 4, 248, 102, 77, 97, 142, 201");
+        .dcType(DcType.IMAGE);
    }  
     
   /**
