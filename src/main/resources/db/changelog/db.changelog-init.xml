@@ -6,7 +6,6 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
 	context="schema-change">
 
-	<!-- Create the PreLibraryPrep ENUM. -->
 	<changeSet context="schema-change" id="init-1" author="gendreauc">
 		<sql>
 			CREATE TYPE dctype AS ENUM (
@@ -17,8 +16,16 @@
 			);
 		</sql>
 	</changeSet>
-
 	<changeSet context="schema-change" id="init-2" author="gendreauc">
+		<sql>
+			CREATE TYPE managed_attribute_type AS ENUM (
+			'INTEGER',
+			'STRING'
+			);
+		</sql>
+	</changeSet>
+
+	<changeSet context="schema-change" id="init-3" author="gendreauc">
 		<createTable tableName="metadata">
 			<column autoIncrement="true" name="id" type="SERIAL">
 				<constraints primaryKey="true" primaryKeyName="pk_metadata_id" />
@@ -34,6 +41,20 @@
 			<column name="xmp_metadata_date" type="timestamptz" />
 			<column name="ac_hash_function" type="VARCHAR(50)" />
 			<column name="ac_hash_value" type="VARCHAR(128)" />
+		</createTable>
+	</changeSet>
+		<changeSet context="schema-change" id="init-4" author="gendreauc">
+		<createTable tableName="managed_attribute">
+			<column autoIncrement="true" name="id" type="SERIAL">
+				<constraints primaryKey="true" primaryKeyName="pk_managed_attribute_id" />
+			</column>
+			<column name="type" type="managed_attribute_type">
+				<constraints nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(50)" >
+				<constraints nullable="false" />
+			</column>
+			<column name="accepted_values" type="text[]" />
 		</createTable>
 	</changeSet>
 </databaseChangeLog>
