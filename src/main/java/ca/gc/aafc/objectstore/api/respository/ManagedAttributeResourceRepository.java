@@ -33,11 +33,10 @@ public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<M
   }
 
   private ManagedAttribute findOneByUUID(UUID uuid) {
-
     ManagedAttribute managedAttribute = entityManager.unwrap(Session.class)
-        .byNaturalId(ManagedAttribute.class).using("uuid", uuid).load();
+        .bySimpleNaturalId(ManagedAttribute.class)
+        .load(uuid);
     return managedAttribute;
-
   }
 
   /**

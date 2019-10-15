@@ -34,12 +34,12 @@ public class ObjectStoreResourceRepository
   }
 
   private ObjectStoreMetadata findOneByUUID(UUID uuid) {
-    
     ObjectStoreMetadata objectStoreMetadata = entityManager.unwrap(Session.class)
-        .byNaturalId(ObjectStoreMetadata.class).using("uuid", uuid).load();
+        .bySimpleNaturalId(ObjectStoreMetadata.class)
+        .load(uuid);
     return objectStoreMetadata;
-  
   }
+
   /**
    * @param resource
    *          to save
