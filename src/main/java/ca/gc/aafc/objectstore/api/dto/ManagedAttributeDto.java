@@ -6,6 +6,7 @@ import java.util.UUID;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute.ManagedAttributeType;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiId;
+import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
 
@@ -14,10 +15,13 @@ import lombok.Data;
 @JsonApiResource(type = "managed-attribute")
 public class ManagedAttributeDto {
   
-  @JsonApiId  
+  @JsonApiId 
   private UUID uuid;
+  
   private String name;
   private ManagedAttributeType managedAttributeType;
   private List<String> acceptedValues;
   
+  @JsonApiRelation(mappedBy = "managedAttributes")
+  private ObjectStoreMetadataDto objectStoreMetadata;  
 }
