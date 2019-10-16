@@ -23,7 +23,6 @@ import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQuery;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
-import io.katharsis.queryspec.QuerySpecSerializer;
 
 @Repository
 @Transactional
