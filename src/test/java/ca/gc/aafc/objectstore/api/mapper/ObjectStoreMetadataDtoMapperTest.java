@@ -5,13 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
+import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
+import ca.gc.aafc.objectstore.api.testsupport.factories.ManagedAttributeFactory;
 import ca.gc.aafc.objectstore.api.testsupport.factories.ObjectStoreMetadataFactory;
 
 public class ObjectStoreMetadataDtoMapperTest {
@@ -26,9 +29,11 @@ public class ObjectStoreMetadataDtoMapperTest {
   public void testGivenObjectStoreMetadata_mapsToObjectStoreMetadataDto() {
 
     // given
+    ManagedAttribute ma = ManagedAttributeFactory.newManagedAttribute().build();
     ObjectStoreMetadata objectStoreMetadata = ObjectStoreMetadataFactory.newObjectStoreMetadata()
         .acDigitizationDate(TEST_OFFSET_DT)
         .xmpMetadataDate(TEST_OFFSET_DT)
+        .managedAttributes(Collections.singletonList(ma))
         .build();
 
     // when
@@ -39,6 +44,7 @@ public class ObjectStoreMetadataDtoMapperTest {
     assertEquals(objectStoreMetadataDto.getAcDigitizationDate(), objectStoreMetadata.getAcDigitizationDate());
     assertEquals(objectStoreMetadataDto.getUuid(), objectStoreMetadata.getUuid());
     assertEquals(objectStoreMetadataDto.getDcType(), objectStoreMetadata.getDcType());
+    assertEquals(ma, objectStoreMetadata.getManagedAttributes().get(0));
   }
 
   @Test

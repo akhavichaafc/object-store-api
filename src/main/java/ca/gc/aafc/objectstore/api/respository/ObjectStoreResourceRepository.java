@@ -1,7 +1,10 @@
 package ca.gc.aafc.objectstore.api.respository;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,7 +19,11 @@ import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
+import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
+import io.crnk.data.jpa.query.criteria.JpaCriteriaQuery;
+import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
+import io.katharsis.queryspec.QuerySpecSerializer;
 
 @Repository
 @Transactional
@@ -25,12 +32,19 @@ public class ObjectStoreResourceRepository
 
   @PersistenceContext
   private EntityManager entityManager;
-
+  
   @Inject
   private ObjectStoreMetadataMapper mapper;
+  
+  private JpaCriteriaQueryFactory queryFactory;
 
   public ObjectStoreResourceRepository() {
     super(ObjectStoreMetadataDto.class);
+  }
+  
+  @PostConstruct
+  void setup() {
+    queryFactory = JpaCriteriaQueryFactory.newInstance(entityManager);
   }
 
   private ObjectStoreMetadata findOneByUUID(UUID uuid) {
@@ -68,8 +82,13 @@ public class ObjectStoreResourceRepository
 
   @Override
   public ResourceList<ObjectStoreMetadataDto> findAll(QuerySpec querySpec) {
-    // TODO Auto-generated method stub
-    return null;
+    JpaCriteriaQuery<ObjectStoreMetadata> jq = queryFactory.query(ObjectStoreMetadata.class);
+    
+    List<ObjectStoreMetadataDto> l = jq.buildExecutor(querySpec).getResultList().stream()
+    .map(mapper::toDto)
+    .collect(Collectors.toList());
+    
+    return new DefaultResourceList<ObjectStoreMetadataDto>(l, null, null);
   }
 
   @Override

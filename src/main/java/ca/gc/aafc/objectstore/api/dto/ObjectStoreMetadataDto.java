@@ -1,7 +1,6 @@
 package ca.gc.aafc.objectstore.api.dto;
 
 import java.time.OffsetDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,8 +25,6 @@ public class ObjectStoreMetadataDto {
 
   private String acHashFunction;
   private String acHashValue;
-  
-  private List<HashMap> assignedValues;
   
   @JsonApiRelation
   private List<ManagedAttributeDto> managedAttributes;  
