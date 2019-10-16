@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import ca.gc.aafc.objectstore.api.interfaces.UniqueObj;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
+@SuppressFBWarnings(justification = "ok for Hibernate Entity", value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 public class MetadataManagedAttribute implements Serializable, UniqueObj {
 
   private static final long serialVersionUID = -3484692979076302405L;
@@ -42,7 +44,7 @@ public class MetadataManagedAttribute implements Serializable, UniqueObj {
   
   @NotNull
   @ManyToOne(cascade = {} )
-  @JoinColumn(name = "id", updatable = false, insertable = false)  
+  @JoinColumn(name = "metadata_id")
   public ObjectStoreMetadata getObjectStoreMetadata() {
     return objectStoreMetadata;
   }
@@ -53,7 +55,7 @@ public class MetadataManagedAttribute implements Serializable, UniqueObj {
 
   @NotNull
   @ManyToOne(cascade = {})
-  @JoinColumn(name = "id" ,updatable = false, insertable = false)  
+  @JoinColumn(name = "managed_attribute_id")
   public ManagedAttribute getManagedAttribute() {
     return managedAttribute;
   }

@@ -65,11 +65,11 @@
 			<column autoIncrement="true" name="id" type="SERIAL">
 				<constraints primaryKey="true" primaryKeyName="pk_metatdata_managed_attribute_id" />
 			</column>
-			<column name="metadata_uuid" type="uuid">
-				<constraints foreignKeyName="fk_metadata_managed_attribute_to_metadata_id" references="metadata(uuid)"/>
+			<column name="metadata_id" type="integer">
+				<constraints foreignKeyName="fk_metadata_managed_attribute_to_metadata_id" references="metadata(id)"/>
 			</column>
-			<column name="managed_attribute_uuid" type="uuid">
-	    		<constraints foreignKeyName="fk_metadata_managed_attribute_to_managed_attribute_id" references="managed_attribute(uuid)"/>
+			<column name="managed_attribute_id" type="integer">
+	    		<constraints foreignKeyName="fk_metadata_managed_attribute_to_managed_attribute_id" references="managed_attribute(id)"/>
 			</column>			
 			<column name="managed_attribute_assigned_values" type="text[]" />
 		</createTable>

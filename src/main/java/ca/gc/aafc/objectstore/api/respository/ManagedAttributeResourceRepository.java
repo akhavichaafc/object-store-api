@@ -1,5 +1,9 @@
 package ca.gc.aafc.objectstore.api.respository;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -70,6 +74,16 @@ public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<M
     // TODO Auto-generated method stub
     return null;
   }
+  
+  public List<ManagedAttributeDto> findAll(Iterable<Serializable> ids) {
+    @SuppressWarnings("unchecked")
+    List<ManagedAttributeDto> managedAttributes = new ArrayList<ManagedAttributeDto>();
+    Iterator it = ids.iterator();
+    while(it.hasNext()) {
+      managedAttributes.add(findOne((UUID)it.next(),null));      
+    }
+    return  managedAttributes;
+  }  
 
   @Override
   public <S extends ManagedAttributeDto> S create(S resource) {
