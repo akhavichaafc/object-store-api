@@ -35,7 +35,8 @@ public class DBBackedIntegrationTest {
   protected void save(Object obj) {
     entityManager.persist(obj);
     entityManager.flush();
-    entityManager.detach(obj);
+    //comment avoid test failure in testlink
+    //entityManager.detach(obj);
   }
   
   protected <T> T find(Class<T> clazz, Serializable id) {

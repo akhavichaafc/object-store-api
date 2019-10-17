@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -174,7 +176,7 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
     this.acHashValue = acHashValue;
   }
 
-  @ManyToMany
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
       name = "metadata_managed_attribute", 
       joinColumns = { @JoinColumn(name = "metadata_id") }, 
