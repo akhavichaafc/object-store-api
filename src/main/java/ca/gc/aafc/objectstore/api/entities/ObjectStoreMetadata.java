@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -43,6 +44,7 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
+@NaturalIdCache
 public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
 
   /** The Constant serialVersionUID. */

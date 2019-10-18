@@ -9,13 +9,11 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
+import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ManagedAttributeDto;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.mapper.ManagedAttributeMapper;
@@ -31,29 +29,20 @@ import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
 @Transactional
 public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<ManagedAttributeDto, UUID> {
 
-  @PersistenceContext
-  private EntityManager entityManager;
+  private final BaseDAO dao;
+  private final ManagedAttributeMapper mapper;
 
-  @Inject
-  private ManagedAttributeMapper mapper;
-  
   private JpaCriteriaQueryFactory queryFactory;  
 
-  public ManagedAttributeResourceRepository() {
-    super(ManagedAttributeDto.class);
-  }
-  
   @PostConstruct
   void setup() {
-    queryFactory = JpaCriteriaQueryFactory.newInstance(entityManager);
+    queryFactory = dao.createWithEntityManager(JpaCriteriaQueryFactory::newInstance);
   }
-  
-  private ManagedAttribute findOneByUUID(UUID uuid) {
 
-    ManagedAttribute managedAttribute = entityManager.unwrap(Session.class)
-        .byNaturalId(ManagedAttribute.class).using("uuid", uuid).load();
-    return managedAttribute;
-
+  public ManagedAttributeResourceRepository(BaseDAO dao, ManagedAttributeMapper mapper) {
+    super(ManagedAttributeDto.class);
+    this.dao = dao;
+    this.mapper = mapper;
   }
 
   /**
@@ -64,15 +53,15 @@ public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<M
   @Override
   public <S extends ManagedAttributeDto> S save(S resource) {
     ManagedAttributeDto dto = (ManagedAttributeDto) resource;
-    ManagedAttribute managedAttribute = findOneByUUID(dto.getUuid());
+    ManagedAttribute managedAttribute = dao.findOneByNaturalId(dto.getUuid(), ManagedAttribute.class);
     mapper.updateManagedAttributeFromDto(dto, managedAttribute);
-    entityManager.merge(managedAttribute);
+    dao.save(managedAttribute);
     return resource;
   }
 
   @Override
   public ManagedAttributeDto findOne(UUID uuid, QuerySpec querySpec) {
-    ManagedAttribute managedAttribute = findOneByUUID(uuid);
+    ManagedAttribute managedAttribute = dao.findOneByNaturalId(uuid, ManagedAttribute.class);
     if (managedAttribute == null) {
       // Throw the 404 exception if the resource is not found.
       throw new ResourceNotFoundException(
@@ -109,15 +98,15 @@ public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<M
       dto.setUuid(UUID.randomUUID());
     }
     ManagedAttribute managedAttribute = mapper.toEntity((ManagedAttributeDto) resource);
-    entityManager.persist(managedAttribute);
+    dao.save(managedAttribute);
     return resource;
   }
 
   @Override
   public void delete(UUID id) {
-    ManagedAttribute managedAttribute = findOneByUUID(id);
+    ManagedAttribute managedAttribute = dao.findOneByNaturalId(id, ManagedAttribute.class);
     if (managedAttribute != null) {
-      entityManager.remove(managedAttribute);
+      dao.delete(managedAttribute);
     }
   }
 }

@@ -7,14 +7,11 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.hibernate.Session;
-import org.hibernate.SimpleNaturalIdLoadAccess;
 import org.springframework.stereotype.Repository;
 
+import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ManagedAttributeDto;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
@@ -33,34 +30,23 @@ import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
 public class ObjectStoreResourceRepository
     extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID> {
 
-  @PersistenceContext
-  private EntityManager entityManager;
-  
-  @Inject
-  private ObjectStoreMetadataMapper mapper;
+  private final BaseDAO dao;
+  private final ObjectStoreMetadataMapper mapper;
   
   private JpaCriteriaQueryFactory queryFactory;
 
-  public ObjectStoreResourceRepository() {
+  @Inject
+  public ObjectStoreResourceRepository(BaseDAO dao, ObjectStoreMetadataMapper mapper) {
     super(ObjectStoreMetadataDto.class);
+    this.dao = dao;
+    this.mapper = mapper;
   }
   
   @PostConstruct
   void setup() {
-    queryFactory = JpaCriteriaQueryFactory.newInstance(entityManager);
+    queryFactory = dao.createWithEntityManager(JpaCriteriaQueryFactory::newInstance);
   }
 
-  private ObjectStoreMetadata findOneByUUID(UUID uuid) {
-    ObjectStoreMetadata objectStoreMetadata = entityManager.unwrap(Session.class)
-        .byNaturalId(ObjectStoreMetadata.class).using("uuid", uuid).load();
-    return objectStoreMetadata;
-  }
-  
-  public <T> T getReferenceByNaturalId(Class<T> entityClass, UUID uuid) {
-    SimpleNaturalIdLoadAccess<T> loadAccess = entityManager.unwrap(Session.class)
-        .bySimpleNaturalId(entityClass);
-    return loadAccess.getReference(uuid);
-  }
   /**
    * @param resource
    *          to save
@@ -69,15 +55,15 @@ public class ObjectStoreResourceRepository
   @Override
   public <S extends ObjectStoreMetadataDto> S save(S resource) {
     ObjectStoreMetadataDto dto =  (ObjectStoreMetadataDto) resource ;
-    ObjectStoreMetadata objectMetadata = findOneByUUID(dto.getUuid());
+    ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(dto.getUuid(), ObjectStoreMetadata.class);
     mapper.updateObjectStoreMetadataFromDto(dto, objectMetadata);
-    entityManager.merge(objectMetadata);
+    dao.save(objectMetadata);
     return resource;
   }
 
   @Override
   public ObjectStoreMetadataDto findOne(UUID uuid, QuerySpec querySpec) {
-    ObjectStoreMetadata objectStoreMetadata = findOneByUUID(uuid);
+    ObjectStoreMetadata objectStoreMetadata = dao.findOneByNaturalId(uuid, ObjectStoreMetadata.class);
     if(objectStoreMetadata ==null){
     // Throw the 404 exception if the resource is not found.
       throw new ResourceNotFoundException(
@@ -104,25 +90,28 @@ public class ObjectStoreResourceRepository
     if(dto.getUuid()==null) {
       dto.setUuid(UUID.randomUUID());
     }
+    
     ObjectStoreMetadata objectMetadata = mapper
         .toEntity((ObjectStoreMetadataDto) resource);
-    
+
     // relationships
     if (resource.getManagedAttributes() != null) {
       objectMetadata.setManagedAttributes(new ArrayList<ManagedAttribute>());
       for (ManagedAttributeDto mdto : resource.getManagedAttributes()) {
-        objectMetadata.getManagedAttributes().add(getReferenceByNaturalId(ManagedAttribute.class, mdto.getUuid()));
+        objectMetadata.getManagedAttributes().add(dao.getReferenceByNaturalId(ManagedAttribute.class, mdto.getUuid()));
       }
     }
-    entityManager.persist(objectMetadata);
+
+    dao.save(objectMetadata);
+
     return resource;
   }
   
   @Override
   public void delete(UUID id) {
-    ObjectStoreMetadata objectStoreMetadata = findOneByUUID(id);
+    ObjectStoreMetadata objectStoreMetadata = dao.findOneByNaturalId(id, ObjectStoreMetadata.class);
     if(objectStoreMetadata != null) {
-      entityManager.remove(objectStoreMetadata);
+      dao.delete(objectStoreMetadata);
     }
   }
 }
