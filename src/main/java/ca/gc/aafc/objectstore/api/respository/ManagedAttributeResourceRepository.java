@@ -8,7 +8,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;

@@ -1,8 +1,8 @@
 package ca.gc.aafc.objectstore.api.respository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -53,28 +53,19 @@ public class MetadataManagedAttributesRelationshipRepository extends
   @Override
   public void setRelations(ObjectStoreMetadataDto source, Collection<UUID> targetIds, String fieldName) {
     log.info("setRelations ->" + targetIds);
-    @SuppressWarnings("unchecked")
-    ResourceList<ManagedAttributeDto> managedAttributes = managedAttributeResourceRepository.findAll((Iterable)targetIds);
-    source.setManagedAttributes(managedAttributes);
-    objectStoreResourceRepository.save(source);
+    objectStoreResourceRepository.setRelationships(source.getUuid(), new ArrayList<>(targetIds));
   }
 
   @Override
   public void addRelations(ObjectStoreMetadataDto source, Collection<UUID> targetIds, String fieldName) {
     log.info("addRelations ->" + targetIds);
-    List<ManagedAttributeDto> managedAttributes = source.getManagedAttributes();
-    managedAttributes.addAll(managedAttributeResourceRepository.findAll((Iterable)targetIds));
-    source.setManagedAttributes(managedAttributes);
-    objectStoreResourceRepository.save(source);
+    objectStoreResourceRepository.addRelationships(source.getUuid(), new ArrayList<>(targetIds));
   }
 
   @Override
   public void removeRelations(ObjectStoreMetadataDto source, Collection<UUID> targetIds, String fieldName) {
     log.info("removeRelations ->" + targetIds);
-    List<ManagedAttributeDto> managedAttributes = source.getManagedAttributes();
-    managedAttributes.removeAll(managedAttributeResourceRepository.findAll((Iterable)targetIds));
-    source.setManagedAttributes(managedAttributes);
-    objectStoreResourceRepository.save(source);    
+    objectStoreResourceRepository.removeRelationships(source.getUuid(), new ArrayList<>(targetIds));
   }
  
 }

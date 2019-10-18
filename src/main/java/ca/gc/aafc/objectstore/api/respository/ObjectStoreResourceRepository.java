@@ -1,6 +1,7 @@
 package ca.gc.aafc.objectstore.api.respository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -82,6 +83,33 @@ public class ObjectStoreResourceRepository
     .collect(Collectors.toList());
     
     return new DefaultResourceList<ObjectStoreMetadataDto>(l, null, null);
+  }
+  
+  public void setRelationships(UUID objectStoreMetadataNaturalKey, List<UUID> targetIds) {
+    ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(objectStoreMetadataNaturalKey, ObjectStoreMetadata.class);
+    objectMetadata.getManagedAttributes().clear();
+    for(UUID rel : targetIds) {
+      if (rel != null) {
+        objectMetadata.getManagedAttributes().add(dao.getReferenceByNaturalId(ManagedAttribute.class, rel));
+      }
+    }
+    dao.save(objectMetadata);
+  }
+  
+  public void addRelationships(UUID objectStoreMetadataNaturalKey, List<UUID> targetIds) {
+    ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(objectStoreMetadataNaturalKey, ObjectStoreMetadata.class);
+    for(UUID rel : targetIds) {
+      if (rel != null) {
+        objectMetadata.getManagedAttributes().add(dao.getReferenceByNaturalId(ManagedAttribute.class, rel));
+      }
+    }
+    dao.save(objectMetadata);
+  }
+  
+  public void removeRelationships(UUID objectStoreMetadataNaturalKey, List<UUID> targetIds) {
+    ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(objectStoreMetadataNaturalKey, ObjectStoreMetadata.class);
+    objectMetadata.getManagedAttributes().removeIf( (ma) -> targetIds.contains(ma.getUuid()));
+    dao.save(objectMetadata);
   }
 
   @Override
