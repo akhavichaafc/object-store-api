@@ -17,7 +17,9 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ManyRelationshipRepositoryBase;
 import io.crnk.core.repository.RelationshipMatcher;
 import io.crnk.core.resource.list.ResourceList;
+import lombok.extern.java.Log;
 
+@Log
 @Repository
 @Transactional
 public class MetadataManagedAttributesRelationshipRepository extends 
@@ -29,28 +31,28 @@ public class MetadataManagedAttributesRelationshipRepository extends
   @Autowired
   private ManagedAttributeResourceRepository managedAttributeResourceRepository; 
   
-  
   @Override
   public RelationshipMatcher getMatcher() {
     RelationshipMatcher matcher = new RelationshipMatcher();
     matcher.rule().source(ObjectStoreMetadataDto.class).target(ManagedAttributeDto.class).add();
     return matcher;
   }
-
   
   @Override
   public Map<UUID, ResourceList<ManagedAttributeDto>> findManyRelations(Collection<UUID> sourceIds,
       String fieldName, QuerySpec querySpec) {
     Map<UUID, ResourceList<ManagedAttributeDto>> map = new HashMap<>();
     for (UUID sourceId : sourceIds) {
+        log.info("findManyRelations ->" + sourceId);
         ResourceList<ManagedAttributeDto> list = managedAttributeResourceRepository.findAll(querySpec);
-        map.put(sourceId, list.isEmpty() ? null : list);
+        map.put(sourceId, list);
     }
     return map;
   }
   
   @Override
   public void setRelations(ObjectStoreMetadataDto source, Collection<UUID> targetIds, String fieldName) {
+    log.info("setRelations ->" + targetIds);
     @SuppressWarnings("unchecked")
     ResourceList<ManagedAttributeDto> managedAttributes = managedAttributeResourceRepository.findAll((Iterable)targetIds);
     source.setManagedAttributes(managedAttributes);
@@ -59,6 +61,7 @@ public class MetadataManagedAttributesRelationshipRepository extends
 
   @Override
   public void addRelations(ObjectStoreMetadataDto source, Collection<UUID> targetIds, String fieldName) {
+    log.info("addRelations ->" + targetIds);
     List<ManagedAttributeDto> managedAttributes = source.getManagedAttributes();
     managedAttributes.addAll(managedAttributeResourceRepository.findAll((Iterable)targetIds));
     source.setManagedAttributes(managedAttributes);
@@ -67,6 +70,7 @@ public class MetadataManagedAttributesRelationshipRepository extends
 
   @Override
   public void removeRelations(ObjectStoreMetadataDto source, Collection<UUID> targetIds, String fieldName) {
+    log.info("removeRelations ->" + targetIds);
     List<ManagedAttributeDto> managedAttributes = source.getManagedAttributes();
     managedAttributes.removeAll(managedAttributeResourceRepository.findAll((Iterable)targetIds));
     source.setManagedAttributes(managedAttributes);

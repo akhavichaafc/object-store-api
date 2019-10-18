@@ -57,7 +57,7 @@ public class ObjectStoreMetadataEntityCRUDIT extends BaseEntityCRUDIT {
   @Test
   public void testLinks() {
     ManagedAttribute ma = ManagedAttributeFactory.newManagedAttribute().build();
-    save(ma);
+    save(ma, false);
     ObjectStoreMetadata a = objectStoreMetaUnderTest = ObjectStoreMetadataFactory
         .newObjectStoreMetadata().acDigitizationDate(TEST_OFFSET_DT)
         .managedAttributes(Collections.singletonList(ma)).build();

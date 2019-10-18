@@ -16,8 +16,10 @@ public interface ObjectStoreMetadataMapper {
   ObjectStoreMetadataDto toDto(ObjectStoreMetadata entity);
 
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "managedAttributes", ignore = true)
   ObjectStoreMetadata toEntity(ObjectStoreMetadataDto dto);
   
+  @Mapping(target = "managedAttributes", ignore = true)
   void updateObjectStoreMetadataFromDto(ObjectStoreMetadataDto dto, @MappingTarget ObjectStoreMetadata entity);  
 
 }

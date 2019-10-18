@@ -42,8 +42,6 @@ public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<M
   public ManagedAttributeResourceRepository() {
     super(ManagedAttributeDto.class);
   }
-
-
   
   @PostConstruct
   void setup() {

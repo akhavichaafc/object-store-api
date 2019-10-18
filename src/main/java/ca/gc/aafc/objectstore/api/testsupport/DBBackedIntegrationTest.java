@@ -33,10 +33,15 @@ public class DBBackedIntegrationTest {
    * @param obj
    */
   protected void save(Object obj) {
+    save(obj, true);
+  }
+  
+  protected void save(Object obj, boolean detach) {
     entityManager.persist(obj);
     entityManager.flush();
-    //comment avoid test failure in testlink
-    //entityManager.detach(obj);
+    if(detach) {
+      entityManager.detach(obj);
+    }
   }
   
   protected <T> T find(Class<T> clazz, Serializable id) {

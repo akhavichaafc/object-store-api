@@ -1,5 +1,6 @@
 package ca.gc.aafc.objectstore.api.respository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -11,9 +12,12 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.hibernate.Session;
+import org.hibernate.SimpleNaturalIdLoadAccess;
 import org.springframework.stereotype.Repository;
 
+import ca.gc.aafc.objectstore.api.dto.ManagedAttributeDto;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
+import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
@@ -47,11 +51,15 @@ public class ObjectStoreResourceRepository
   }
 
   private ObjectStoreMetadata findOneByUUID(UUID uuid) {
-    
     ObjectStoreMetadata objectStoreMetadata = entityManager.unwrap(Session.class)
         .byNaturalId(ObjectStoreMetadata.class).using("uuid", uuid).load();
     return objectStoreMetadata;
+  }
   
+  public <T> T getReferenceByNaturalId(Class<T> entityClass, UUID uuid) {
+    SimpleNaturalIdLoadAccess<T> loadAccess = entityManager.unwrap(Session.class)
+        .bySimpleNaturalId(entityClass);
+    return loadAccess.getReference(uuid);
   }
   /**
    * @param resource
@@ -98,6 +106,14 @@ public class ObjectStoreResourceRepository
     }
     ObjectStoreMetadata objectMetadata = mapper
         .toEntity((ObjectStoreMetadataDto) resource);
+    
+    // relationships
+    if (resource.getManagedAttributes() != null) {
+      objectMetadata.setManagedAttributes(new ArrayList<ManagedAttribute>());
+      for (ManagedAttributeDto mdto : resource.getManagedAttributes()) {
+        objectMetadata.getManagedAttributes().add(getReferenceByNaturalId(ManagedAttribute.class, mdto.getUuid()));
+      }
+    }
     entityManager.persist(objectMetadata);
     return resource;
   }
