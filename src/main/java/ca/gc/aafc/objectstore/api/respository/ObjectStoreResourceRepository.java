@@ -3,13 +3,11 @@ package ca.gc.aafc.objectstore.api.respository;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
+import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
@@ -23,21 +21,14 @@ import io.crnk.core.resource.list.ResourceList;
 public class ObjectStoreResourceRepository
     extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID> {
 
-  @PersistenceContext
-  private EntityManager entityManager;
-
+  private final BaseDAO dao;
+  private final ObjectStoreMetadataMapper mapper;
+  
   @Inject
-  private ObjectStoreMetadataMapper mapper;
-
-  public ObjectStoreResourceRepository() {
+  public ObjectStoreResourceRepository(BaseDAO dao, ObjectStoreMetadataMapper mapper) {
     super(ObjectStoreMetadataDto.class);
-  }
-
-  private ObjectStoreMetadata findOneByUUID(UUID uuid) {
-    ObjectStoreMetadata objectStoreMetadata = entityManager.unwrap(Session.class)
-        .bySimpleNaturalId(ObjectStoreMetadata.class)
-        .load(uuid);
-    return objectStoreMetadata;
+    this.dao = dao;
+    this.mapper = mapper;
   }
 
   /**
@@ -48,15 +39,15 @@ public class ObjectStoreResourceRepository
   @Override
   public <S extends ObjectStoreMetadataDto> S save(S resource) {
     ObjectStoreMetadataDto dto =  (ObjectStoreMetadataDto) resource ;
-    ObjectStoreMetadata objectMetadata = findOneByUUID(dto.getUuid());
+    ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(dto.getUuid(), ObjectStoreMetadata.class);
     mapper.updateObjectStoreMetadataFromDto(dto, objectMetadata);
-    entityManager.merge(objectMetadata);
+    dao.save(objectMetadata);
     return resource;
   }
 
   @Override
   public ObjectStoreMetadataDto findOne(UUID uuid, QuerySpec querySpec) {
-    ObjectStoreMetadata objectStoreMetadata = findOneByUUID(uuid);
+    ObjectStoreMetadata objectStoreMetadata = dao.findOneByNaturalId(uuid, ObjectStoreMetadata.class);
     if(objectStoreMetadata ==null){
     // Throw the 404 exception if the resource is not found.
       throw new ResourceNotFoundException(
@@ -80,15 +71,15 @@ public class ObjectStoreResourceRepository
     }
     ObjectStoreMetadata objectMetadata = mapper
         .toEntity((ObjectStoreMetadataDto) resource);
-    entityManager.persist(objectMetadata);
+    dao.save(objectMetadata);
     return resource;
   }
   
   @Override
   public void delete(UUID id) {
-    ObjectStoreMetadata objectStoreMetadata = findOneByUUID(id);
+    ObjectStoreMetadata objectStoreMetadata = dao.findOneByNaturalId(id, ObjectStoreMetadata.class);
     if(objectStoreMetadata != null) {
-      entityManager.remove(objectStoreMetadata);
+      dao.delete(objectStoreMetadata);
     }
   }
 }
