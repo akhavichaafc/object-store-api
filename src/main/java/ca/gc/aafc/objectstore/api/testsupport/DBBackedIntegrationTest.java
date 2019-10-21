@@ -1,8 +1,12 @@
 package ca.gc.aafc.objectstore.api.testsupport;
 
 import java.io.Serializable;
+import java.util.function.Consumer;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,10 +24,16 @@ public class DBBackedIntegrationTest {
 
   @Inject
   private EntityManager entityManager;
+    
+  // Should only be used with runInNewTransaction
+  @Inject
+  private EntityManagerFactory entityManagerFactory;
   
-  public DBBackedIntegrationTest() {}
+  protected DBBackedIntegrationTest() {}
   
-  public DBBackedIntegrationTest(EntityManager entityManager) {
+  
+  public DBBackedIntegrationTest(EntityManagerFactory entityManagerFactory, EntityManager entityManager) {
+    this.entityManagerFactory = entityManagerFactory;
     this.entityManager = entityManager;
   }
     
@@ -47,6 +57,15 @@ public class DBBackedIntegrationTest {
   protected <T> T find(Class<T> clazz, Serializable id) {
     T obj = entityManager.find(clazz, id);
     return obj;
+  }
+  
+  /**
+   * See {@link EntityManager#detach(Object)}.
+   * 
+   * @param obj
+   */
+  protected void detach(Object obj) {
+    entityManager.detach(obj);
   }
   
   /**
@@ -74,6 +93,26 @@ public class DBBackedIntegrationTest {
   protected <T> void remove(Class<T> clazz, Serializable id) {
     entityManager.remove(entityManager.find(clazz, id));
     entityManager.flush();
+  }
+
+  
+  /**
+   * Accepts a {@link Consumer} of {@link EntityManager} that will be called in a new, unmanaged transaction.
+   * The main goal is to not interfere with SpringTest Managed transaction.
+   * Note that the Transaction will be committed.
+   * 
+   * This should only be used for setup/tear down purpose.
+   * 
+   * @param emConsumer
+   */
+  protected void runInNewTransaction(Consumer<EntityManager> emConsumer) {
+    EntityManager em = entityManagerFactory.createEntityManager();
+    EntityTransaction et = em.getTransaction();
+    et.begin();
+    emConsumer.accept(em);
+    em.flush();
+    et.commit();
+    em.close();
   }
 
 }

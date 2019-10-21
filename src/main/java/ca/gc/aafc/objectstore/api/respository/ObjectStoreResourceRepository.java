@@ -1,7 +1,6 @@
 package ca.gc.aafc.objectstore.api.respository;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -108,7 +107,7 @@ public class ObjectStoreResourceRepository
   
   public void removeRelationships(UUID objectStoreMetadataNaturalKey, List<UUID> targetIds) {
     ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(objectStoreMetadataNaturalKey, ObjectStoreMetadata.class);
-    objectMetadata.getManagedAttributes().removeIf( (ma) -> targetIds.contains(ma.getUuid()));
+    objectMetadata.getManagedAttributes().removeIf(ma -> targetIds.contains(ma.getUuid()));
     dao.save(objectMetadata);
   }
 

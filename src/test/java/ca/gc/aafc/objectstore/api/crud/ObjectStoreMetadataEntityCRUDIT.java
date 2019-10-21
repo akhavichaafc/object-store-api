@@ -11,8 +11,6 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.api.client.util.Lists;
-
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.testsupport.factories.ManagedAttributeFactory;

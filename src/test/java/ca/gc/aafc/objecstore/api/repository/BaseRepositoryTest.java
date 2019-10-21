@@ -16,13 +16,13 @@ public abstract class BaseRepositoryTest extends BaseIntegrationTest {
    */
   protected void persist(UniqueObj objectToPersist) {
     assertNull( objectToPersist.getId());
-    entityManager.persist(objectToPersist);
+    save(objectToPersist);
     assertNotNull( objectToPersist.getId());
   }
   
   protected void delete(UniqueObj objectToPersist) {
     assertNotNull( objectToPersist.getId());
-    entityManager.remove(objectToPersist);
+    delete(objectToPersist);
     assertNull( objectToPersist.getId());
   }
 
