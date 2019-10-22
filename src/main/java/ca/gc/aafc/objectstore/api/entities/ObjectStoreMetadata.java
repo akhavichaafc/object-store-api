@@ -38,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "metadata")
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
 @SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
-@Builder
+@Builder(toBuilder=true)
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NaturalIdCache

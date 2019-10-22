@@ -36,9 +36,11 @@ public interface ObjectStoreMetadataMapper {
     if (mma == null) {
       return null;
     }
-    MetadataManagedAttribute mma2 = new MetadataManagedAttribute();
-    mma2.setId(mma.getId());
-    mma2.setUuid(mma.getUuid());
+    // Get a builder from the current instance and set the relationships to null
+    MetadataManagedAttribute mma2 = mma.toBuilder()
+        .objectStoreMetadata(null)
+        .managedAttribute(null)
+        .build();
     return MetadataManagedAttributeMapper.INSTANCE.toDto(mma2);
   }
 

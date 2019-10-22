@@ -5,13 +5,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
+import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
+import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
+import ca.gc.aafc.objectstore.api.testsupport.factories.ManagedAttributeFactory;
+import ca.gc.aafc.objectstore.api.testsupport.factories.MetadataManagedAttributeFactory;
 import ca.gc.aafc.objectstore.api.testsupport.factories.ObjectStoreMetadataFactory;
 
 public class ObjectStoreMetadataDtoMapperTest {
@@ -26,10 +31,20 @@ public class ObjectStoreMetadataDtoMapperTest {
   public void testGivenObjectStoreMetadata_mapsToObjectStoreMetadataDto() {
 
     // given
+    ManagedAttribute ma = ManagedAttributeFactory.newManagedAttribute().build();
+    MetadataManagedAttribute mma = MetadataManagedAttributeFactory.newMetadataManagedAttribute()
+        .managedAttribute(ma)
+        .assignedValue("1234")
+        .build();
+    
     ObjectStoreMetadata objectStoreMetadata = ObjectStoreMetadataFactory.newObjectStoreMetadata()
         .acDigitizationDate(TEST_OFFSET_DT)
         .xmpMetadataDate(TEST_OFFSET_DT)
+        .managedAttribute(Collections.singletonList(mma))
         .build();
+    
+    // set circular reference
+    mma.setObjectStoreMetadata(objectStoreMetadata);
 
     // when
     ObjectStoreMetadataDto objectStoreMetadataDto = DTO_MAPPER
@@ -39,6 +54,7 @@ public class ObjectStoreMetadataDtoMapperTest {
     assertEquals(objectStoreMetadataDto.getAcDigitizationDate(), objectStoreMetadata.getAcDigitizationDate());
     assertEquals(objectStoreMetadataDto.getUuid(), objectStoreMetadata.getUuid());
     assertEquals(objectStoreMetadataDto.getDcType(), objectStoreMetadata.getDcType());
+    assertEquals(objectStoreMetadata.getManagedAttribute().size(), objectStoreMetadataDto.getManagedAttribute().size());
   }
 
   @Test

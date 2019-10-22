@@ -22,7 +22,7 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
 @Entity
-@Builder
+@Builder(toBuilder=true)
 @AllArgsConstructor
 @RequiredArgsConstructor
 @SuppressFBWarnings(justification = "ok for Hibernate Entity", value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
