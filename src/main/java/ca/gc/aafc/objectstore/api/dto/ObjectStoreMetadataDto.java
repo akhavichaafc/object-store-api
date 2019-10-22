@@ -27,6 +27,6 @@ public class ObjectStoreMetadataDto {
   private String acHashValue;
   
   @JsonApiRelation
-  private List<ManagedAttributeDto> managedAttributes;
+  private List<MetadataManagedAttributeDto> managedAttribute;
   
 }

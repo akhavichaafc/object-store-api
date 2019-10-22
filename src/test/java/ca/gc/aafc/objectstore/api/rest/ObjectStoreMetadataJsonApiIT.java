@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import com.google.common.collect.ImmutableMap;
-
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
@@ -76,12 +74,13 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
   
   @Override
   protected Map<String, Object> buildRelationshipMap() {
-    ImmutableMap.Builder<String, Object> relationships = new ImmutableMap.Builder<>();
+/*    ImmutableMap.Builder<String, Object> relationships = new ImmutableMap.Builder<>();
     relationships.put("type", "managed-attribute").put("id", managedAttributeId.toString()).build();
 
     ImmutableMap.Builder<String, Object> bldr = new ImmutableMap.Builder<>();
     bldr.put("data", relationships.build());
-    return ImmutableMap.of("managedAttributes", bldr.build());
+    return ImmutableMap.of("managedAttribute", bldr.build());*/
+    return null;
   }
   
 }

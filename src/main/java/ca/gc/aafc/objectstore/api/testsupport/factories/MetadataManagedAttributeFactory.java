@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BiFunction;
 
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
@@ -26,10 +27,12 @@ public class MetadataManagedAttributeFactory implements TestableEntityFactory<Me
    */
   public static MetadataManagedAttribute.MetadataManagedAttributeBuilder newMetadataManagedAttribute() {
     return MetadataManagedAttribute.builder()
+        .uuid(UUID.randomUUID())
         .objectStoreMetadata(ObjectStoreMetadataFactory.newObjectStoreMetadata()
             .acDigitizationDate(TEST_OFFSET_DT).build())
         .managedAttribute(ManagedAttributeFactory.newManagedAttribute()
-            .acceptedValues(new String[] { "a", "b" }).build());
+            .acceptedValues(new String[] { "a", "b" }).build())
+        .assignedValue("test value");
    } 
   
   /**

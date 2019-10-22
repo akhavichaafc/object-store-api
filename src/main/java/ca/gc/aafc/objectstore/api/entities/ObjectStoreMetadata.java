@@ -5,18 +5,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -63,7 +60,7 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   private String acHashFunction;
   private String acHashValue;
   
-  private List<ManagedAttribute> managedAttributes;  
+  private List<MetadataManagedAttribute> managedAttribute;  
 
   public enum DcType {
     IMAGE("Image"), 
@@ -178,18 +175,14 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
     this.acHashValue = acHashValue;
   }
 
-  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @JoinTable(
-      name = "metadata_managed_attribute", 
-      joinColumns = { @JoinColumn(name = "metadata_id") }, 
-      inverseJoinColumns = { @JoinColumn(name = "managed_attribute_id") }
-  )
-  public List<ManagedAttribute> getManagedAttributes() {
-    return managedAttributes;
+  @OneToMany
+  @JoinColumn(name = "metadata_id")
+  public List<MetadataManagedAttribute> getManagedAttribute() {
+    return managedAttribute;
   }
 
-  public void setManagedAttributes(List<ManagedAttribute> managedAttributes) {
-    this.managedAttributes = managedAttributes;
+  public void setManagedAttribute(List<MetadataManagedAttribute> managedAttribute) {
+    this.managedAttribute = managedAttribute;
   }
 
 }
