@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
-import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
@@ -79,33 +78,6 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     .collect(Collectors.toList());
     
     return new DefaultResourceList<ObjectStoreMetadataDto>(l, null, null);
-  }
-  
-  public void setRelationships(UUID objectStoreMetadataNaturalKey, List<UUID> targetIds) {
-    ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(objectStoreMetadataNaturalKey, ObjectStoreMetadata.class);
-    objectMetadata.getManagedAttribute().clear();
-    for(UUID rel : targetIds) {
-      if (rel != null) {
-        objectMetadata.getManagedAttribute().add(dao.getReferenceByNaturalId(MetadataManagedAttribute.class, rel));
-      }
-    }
-    dao.save(objectMetadata);
-  }
-  
-  public void addRelationships(UUID objectStoreMetadataNaturalKey, List<UUID> targetIds) {
-    ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(objectStoreMetadataNaturalKey, ObjectStoreMetadata.class);
-    for(UUID rel : targetIds) {
-      if (rel != null) {
-        objectMetadata.getManagedAttribute().add(dao.getReferenceByNaturalId(MetadataManagedAttribute.class, rel));
-      }
-    }
-    dao.save(objectMetadata);
-  }
-  
-  public void removeRelationships(UUID objectStoreMetadataNaturalKey, List<UUID> targetIds) {
-    ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(objectStoreMetadataNaturalKey, ObjectStoreMetadata.class);
-    objectMetadata.getManagedAttribute().removeIf(ma -> targetIds.contains(ma.getUuid()));
-    dao.save(objectMetadata);
   }
 
   @Override
