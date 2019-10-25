@@ -51,7 +51,7 @@ public interface MetadataManagedAttributeMapper {
     ObjectStoreMetadata osm2 = osm.toBuilder()
         .managedAttribute(null)
         .build();
-    return ObjectStoreMetadataMapper.INSTANCE.toDto(osm2);
+    return ObjectStoreMetadataMapper.INSTANCE.toDto(osm2, null);
   }
   
 }
