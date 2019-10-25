@@ -26,7 +26,7 @@ public class BaseDAOIT extends BaseIntegrationTest {
     dao.save(osm);
     
     // detached the object to make sure we don't get the entity from memory
-    entityManager.detach(osm);
+    detach(osm);
     
     ObjectStoreMetadata osm2 = dao.findOneByNaturalId(naturalKey, ObjectStoreMetadata.class);
     assertNotNull(osm2);

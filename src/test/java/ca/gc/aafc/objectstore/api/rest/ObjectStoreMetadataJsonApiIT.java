@@ -56,4 +56,5 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
     
     return toAttributeMap(objectStoreMetadatadto);
   }
+  
 }

@@ -8,7 +8,13 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import org.junit.jupiter.api.Test;
+
+import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
+import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
+import ca.gc.aafc.objectstore.api.testsupport.factories.ManagedAttributeFactory;
+import ca.gc.aafc.objectstore.api.testsupport.factories.MetadataManagedAttributeFactory;
 import ca.gc.aafc.objectstore.api.testsupport.factories.ObjectStoreMetadataFactory;
 
 public class ObjectStoreMetadataEntityCRUDIT extends BaseEntityCRUDIT {
@@ -45,6 +51,30 @@ public class ObjectStoreMetadataEntityCRUDIT extends BaseEntityCRUDIT {
     Integer id = objectStoreMetaUnderTest.getId();
     remove(ObjectStoreMetadata.class, id);
     assertNull(find(ObjectStoreMetadata.class, id));
+  }
+  
+  @Test
+  public void testRelationships() {
+    ManagedAttribute ma = ManagedAttributeFactory.newManagedAttribute().build();
+    save(ma, false);
+   
+    ObjectStoreMetadata osm = ObjectStoreMetadataFactory
+        .newObjectStoreMetadata().acDigitizationDate(TEST_OFFSET_DT).build();
+    save(osm, false);
+    assertNotNull(osm.getId());
+    
+    // link the 2 entities
+    MetadataManagedAttribute mma = MetadataManagedAttributeFactory.newMetadataManagedAttribute()
+    .objectStoreMetadata(osm)
+    .managedAttribute(ma)
+    .assignedValue("test value")
+    .build();
+    
+    save(mma);
+    
+    MetadataManagedAttribute restoredMma = find(MetadataManagedAttribute.class, mma.getId());
+    assertEquals(osm.getId(), restoredMma.getObjectStoreMetadata().getId());
+    
   }
 
 }

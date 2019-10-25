@@ -1,8 +1,13 @@
 package ca.gc.aafc.objectstore.api.respository;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import javax.inject.Inject;
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
@@ -14,7 +19,10 @@ import ca.gc.aafc.objectstore.api.mapper.ManagedAttributeMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
+import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
+import io.crnk.data.jpa.query.criteria.JpaCriteriaQuery;
+import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
 
 @Repository
 @Transactional
@@ -23,7 +31,13 @@ public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<M
   private final BaseDAO dao;
   private final ManagedAttributeMapper mapper;
 
-  @Inject
+  private JpaCriteriaQueryFactory queryFactory;  
+
+  @PostConstruct
+  void setup() {
+    queryFactory = dao.createWithEntityManager(JpaCriteriaQueryFactory::newInstance);
+  }
+
   public ManagedAttributeResourceRepository(BaseDAO dao, ManagedAttributeMapper mapper) {
     super(ManagedAttributeDto.class);
     this.dao = dao;
@@ -57,9 +71,24 @@ public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<M
 
   @Override
   public ResourceList<ManagedAttributeDto> findAll(QuerySpec querySpec) {
-    // TODO Auto-generated method stub
-    return null;
+    JpaCriteriaQuery<ManagedAttribute> jq = queryFactory.query(ManagedAttribute.class);
+    
+    List<ManagedAttributeDto> l = jq.buildExecutor(querySpec).getResultList().stream()
+    .map(mapper::toDto)
+    .collect(Collectors.toList());
+    
+    return new DefaultResourceList<ManagedAttributeDto>(l, null, null);
   }
+  
+  public ResourceList<ManagedAttributeDto> findAll(Iterable<Serializable> ids) {
+    @SuppressWarnings("unchecked")
+    List<ManagedAttributeDto> managedAttributes = new ArrayList<ManagedAttributeDto>();
+    Iterator it = ids.iterator();
+    while(it.hasNext()) {
+      managedAttributes.add(findOne((UUID)it.next(),null));      
+    }
+    return new DefaultResourceList<ManagedAttributeDto>(managedAttributes, null, null);
+  }  
 
   @Override
   public <S extends ManagedAttributeDto> S create(S resource) {

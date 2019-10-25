@@ -1,6 +1,7 @@
 package ca.gc.aafc.objectstore.api.entities;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,6 +12,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -35,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "metadata")
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
 @SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
-@Builder
+@Builder(toBuilder=true)
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NaturalIdCache
@@ -56,6 +59,8 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
 
   private String acHashFunction;
   private String acHashValue;
+  
+  private List<MetadataManagedAttribute> managedAttribute;  
 
   public enum DcType {
     IMAGE("Image"), 
@@ -168,6 +173,16 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
 
   public void setAcHashValue(String acHashValue) {
     this.acHashValue = acHashValue;
+  }
+
+  @OneToMany
+  @JoinColumn(name = "metadata_id")
+  public List<MetadataManagedAttribute> getManagedAttribute() {
+    return managedAttribute;
+  }
+
+  public void setManagedAttribute(List<MetadataManagedAttribute> managedAttribute) {
+    this.managedAttribute = managedAttribute;
   }
 
 }

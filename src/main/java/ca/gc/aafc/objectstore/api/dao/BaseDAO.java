@@ -1,7 +1,9 @@
 package ca.gc.aafc.objectstore.api.dao;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,6 +21,16 @@ public class BaseDAO {
   
   @PersistenceContext
   private EntityManager entityManager;
+  
+  /**
+   * This method can be used to inject the EntityManager into an external object.
+   * 
+   * @param emConsumer
+   */
+  public <T> T createWithEntityManager(Function<EntityManager, T> creator) {
+    Objects.requireNonNull(creator);
+    return creator.apply(entityManager);
+  }
 
   /**
    * Find an entity by it's naturalId. The method assumes that the naturalId is unique.

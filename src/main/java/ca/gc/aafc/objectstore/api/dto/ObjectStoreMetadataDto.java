@@ -1,10 +1,12 @@
 package ca.gc.aafc.objectstore.api.dto;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
 import io.crnk.core.resource.annotations.JsonApiId;
+import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
 
@@ -23,5 +25,8 @@ public class ObjectStoreMetadataDto {
 
   private String acHashFunction;
   private String acHashValue;
+  
+  @JsonApiRelation
+  private List<MetadataManagedAttributeDto> managedAttribute;
   
 }

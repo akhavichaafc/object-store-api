@@ -80,7 +80,6 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
 
   public static final String API_BASE_PATH = "/api";
   public static final String SCHEMA_BASE_PATH = "/json-schema";
-
    
   @BeforeEach
   public final void before() {
@@ -194,6 +193,21 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
     }
     return ImmutableMap.of("data", bldr.build());
   }
+  
+  public static Map<String, Object> toRelationshipMap(String relName, String type, String id) {
+    ImmutableMap.Builder<String, Object> relationships = new ImmutableMap.Builder<>();
+    relationships.put("type", type).put("id", id).build();
+    
+    ImmutableMap.Builder<String, Object> bldr = new ImmutableMap.Builder<>();
+    bldr.put("data", relationships.build());
+    
+    ImmutableMap.Builder<String, Object> relBuilder = new ImmutableMap.Builder<>();
+    relBuilder.put(relName, bldr.build());
+    
+    return relBuilder.build();
+        
+  }
+  
 
   /**
    * Try to get a non-existing id (id = 0).
@@ -214,13 +228,17 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
     ValidatableResponse responseCompact = given().header("crnk-compact", "true").when()
         .get(getResourceUnderTest() + "/" + id).then().statusCode(HttpStatus.OK.value());
     
-    validateJsonSchemaByURL(getGetOneSchemaFilename(), responseCompact.extract().body().asString());
+    if( getGetOneSchemaFilename() != null) {
+      validateJsonSchemaByURL(getGetOneSchemaFilename(), responseCompact.extract().body().asString());
+    }
     
     // Test without the crnk-compact header.
     ValidatableResponse response = given().when().get(getResourceUnderTest() + "/" + id).then()
         .statusCode(HttpStatus.OK.value());
     
-    validateJsonSchemaByURL(getGetOneSchemaFilename(), response.extract().body().asString());
+    if( getGetOneSchemaFilename() != null) {
+      validateJsonSchemaByURL(getGetOneSchemaFilename(), response.extract().body().asString());
+    }
     
     // cleanup
     sendDelete(id);
@@ -323,13 +341,14 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
    * @return id of the newly created resource
    */
   protected String sendPost(String resourceName, Map<String, Object> dataMap) {
+    log.info("Posting to resourceName:" + dataMap);
     Response response = given().header("crnk-compact", "true").contentType(JSON_API_CONTENT_TYPE).body(dataMap).when()
         .post(resourceName);
     response.then().statusCode(HttpStatus.CREATED.value());
     String id = (String) response.body().jsonPath().get("data.id");
     return id;
   }
-
+ 
   /**
    * Sends a PATCH to the resource under test for the provided id. Asserts that it returns HTTP OK
    * 200 and returns the response as {@link ValidatableResponse}.
