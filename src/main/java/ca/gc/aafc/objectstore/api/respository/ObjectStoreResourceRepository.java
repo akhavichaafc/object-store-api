@@ -1,6 +1,5 @@
 package ca.gc.aafc.objectstore.api.respository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -12,7 +11,6 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import ca.gc.aafc.objectstore.api.dao.BaseDAO;
-import ca.gc.aafc.objectstore.api.dto.MetadataManagedAttributeDto;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
@@ -27,8 +25,7 @@ import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
 
 @Repository
 @Transactional
-public class ObjectStoreResourceRepository
-    extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID> {
+public class ObjectStoreResourceRepository extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID> {
 
   private final BaseDAO dao;
   private final ObjectStoreMetadataMapper mapper;
@@ -121,15 +118,6 @@ public class ObjectStoreResourceRepository
     ObjectStoreMetadata objectMetadata = mapper
         .toEntity((ObjectStoreMetadataDto) resource);
    
-
-    // relationships
-    if (resource.getManagedAttribute() != null) {
-      objectMetadata.setManagedAttribute(new ArrayList<MetadataManagedAttribute>());
-      for (MetadataManagedAttributeDto mdto : resource.getManagedAttribute()) {
-        objectMetadata.getManagedAttribute().add(dao.getReferenceByNaturalId(MetadataManagedAttribute.class, mdto.getUuid()));
-      }
-    }
-
     dao.save(objectMetadata);
 
     return resource;

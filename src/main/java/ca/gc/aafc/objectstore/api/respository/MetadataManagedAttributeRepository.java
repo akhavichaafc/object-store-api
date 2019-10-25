@@ -59,15 +59,6 @@ public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<M
     mapper.updateMetadataManagedAttributeFromDto(dto, metadataManagedAttribute);
     
     System.out.println("Saving current objectStoreMetadata:" + metadataManagedAttribute.getObjectStoreMetadata());
-    // relationships
-    //if (dto.getManagedAttribute() != null) {
-    //  metadataManagedAttribute.setManagedAttribute(dao.getReferenceByNaturalId(ManagedAttribute.class, dto.getManagedAttribute().getUuid()));
-   // }
-    
-    //if(dto.getObjectStoreMetadata() != null) {
-   //   metadataManagedAttribute.setObjectStoreMetadata(dao.getReferenceByNaturalId(ObjectStoreMetadata.class, dto.getObjectStoreMetadata().getUuid()));
-   // }
-    
     dao.save(metadataManagedAttribute);
     return resource;
   }
@@ -94,33 +85,6 @@ public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<M
     
     return new DefaultResourceList<MetadataManagedAttributeDto>(l, null, null);
   }
-  
-//  public void setRelationships(UUID objectStoreMetadataNaturalKey, List<UUID> targetIds) {
-//    ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(objectStoreMetadataNaturalKey, ObjectStoreMetadata.class);
-//    objectMetadata.getManagedAttribute().clear();
-//    for(UUID rel : targetIds) {
-//      if (rel != null) {
-//        objectMetadata.getManagedAttribute().add(dao.getReferenceByNaturalId(MetadataManagedAttribute.class, rel));
-//      }
-//    }
-//    dao.save(objectMetadata);
-//  }
-//  
-//  public void addRelationships(UUID objectStoreMetadataNaturalKey, List<UUID> targetIds) {
-//    ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(objectStoreMetadataNaturalKey, ObjectStoreMetadata.class);
-//    for(UUID rel : targetIds) {
-//      if (rel != null) {
-//        objectMetadata.getManagedAttribute().add(dao.getReferenceByNaturalId(MetadataManagedAttribute.class, rel));
-//      }
-//    }
-//    dao.save(objectMetadata);
-//  }
-//  
-//  public void removeRelationships(UUID objectStoreMetadataNaturalKey, List<UUID> targetIds) {
-//    ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(objectStoreMetadataNaturalKey, ObjectStoreMetadata.class);
-//    objectMetadata.getManagedAttribute().removeIf(ma -> targetIds.contains(ma.getUuid()));
-//    dao.save(objectMetadata);
-//  }
 
   @Override
   public <S extends MetadataManagedAttributeDto> S create(S resource) {
