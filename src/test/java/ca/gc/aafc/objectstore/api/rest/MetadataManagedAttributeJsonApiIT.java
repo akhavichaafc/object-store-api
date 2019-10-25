@@ -69,20 +69,16 @@ public class MetadataManagedAttributeJsonApiIT extends BaseJsonApiIntegrationTes
 
   @Override
   protected Map<String, Object> buildUpdateAttributeMap() {
-
     mmaCreated.setAssignedValue("zxy");
-
     MetadataManagedAttributeDto objectStoreMetadatadto = mapper.toDto(mmaCreated);
     return toAttributeMap(objectStoreMetadatadto);
   }
 
   @Override
   protected Map<String, Object> buildRelationshipMap() {
-
     ImmutableMap.Builder<String, Object> relationships = new ImmutableMap.Builder<>();
     relationships.putAll(toRelationshipMap("managedAttribute", "managed-attribute", managedAttributeId.toString()));
     relationships.putAll(toRelationshipMap("objectStoreMetadata", "metadata", metadataId.toString()));
-        
     return relationships.build();
   }
 
