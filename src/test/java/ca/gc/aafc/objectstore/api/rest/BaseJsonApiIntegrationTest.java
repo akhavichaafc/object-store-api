@@ -255,13 +255,14 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
     }
     
     validateIncludeRelationships(id, relationships);
+    validateRelationshipEndpoints(id, relationships);
     
     // cleanup
     sendDelete(id);
   }
   
   /**
-   * Validate the response from a GET on a resource with the ?include parameters to make sure the
+   * Validates the response from a GET on a resource with the ?include parameters to make sure the
    * relationships can be resolved.
    * 
    * @param resourceId
@@ -278,6 +279,25 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
     
     for(Relationship rel : relationships) {
       response.body("data.relationships." + rel.getName() + ".data.id",
+          equalTo(rel.getId()));
+    }
+  }
+  
+  /**
+   * Validates the relationships endpoints of the resource (e.g /articles/1/relationships/author).
+   * Currently limited to 1 relationship entry.
+   * @param resourceId
+   * @param relationships
+   */
+  private void validateRelationshipEndpoints(String resourceId, List<Relationship> relationships) {
+    if (relationships == null) {
+      return;
+    }
+       
+    for(Relationship rel : relationships) {
+      ValidatableResponse response = given().when().get(getResourceUnderTest() + "/" + resourceId + "/relationships/" + rel.getName()).then()
+          .statusCode(HttpStatus.OK.value());
+      response.body("data.id",
           equalTo(rel.getId()));
     }
   }

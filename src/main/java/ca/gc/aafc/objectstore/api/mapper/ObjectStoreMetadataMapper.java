@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.mapstruct.Context;
+import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -30,8 +31,7 @@ public interface ObjectStoreMetadataMapper {
   @Mapping(target = "acMetadataCreator", ignore = true)
   ObjectStoreMetadata toEntity(ObjectStoreMetadataDto dto);
   
-  @Mapping(target = "managedAttribute", ignore = true)
-  @Mapping(target = "acMetadataCreator", ignore = true)
+  @InheritConfiguration
   void updateObjectStoreMetadataFromDto(ObjectStoreMetadataDto dto, @MappingTarget ObjectStoreMetadata entity);
    
   /**
