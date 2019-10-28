@@ -1,12 +1,12 @@
 package ca.gc.aafc.objectstore.api.rest;
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
-
-import com.google.common.collect.ImmutableMap;
 
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.Agent;
@@ -17,7 +17,8 @@ import ca.gc.aafc.objectstore.api.testsupport.factories.ObjectStoreMetadataFacto
 
 public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
 
-  private ObjectStoreMetadataMapper mapper = ObjectStoreMetadataMapper.INSTANCE;
+  private final ObjectStoreMetadataMapper mapper = ObjectStoreMetadataMapper.INSTANCE;
+  private static final String METADATA_CREATOR_PROPERTY_NAME = "acMetadataCreator";
   
   private ObjectStoreMetadata objectStoreMetadata;
   
@@ -79,13 +80,8 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
   }
   
   @Override
-  protected Map<String, Object> buildRelationshipMap() {
-    ImmutableMap.Builder<String, Object> relationships = new ImmutableMap.Builder<>();
-    relationships.put("type", "agent").put("id", agentId.toString()).build();
-
-    ImmutableMap.Builder<String, Object> bldr = new ImmutableMap.Builder<>();
-    bldr.put("data", relationships.build());
-    return ImmutableMap.of("acMetadataCreator", bldr.build());
+  protected List<Relationship> buildRelationshipList() {
+    return Arrays.asList(Relationship.of(METADATA_CREATOR_PROPERTY_NAME, "agent", agentId.toString()));
   }
   
 }

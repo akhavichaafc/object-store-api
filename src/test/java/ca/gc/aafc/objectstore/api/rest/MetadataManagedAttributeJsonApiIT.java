@@ -1,11 +1,11 @@
 package ca.gc.aafc.objectstore.api.rest;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
-
-import com.google.common.collect.ImmutableMap;
 
 import ca.gc.aafc.objectstore.api.dto.MetadataManagedAttributeDto;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
@@ -75,11 +75,10 @@ public class MetadataManagedAttributeJsonApiIT extends BaseJsonApiIntegrationTes
   }
 
   @Override
-  protected Map<String, Object> buildRelationshipMap() {
-    ImmutableMap.Builder<String, Object> relationships = new ImmutableMap.Builder<>();
-    relationships.putAll(toRelationshipMap("managedAttribute", "managed-attribute", managedAttributeId.toString()));
-    relationships.putAll(toRelationshipMap("objectStoreMetadata", "metadata", metadataId.toString()));
-    return relationships.build();
+  protected List<Relationship> buildRelationshipList() {
+    return Arrays.asList(
+        Relationship.of("managedAttribute", "managed-attribute", managedAttributeId.toString()),
+        Relationship.of("objectStoreMetadata", "metadata", metadataId.toString()));
   }
 
 }
