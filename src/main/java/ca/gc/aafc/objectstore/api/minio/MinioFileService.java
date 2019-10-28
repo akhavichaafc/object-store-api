@@ -6,16 +6,19 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.xmlpull.v1.XmlPullParserException;
 
+import ca.gc.aafc.objectstore.api.file.FileObjectInfo;
+import io.minio.ErrorCode;
 import io.minio.MinioClient;
+import io.minio.ObjectStat;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -26,8 +29,10 @@ import io.minio.errors.InvalidPortException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class MinioFileService {
 
   private final MinioClient minioClient;
@@ -72,7 +77,7 @@ public class MinioFileService {
    * @throws InvalidPortException
    * @throws URISyntaxException
    */
-  public void storeFile(String fileName, InputStream iStream, String bucket)
+  public void storeFile(String fileName, InputStream iStream, String contentType, String bucket)
       throws NoSuchAlgorithmException, IOException, InvalidKeyException, InvalidBucketNameException,
       NoResponseException, ErrorResponseException, InternalException, InvalidArgumentException,
       InsufficientDataException, InvalidResponseException, XmlPullParserException,
@@ -84,7 +89,53 @@ public class MinioFileService {
     }
     
     // Upload the file to the bucket
-    minioClient.putObject(bucket, fileName, iStream, null, null, null, ContentType.APPLICATION_OCTET_STREAM.getMimeType());
+    minioClient.putObject(bucket, fileName, iStream, null, null, null, contentType);
+  }
+  
+  public InputStream getFile(String fileName, String bucketName) throws IOException {
+    try {
+      return minioClient.getObject(bucketName, fileName);
+    } catch (InvalidKeyException | InvalidBucketNameException | NoSuchAlgorithmException
+        | InsufficientDataException | NoResponseException | ErrorResponseException
+        | InternalException | InvalidArgumentException | InvalidResponseException
+        | XmlPullParserException e) {
+      throw new IOException(e);
+    }
+  }
+  
+  /**
+   * Get information about a file as {@link FileObjectInfo}.
+   * @param fileName
+   * @param bucketName
+   * @return
+   * @throws IOException
+   */
+  public Optional<FileObjectInfo> getFileInfo(String fileName, String bucketName) throws IOException {
+
+    ObjectStat objectStat;
+    try {
+      objectStat = minioClient.statObject(bucketName, fileName);
+      return Optional.of(
+          FileObjectInfo.builder()
+          .length(objectStat.length())
+          .contentType(objectStat.contentType())
+          .build());
+    } catch (ErrorResponseException erEx) {
+      if (ErrorCode.NO_SUCH_KEY == erEx.errorResponse().errorCode() ||
+          ErrorCode.NO_SUCH_BUCKET == erEx.errorResponse().errorCode()) {
+        log.debug("file: {}, bucket: {} : not found", fileName, bucketName);
+        return Optional.empty();
+      }
+      throw new IOException(erEx);
+    }
+    catch(  
+        InvalidKeyException | InvalidBucketNameException | NoSuchAlgorithmException
+        | InsufficientDataException | NoResponseException
+        | InternalException | InvalidResponseException | InvalidArgumentException
+        | XmlPullParserException e) {
+      throw new IOException(e);
+    }
+
   }
 
 }
