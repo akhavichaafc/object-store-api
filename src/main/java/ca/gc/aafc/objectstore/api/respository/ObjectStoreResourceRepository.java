@@ -2,7 +2,6 @@ package ca.gc.aafc.objectstore.api.respository;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -77,7 +76,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
           this.getClass().getSimpleName() + " with ID " + uuid + " Not Found."
       );
     }
-    return mapper.toDto(objectStoreMetadata, (s) -> dao.isLoaded(objectStoreMetadata, s));
+    return mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName));
   }
 
   @Override
@@ -87,7 +86,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     log.info("QuerySpec:" + querySpec);
    
     List<ObjectStoreMetadataDto> l = jq.buildExecutor(querySpec).getResultList().stream()
-    .map( e -> mapper.toDto(e, (s) -> dao.isLoaded(e, s)))
+    .map( objectStoreMetadata -> mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName)))
     .collect(Collectors.toList());
     
     return new DefaultResourceList<ObjectStoreMetadataDto>(l, null, null);

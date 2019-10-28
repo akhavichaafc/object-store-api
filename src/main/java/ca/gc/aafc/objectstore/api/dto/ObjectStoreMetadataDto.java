@@ -7,7 +7,6 @@ import java.util.UUID;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiRelation;
-import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
 
