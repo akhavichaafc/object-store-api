@@ -33,6 +33,12 @@
 			<column name="uuid" type="uuid">
 			    <constraints nullable="false" unique="true" />
 			</column>
+			<column name="file_identifier" type="uuid">
+			    <constraints nullable="false" unique="true" />
+			</column>
+			<column name="bucket" type="VARCHAR(50)">
+			    <constraints nullable="false" />
+			</column>
 			<column name="dc_format" type="VARCHAR(50)" />
 			<column name="dc_type" type="dctype">
 				<constraints nullable="false" />

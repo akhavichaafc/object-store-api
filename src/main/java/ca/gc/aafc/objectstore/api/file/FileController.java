@@ -5,8 +5,12 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,7 +27,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.xmlpull.v1.XmlPullParserException;
 
 import ca.gc.aafc.objectstore.api.minio.MinioFileService;
-import io.crnk.core.exception.ResourceNotFoundException;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -41,8 +44,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FileController {
 
+  private static final int MAX_NUMBER_OF_ATTEMPT_RANDOM_UUID = 5;
+  
   private final MinioFileService minioService;
 
+  @Inject
   public FileController(MinioFileService minioService) {
     this.minioService = minioService;
   }
@@ -55,11 +61,16 @@ public class FileController {
       RegionConflictException, InvalidEndpointException, InvalidPortException, IOException,
       XmlPullParserException, URISyntaxException {
     
-    UUID uuid = UUID.randomUUID();
-    //to do check with the database
-    //record original filename
+    // Temporary, we will need to check if the user is an admin
+    minioService.ensureBucketExists(bucket);
 
-    minioService.storeFile(uuid.toString(), file.getInputStream(), file.getContentType(), bucket);
+    // Check that the UUID is not already assigned. It is very unlikely but not impossible
+    UUID uuid = getNewUUID(bucket);
+
+    // Detect media type and file extension with a library instead of relying on the provided filename (#17825)
+    String ext = StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
+
+    minioService.storeFile(uuid.toString() + "." + ext, file.getInputStream(), file.getContentType(), bucket);
     
     return new FileUploadResponse(uuid.toString(), file.getContentType(),
         file.getSize());
@@ -70,25 +81,46 @@ public class FileController {
       @PathVariable UUID fileId) throws IOException {
     
     try {
-      FileObjectInfo foi = minioService.getFileInfo(fileId.toString(), bucket)
-          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, fileId + " or bucket " + bucket + " Not Found", null));
-      
+
+      // We should get the extension from the database, not scanning files in Minio by prefix
+      Optional<String> possibleFileName = minioService.getFileNameByPrefix(bucket,
+          fileId.toString());
+
+      String fileName = possibleFileName
+          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+              possibleFileName + " or bucket " + bucket + " Not Found", null));
+
+      FileObjectInfo foi = minioService.getFileInfo(fileName, bucket)
+          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+              fileId + " or bucket " + bucket + " Not Found", null));
+
       HttpHeaders respHeaders = new HttpHeaders();
       respHeaders.setContentType(MediaType.parseMediaType(foi.getContentType()));
       respHeaders.setContentLength(foi.getLength());
-      respHeaders.setContentDispositionFormData("attachment", "fileNameIwant.jpg");
-      
-      InputStream is = minioService.getFile(fileId.toString(), bucket);
+      respHeaders.setContentDispositionFormData("attachment", fileName);
+
+      InputStream is = minioService.getFile(fileName, bucket);
 
       InputStreamResource isr = new InputStreamResource(is);
       return new ResponseEntity<InputStreamResource>(isr, respHeaders, HttpStatus.OK);
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       log.warn("Can't download object", e);
     }
    
     throw new ResponseStatusException(
         HttpStatus.INTERNAL_SERVER_ERROR, null);
+  }
+  
+  private UUID getNewUUID(String bucketName) throws IllegalStateException {
+    int numberOfAttempt = 0;
+    while (numberOfAttempt < MAX_NUMBER_OF_ATTEMPT_RANDOM_UUID) {
+      UUID uuid = UUID.randomUUID();
+      if(!minioService.isFileWithPrefixExists(bucketName, uuid.toString())) {
+        return uuid;
+      }
+      numberOfAttempt++;
+    }
+    throw new IllegalStateException("Can't assign unique UUID. Giving up.");
   }
 
 }

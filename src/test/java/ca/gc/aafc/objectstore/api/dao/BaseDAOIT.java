@@ -1,6 +1,8 @@
 package ca.gc.aafc.objectstore.api.dao;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 
@@ -30,6 +32,21 @@ public class BaseDAOIT extends BaseIntegrationTest {
     
     ObjectStoreMetadata osm2 = dao.findOneByNaturalId(naturalKey, ObjectStoreMetadata.class);
     assertNotNull(osm2);
+  }
+  
+  @Test
+  public void testGivenNewEntity_existsByNaturalId() {
+    UUID naturalKey = UUID.randomUUID();
+    ObjectStoreMetadata osm = ObjectStoreMetadataFactory.newObjectStoreMetadata()
+        .uuid(naturalKey)
+        .build();
+    dao.save(osm);
+    
+    // detached the object to make sure we don't get the entity from memory
+    detach(osm);
+    
+    assertFalse(dao.existsByNaturalId(UUID.randomUUID(), ObjectStoreMetadata.class));
+    assertTrue(dao.existsByNaturalId(naturalKey, ObjectStoreMetadata.class));
   }
   
 /* TODO enable when Issue 17672 will be done 
