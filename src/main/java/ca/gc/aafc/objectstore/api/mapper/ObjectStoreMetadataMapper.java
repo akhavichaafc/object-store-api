@@ -1,5 +1,11 @@
 package ca.gc.aafc.objectstore.api.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
+import org.mapstruct.Context;
+import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -17,13 +23,15 @@ public interface ObjectStoreMetadataMapper {
   ObjectStoreMetadataMapper INSTANCE = Mappers.getMapper(ObjectStoreMetadataMapper.class);
 
   @Mapping(target = "managedAttribute", qualifiedByName="metadataManagedAttributeIdOnly")
-  ObjectStoreMetadataDto toDto(ObjectStoreMetadata entity);
+  ObjectStoreMetadataDto toDto(ObjectStoreMetadata entity, @Context Function<String, Boolean> isAvailable);
   
+
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "managedAttribute", ignore = true)
+  @Mapping(target = "acMetadataCreator", ignore = true)
   ObjectStoreMetadata toEntity(ObjectStoreMetadataDto dto);
   
-  @Mapping(target = "managedAttribute", ignore = true)
+  @InheritConfiguration
   void updateObjectStoreMetadataFromDto(ObjectStoreMetadataDto dto, @MappingTarget ObjectStoreMetadata entity);
    
   /**
@@ -32,16 +40,20 @@ public interface ObjectStoreMetadataMapper {
    * @return
    */
   @Named("metadataManagedAttributeIdOnly")
-  default MetadataManagedAttributeDto metadataManagedAttributeToMetadataManagedAttributeDto(MetadataManagedAttribute mma) {
-    if (mma == null) {
+  default List<MetadataManagedAttributeDto> metadataManagedAttributeListToMetadataManagedAttributeDtoList(List<MetadataManagedAttribute> mma, @Context Function<String, Boolean> isAvailable) {
+    if (mma == null || isAvailable == null || !isAvailable.apply("managedAttribute")) {
       return null;
     }
-    // Get a builder from the current instance and set the relationships to null
-    MetadataManagedAttribute mma2 = mma.toBuilder()
-        .objectStoreMetadata(null)
-        .managedAttribute(null)
-        .build();
-    return MetadataManagedAttributeMapper.INSTANCE.toDto(mma2);
+    List<MetadataManagedAttributeDto> result = new ArrayList<>(mma.size());
+    for( MetadataManagedAttribute currMma : mma) {
+      // Get a builder from the current instance and set the relationships to null
+      MetadataManagedAttribute mma2 = currMma.toBuilder()
+          .objectStoreMetadata(null)
+          .managedAttribute(null)
+          .build();
+      result.add(MetadataManagedAttributeMapper.INSTANCE.toDto(mma2));
+    }
+    return result;
   }
 
 }

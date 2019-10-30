@@ -1,5 +1,6 @@
 package ca.gc.aafc.objectstore.api.mapper;
 
+import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -29,8 +30,7 @@ public interface MetadataManagedAttributeMapper {
   @Mapping(target = "managedAttribute", ignore = true)
   MetadataManagedAttribute toEntity(MetadataManagedAttributeDto dto);
 
-  @Mapping(target = "objectStoreMetadata", ignore = true)
-  @Mapping(target = "managedAttribute", ignore = true)
+  @InheritConfiguration
   void updateMetadataManagedAttributeFromDto(MetadataManagedAttributeDto dto,
       @MappingTarget MetadataManagedAttribute entity);
 
@@ -51,7 +51,7 @@ public interface MetadataManagedAttributeMapper {
     ObjectStoreMetadata osm2 = osm.toBuilder()
         .managedAttribute(null)
         .build();
-    return ObjectStoreMetadataMapper.INSTANCE.toDto(osm2);
+    return ObjectStoreMetadataMapper.INSTANCE.toDto(osm2, null);
   }
   
 }

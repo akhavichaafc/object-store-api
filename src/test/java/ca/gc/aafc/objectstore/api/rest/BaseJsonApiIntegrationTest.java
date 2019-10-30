@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,11 +119,11 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
 	protected abstract Map<String, Object> buildUpdateAttributeMap();
 	
   /**
-   * Override if a relationship map is required.
+   * Override if a relationships are required.
    * 
-   * @return relationship map or null if none
-   */
-  protected Map<String, Object> buildRelationshipMap() {
+   * @return list of relationships or null if none
+   */  
+  protected List<Relationship> buildRelationshipList() {
     return null;
   }
 
@@ -194,18 +196,29 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
     return ImmutableMap.of("data", bldr.build());
   }
   
-  public static Map<String, Object> toRelationshipMap(String relName, String type, String id) {
+  private static Map<String, Object> toRelationshipMap(List<Relationship> relationship) {
+    if( relationship == null) {
+      return null;
+    }
+    
     ImmutableMap.Builder<String, Object> relationships = new ImmutableMap.Builder<>();
-    relationships.put("type", type).put("id", id).build();
+    for (Relationship rel : relationship) {
+      relationships.putAll(toRelationshipMap(rel));
+    }
+    return relationships.build();
+  }
+    
+  private static Map<String, Object> toRelationshipMap(Relationship relationship) {
+    ImmutableMap.Builder<String, Object> relationships = new ImmutableMap.Builder<>();
+    relationships.put("type", relationship.getType()).put("id", relationship.getId()).build();
     
     ImmutableMap.Builder<String, Object> bldr = new ImmutableMap.Builder<>();
     bldr.put("data", relationships.build());
     
     ImmutableMap.Builder<String, Object> relBuilder = new ImmutableMap.Builder<>();
-    relBuilder.put(relName, bldr.build());
+    relBuilder.put(relationship.getName(), bldr.build());
     
     return relBuilder.build();
-        
   }
   
 
@@ -222,7 +235,8 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
   @Test
   public void resourceUnderTest_whenIdExists_returnOkAndBody()
       throws IOException, URISyntaxException {
-    String id = sendPost(toJsonAPIMap(buildCreateAttributeMap(), buildRelationshipMap()));
+    List<Relationship> relationships = buildRelationshipList();
+    String id = sendPost(toJsonAPIMap(buildCreateAttributeMap(), toRelationshipMap(relationships)));
     
     // Test with the crnk-compact header.
     ValidatableResponse responseCompact = given().header("crnk-compact", "true").when()
@@ -240,15 +254,59 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
       validateJsonSchemaByURL(getGetOneSchemaFilename(), response.extract().body().asString());
     }
     
+    validateIncludeRelationships(id, relationships);
+    validateRelationshipEndpoints(id, relationships);
+    
     // cleanup
     sendDelete(id);
+  }
+  
+  /**
+   * Validates the response from a GET on a resource with the ?include parameters to make sure the
+   * relationships can be resolved.
+   * 
+   * @param resourceId
+   * @param relationships
+   */
+  private void validateIncludeRelationships(String resourceId, List<Relationship> relationships) {
+    if (relationships == null) {
+      return;
+    }
+    
+    String includeParam = "?include=" + relationships.stream().map(Relationship::getName).collect(Collectors.joining(","));
+    ValidatableResponse response = given().when().get(getResourceUnderTest() + "/" + resourceId + includeParam).then()
+        .statusCode(HttpStatus.OK.value());
+    
+    for(Relationship rel : relationships) {
+      response.body("data.relationships." + rel.getName() + ".data.id",
+          equalTo(rel.getId()));
+    }
+  }
+  
+  /**
+   * Validates the relationships endpoints of the resource (e.g /articles/1/relationships/author).
+   * Currently limited to 1 relationship entry.
+   * @param resourceId
+   * @param relationships
+   */
+  private void validateRelationshipEndpoints(String resourceId, List<Relationship> relationships) {
+    if (relationships == null) {
+      return;
+    }
+       
+    for(Relationship rel : relationships) {
+      ValidatableResponse response = given().when().get(getResourceUnderTest() + "/" + resourceId + "/relationships/" + rel.getName()).then()
+          .statusCode(HttpStatus.OK.value());
+      response.body("data.id",
+          equalTo(rel.getId()));
+    }
   }
 
   //@Test
   public void resourceUnderTest_whenMultipleResources_returnOkAndBody()
       throws IOException, URISyntaxException {
-    String id1 = sendPost(toJsonAPIMap(buildCreateAttributeMap(), buildRelationshipMap()));
-    String id2 = sendPost(toJsonAPIMap(buildCreateAttributeMap(), buildRelationshipMap()));
+    String id1 = sendPost(toJsonAPIMap(buildCreateAttributeMap(), toRelationshipMap(buildRelationshipList())));
+    String id2 = sendPost(toJsonAPIMap(buildCreateAttributeMap(), toRelationshipMap(buildRelationshipList())));
 
     // Test with the crnk-compact header.
     ValidatableResponse responseCompact = given().header("crnk-compact", "true").when()
@@ -269,7 +327,7 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
 
   @Test
   public void resourceUnderTest_whenDeleteExisting_returnNoContent() {
-    String id = sendPost(toJsonAPIMap(buildCreateAttributeMap(), buildRelationshipMap()));
+    String id = sendPost(toJsonAPIMap(buildCreateAttributeMap(), toRelationshipMap(buildRelationshipList())));
     sendDelete(id);
   }
   
@@ -277,11 +335,11 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
   public void resourceUnderTest_whenUpdating_returnOkAndResourceIsUpdated() {
     // Setup: create an resource
 
-    String id = sendPost(toJsonAPIMap(buildCreateAttributeMap(), buildRelationshipMap()));
+    String id = sendPost(toJsonAPIMap(buildCreateAttributeMap(), toRelationshipMap(buildRelationshipList())));
     Map<String, Object> updatedAttributeMap = buildUpdateAttributeMap();
     
     // update the resource
-    sendPatch(id, toJsonAPIMap(getResourceUnderTest(), updatedAttributeMap, buildRelationshipMap(), id));
+    sendPatch(id, toJsonAPIMap(getResourceUnderTest(), updatedAttributeMap, toRelationshipMap(buildRelationshipList()), id));
 
     ValidatableResponse responseUpdate = sendGet(id);
     // verify
