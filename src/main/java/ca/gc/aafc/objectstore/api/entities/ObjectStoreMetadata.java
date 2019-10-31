@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -60,10 +61,13 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   private OffsetDateTime acDigitizationDate;
   private OffsetDateTime xmpMetadataDate;
 
+  private String originalFilename;
+  
   private String acHashFunction;
   private String acHashValue;
   
-  private List<MetadataManagedAttribute> managedAttribute;  
+  private List<MetadataManagedAttribute> managedAttribute;
+  private Agent acMetadataCreator;
 
   public enum DcType {
     IMAGE("Image"), 
@@ -179,6 +183,14 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   public void setXmpMetadataDate(OffsetDateTime xmpMetadataDate) {
     this.xmpMetadataDate = xmpMetadataDate;
   }
+  
+  public String getOriginalFilename() {
+    return originalFilename;
+  }
+
+  public void setOriginalFilename(String originalFilename) {
+    this.originalFilename = originalFilename;
+  }
 
   @Column(name = "ac_hash_function")
   public String getAcHashFunction() {
@@ -207,5 +219,17 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   public void setManagedAttribute(List<MetadataManagedAttribute> managedAttribute) {
     this.managedAttribute = managedAttribute;
   }
+
+  @OneToOne
+  @JoinColumn(name = "ac_metadata_creator_id", referencedColumnName = "id")
+  public Agent getAcMetadataCreator() {
+    return acMetadataCreator;
+  }
+
+  public void setAcMetadataCreator(Agent acMetadataCreator) {
+    this.acMetadataCreator = acMetadataCreator;
+  }
+  
+  
 
 }

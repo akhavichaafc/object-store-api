@@ -45,8 +45,10 @@
 			</column>
 			<column name="ac_digitization_date" type="timestamptz" />
 			<column name="xmp_metadata_date" type="timestamptz" />
+			<column name="original_filename" type="VARCHAR(250)" />
 			<column name="ac_hash_function" type="VARCHAR(50)" />
 			<column name="ac_hash_value" type="VARCHAR(128)" />
+			<column name="ac_metadata_creator_id" type="INTEGER" />
 		</createTable>
 	</changeSet>
 		<changeSet context="schema-change" id="init-4" author="gendreauc">
@@ -84,5 +86,26 @@
 				<constraints nullable="false"/>
 			</column>
 		</createTable>
-	</changeSet>	
+	</changeSet>
+	<changeSet context="schema-change" id="init-6" author="gendreauc">
+		<createTable tableName="agent">
+			<column autoIncrement="true" name="id" type="SERIAL">
+				<constraints primaryKey="true" primaryKeyName="pk_agent_id" />
+			</column>
+			<column name="uuid" type="uuid">
+			    <constraints nullable="false" unique="true" />
+			</column>
+			<column name="display_name" type="VARCHAR(250)" >
+				<constraints nullable="false" unique="true"/>
+			</column>
+			<column name="email" type="VARCHAR(250)">
+				<constraints nullable="false" unique="true" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint baseColumnNames="ac_metadata_creator_id"
+            baseTableName="metadata"
+            constraintName="fk_metadata_creator_agent"
+            referencedColumnNames="id"
+            referencedTableName="agent"/>
+	</changeSet>
 </databaseChangeLog>

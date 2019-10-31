@@ -25,11 +25,16 @@ public class ObjectStoreMetadataDto {
 
   private OffsetDateTime acDigitizationDate;
   private OffsetDateTime xmpMetadataDate;
+  
+  private String originalFilename;
 
   private String acHashFunction;
   private String acHashValue;
   
   @JsonApiRelation
   private List<MetadataManagedAttributeDto> managedAttribute;
+  
+  @JsonApiRelation
+  private AgentDto acMetadataCreator;
   
 }

@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -45,6 +46,21 @@ public class BaseDAO {
   public <T> T createWithEntityManager(Function<EntityManager, T> creator) {
     Objects.requireNonNull(creator);
     return creator.apply(entityManager);
+  }
+  
+  /**
+   * Utility function that can check if a lazy loaded attribute is actually loaded.
+   * @param entity
+   * @param fieldName
+   * @return
+   */
+  public Boolean isLoaded(Object entity, String fieldName) {
+    Objects.requireNonNull(entity);
+    Objects.requireNonNull(fieldName);
+
+    PersistenceUnitUtil unitUtil = entityManager.getEntityManagerFactory()
+        .getPersistenceUnitUtil();
+    return unitUtil.isLoaded(entity, fieldName);
   }
 
   /**

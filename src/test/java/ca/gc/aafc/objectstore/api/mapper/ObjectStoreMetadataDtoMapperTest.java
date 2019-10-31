@@ -1,6 +1,7 @@
 package ca.gc.aafc.objectstore.api.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -10,11 +11,14 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
+import ca.gc.aafc.objectstore.api.dto.AgentDto;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
+import ca.gc.aafc.objectstore.api.entities.Agent;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
+import ca.gc.aafc.objectstore.api.testsupport.factories.AgentFactory;
 import ca.gc.aafc.objectstore.api.testsupport.factories.ManagedAttributeFactory;
 import ca.gc.aafc.objectstore.api.testsupport.factories.MetadataManagedAttributeFactory;
 import ca.gc.aafc.objectstore.api.testsupport.factories.ObjectStoreMetadataFactory;
@@ -32,6 +36,7 @@ public class ObjectStoreMetadataDtoMapperTest {
 
     // given
     ManagedAttribute ma = ManagedAttributeFactory.newManagedAttribute().build();
+    Agent agent = AgentFactory.newAgent().build();
     MetadataManagedAttribute mma = MetadataManagedAttributeFactory.newMetadataManagedAttribute()
         .managedAttribute(ma)
         .assignedValue("1234")
@@ -41,6 +46,7 @@ public class ObjectStoreMetadataDtoMapperTest {
         .acDigitizationDate(TEST_OFFSET_DT)
         .xmpMetadataDate(TEST_OFFSET_DT)
         .managedAttribute(Collections.singletonList(mma))
+        .acMetadataCreator(agent)
         .build();
     
     // set circular reference
@@ -48,13 +54,14 @@ public class ObjectStoreMetadataDtoMapperTest {
 
     // when
     ObjectStoreMetadataDto objectStoreMetadataDto = DTO_MAPPER
-        .toDto(objectStoreMetadata);
+        .toDto(objectStoreMetadata, (s) -> true);
 
     // then
     assertEquals(objectStoreMetadataDto.getAcDigitizationDate(), objectStoreMetadata.getAcDigitizationDate());
     assertEquals(objectStoreMetadataDto.getUuid(), objectStoreMetadata.getUuid());
     assertEquals(objectStoreMetadataDto.getDcType(), objectStoreMetadata.getDcType());
     assertEquals(objectStoreMetadata.getManagedAttribute().size(), objectStoreMetadataDto.getManagedAttribute().size());
+    assertEquals(objectStoreMetadata.getAcMetadataCreator().getDisplayName(), objectStoreMetadataDto.getAcMetadataCreator().getDisplayName());
   }
 
   @Test
@@ -66,7 +73,12 @@ public class ObjectStoreMetadataDtoMapperTest {
     objectStoreMetadataDto.setDcType(DcType.IMAGE);
     objectStoreMetadataDto.setAcDigitizationDate(TEST_OFFSET_DT);
     objectStoreMetadataDto.setXmpMetadataDate(TEST_OFFSET_DT);
-
+    
+    AgentDto agent = new AgentDto();
+    agent.setDisplayName("a b");
+    agent.setDisplayName("a@b.ca");
+    objectStoreMetadataDto.setAcMetadataCreator(agent);
+    
     // when
     ObjectStoreMetadata objectStoreMetadata = DTO_MAPPER
         .toEntity(objectStoreMetadataDto);
@@ -75,6 +87,7 @@ public class ObjectStoreMetadataDtoMapperTest {
     assertEquals(objectStoreMetadata.getAcDigitizationDate(), objectStoreMetadataDto.getAcDigitizationDate());
     assertEquals(objectStoreMetadata.getUuid(), objectStoreMetadataDto.getUuid());
     assertEquals(objectStoreMetadata.getDcType(), objectStoreMetadataDto.getDcType());
+    assertNull(objectStoreMetadata.getAcMetadataCreator(), "relationships are not mapped to entity");
   }
 
 }

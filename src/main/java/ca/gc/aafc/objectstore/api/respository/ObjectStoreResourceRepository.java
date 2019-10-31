@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
+import ca.gc.aafc.objectstore.api.entities.Agent;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
@@ -26,7 +27,9 @@ import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQuery;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Repository
 @Transactional
 public class ObjectStoreResourceRepository extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID> {
@@ -60,7 +63,15 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     ObjectStoreMetadataDto dto =  (ObjectStoreMetadataDto) resource ;
     ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(dto.getUuid(), ObjectStoreMetadata.class);
     mapper.updateObjectStoreMetadataFromDto(dto, objectMetadata);
+
     handleFileRelatedData(objectMetadata);
+    
+    // relationships
+    if (resource.getAcMetadataCreator() != null) {
+      objectMetadata.setAcMetadataCreator(
+          dao.getReferenceByNaturalId(Agent.class, resource.getAcMetadataCreator().getUuid()));
+    }
+    
     dao.save(objectMetadata);
     return resource;
   }
@@ -74,15 +85,17 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
           this.getClass().getSimpleName() + " with ID " + uuid + " Not Found."
       );
     }
-    return mapper.toDto(objectStoreMetadata);
+    return mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName));
   }
 
   @Override
   public ResourceList<ObjectStoreMetadataDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<ObjectStoreMetadata> jq = queryFactory.query(ObjectStoreMetadata.class);
     
+    log.info("QuerySpec:" + querySpec);
+   
     List<ObjectStoreMetadataDto> l = jq.buildExecutor(querySpec).getResultList().stream()
-    .map(mapper::toDto)
+    .map( objectStoreMetadata -> mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName)))
     .collect(Collectors.toList());
     
     return new DefaultResourceList<ObjectStoreMetadataDto>(l, null, null);
@@ -101,6 +114,12 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     
     handleFileRelatedData(objectMetadata);
    
+    // relationships
+    if (resource.getAcMetadataCreator() != null) {
+      objectMetadata.setAcMetadataCreator(
+          dao.getReferenceByNaturalId(Agent.class, resource.getAcMetadataCreator().getUuid()));
+    }
+    
     dao.save(objectMetadata);
 
     return resource;

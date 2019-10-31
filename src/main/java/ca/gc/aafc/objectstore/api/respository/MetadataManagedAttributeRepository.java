@@ -96,8 +96,6 @@ public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<M
     MetadataManagedAttribute metadataManagedAttribute = mapper
         .toEntity((MetadataManagedAttributeDto) resource);
     
-    log.info("Creating MetadataManagedAttributeDto. received dto:" + metadataManagedAttribute);
-
     // relationships
     if (dto.getManagedAttribute() != null) {
       metadataManagedAttribute.setManagedAttribute(dao.getReferenceByNaturalId(ManagedAttribute.class, dto.getManagedAttribute().getUuid()));
