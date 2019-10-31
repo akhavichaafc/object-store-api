@@ -1,16 +1,28 @@
 package ca.gc.aafc.objectstore.api.dao;
 
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import javax.inject.Inject;
+import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnitUtil;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
 import org.hibernate.Session;
 import org.hibernate.SimpleNaturalIdLoadAccess;
+import org.hibernate.annotations.NaturalId;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,6 +34,9 @@ public class BaseDAO {
   
   @PersistenceContext
   private EntityManager entityManager;
+  
+  @Inject
+  private Validator validator;
   
   /**
    * This method can be used to inject the EntityManager into an external object.
@@ -60,6 +75,24 @@ public class BaseDAO {
         .bySimpleNaturalId(entityClass)
         .load(uuid);
     return objectStoreMetadata;
+  }
+  
+  /**
+   * Check for the existence of a record by natural id (as uuid).
+   * @param uuid
+   * @param entityClass
+   * @return
+   */
+  public boolean existsByNaturalId(UUID uuid, Class<?> entityClass) {
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+    Root<?> from = cq.from(entityClass);
+    
+    cq.select(cb.count(from));
+    cq.where(cb.equal(from.get(extractNaturalIdFieldName(entityClass)), uuid));
+
+    TypedQuery<Long> tq = entityManager.createQuery(cq);
+    return tq.getSingleResult() > 0;
   }
   
   /**
@@ -104,6 +137,36 @@ public class BaseDAO {
    */
   public void delete(Object entity) {
     entityManager.remove(entity);
+  }
+  
+  /**
+   * Same as {@link Validator#validate(Object, Class...)}
+   * 
+   * @param entity
+   *          the entity to validate (not null)
+   * @return constraint violations or an empty set if none
+   */
+  public <T> Set<ConstraintViolation<T>> validateEntity(T entity) {
+    return validator.validate(entity);
+  }
+  
+  /**
+   * Given a class, this method will extract the name of the field (using the {@link Column}
+   * annotation when that field is annotated with {@link NaturalId}.
+   * 
+   * @param entityClass
+   * @return name if the NaturalId field or null if none
+   */
+  private String extractNaturalIdFieldName(Class<?> entityClass) {
+    Optional<Column> naturalIdColumn = Arrays.stream(entityClass.getDeclaredMethods())
+        .filter(m -> m.getAnnotation(NaturalId.class) != null)
+        .map(m -> m.getAnnotation(Column.class))
+        .findFirst();
+
+    if (naturalIdColumn.isPresent()) {
+      return naturalIdColumn.get().name();
+    }
+    return null;
   }
   
 }

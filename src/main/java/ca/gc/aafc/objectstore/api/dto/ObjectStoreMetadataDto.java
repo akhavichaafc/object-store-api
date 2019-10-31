@@ -16,6 +16,9 @@ public class ObjectStoreMetadataDto {
   
   @JsonApiId
   private UUID uuid;
+  
+  private String bucket;
+  private UUID fileIdentifier;
 
   private String dcFormat;
   private DcType dcType;

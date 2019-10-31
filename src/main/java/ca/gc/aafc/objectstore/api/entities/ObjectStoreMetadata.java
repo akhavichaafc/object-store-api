@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
@@ -51,6 +52,8 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   private Integer id;
 
   private UUID uuid;
+  private String bucket;
+  private UUID fileIdentifier;
 
   private String dcFormat;
   private DcType dcType;
@@ -121,7 +124,27 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   public void setUuid(UUID uuid) {
     this.uuid = uuid;
   }
+  
+  @NotNull
+  @Column(name = "file_identifier", unique = true)
+  public UUID getFileIdentifier() {
+    return fileIdentifier;
+  }
 
+  public void setFileIdentifier(UUID fileIdentifier) {
+    this.fileIdentifier = fileIdentifier;
+  }
+
+  @NotNull
+  @Size(max = 50)
+  public String getBucket() {
+    return bucket;
+  }
+
+  public void setBucket(String bucket) {
+    this.bucket = bucket;
+  }
+  
   @Column(name = "dc_format")
   public String getDcFormat() {
     return dcFormat;

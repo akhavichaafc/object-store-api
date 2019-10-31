@@ -1,4 +1,4 @@
-package ca.gc.aafc.objectstore.api.fileupload.payload;
+package ca.gc.aafc.objectstore.api.file;
 
 public class FileUploadResponse {
 
