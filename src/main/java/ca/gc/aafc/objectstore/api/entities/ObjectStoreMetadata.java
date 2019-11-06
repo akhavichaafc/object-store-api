@@ -24,6 +24,7 @@ import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 
 import ca.gc.aafc.objectstore.api.interfaces.UniqueObj;
@@ -39,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @Table(name = "metadata")
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
+@TypeDef(name = "string-array", typeClass = StringArrayType.class)
 @SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @Builder(toBuilder=true)
 @AllArgsConstructor
@@ -65,6 +67,7 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   
   private String acHashFunction;
   private String acHashValue;
+  private String[] acTags;
   
   private List<MetadataManagedAttribute> managedAttribute;
   private Agent acMetadataCreator;
@@ -209,6 +212,18 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   public void setAcHashValue(String acHashValue) {
     this.acHashValue = acHashValue;
   }
+  
+  @Type( type = "string-array" )
+  @Column(name = "ac_tags", 
+      columnDefinition = "text[]"
+  )
+  public String[] getAcTags() {
+    return acTags;
+  }
+
+  public void setAcTags(String[] acTags) {
+    this.acTags = acTags;
+  }
 
   @OneToMany
   @JoinColumn(name = "metadata_id")
@@ -229,6 +244,8 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   public void setAcMetadataCreator(Agent acMetadataCreator) {
     this.acMetadataCreator = acMetadataCreator;
   }
+
+
   
   
 
