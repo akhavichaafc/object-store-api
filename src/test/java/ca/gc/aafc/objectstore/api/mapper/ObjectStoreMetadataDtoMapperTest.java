@@ -28,6 +28,7 @@ public class ObjectStoreMetadataDtoMapperTest {
   private static final ZoneId MTL_TZ = ZoneId.of("America/Montreal");
   private final ZonedDateTime TEST_ZONED_DT = ZonedDateTime.of(2019, 1, 2, 3, 4, 5, 0, MTL_TZ);
   private final OffsetDateTime TEST_OFFSET_DT = TEST_ZONED_DT.toOffsetDateTime();
+  private final String[] TEST_TAGS = {"tag1"};
 
   private static final ObjectStoreMetadataMapper DTO_MAPPER = ObjectStoreMetadataMapper.INSTANCE;
 
@@ -46,6 +47,7 @@ public class ObjectStoreMetadataDtoMapperTest {
         .acDigitizationDate(TEST_OFFSET_DT)
         .xmpMetadataDate(TEST_OFFSET_DT)
         .managedAttribute(Collections.singletonList(mma))
+        .acTags(TEST_TAGS)
         .acMetadataCreator(agent)
         .build();
     
@@ -62,6 +64,7 @@ public class ObjectStoreMetadataDtoMapperTest {
     assertEquals(objectStoreMetadataDto.getDcType(), objectStoreMetadata.getDcType());
     assertEquals(objectStoreMetadata.getManagedAttribute().size(), objectStoreMetadataDto.getManagedAttribute().size());
     assertEquals(objectStoreMetadata.getAcMetadataCreator().getDisplayName(), objectStoreMetadataDto.getAcMetadataCreator().getDisplayName());
+    assertEquals(1, objectStoreMetadataDto.getAcTags().size());
   }
 
   @Test

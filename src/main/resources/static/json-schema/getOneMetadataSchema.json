@@ -77,17 +77,6 @@
                 }
               ],
               "description": "List of key/value pairs of managed attributes."
-            },
-            "unmanagedAttributes": {
-              "type": "array",
-              "items": [
-                {
-                  "type": [
-                    "string"
-                  ]
-                }
-              ],
-              "description": "List of key(tag). Similar to https://tdwg.github.io/ac/termlist/#ac_tag"
             },            
             "acTags": {
               "type": "array",
