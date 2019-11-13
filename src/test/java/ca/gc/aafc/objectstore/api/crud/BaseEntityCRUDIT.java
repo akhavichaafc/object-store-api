@@ -4,6 +4,7 @@ import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import ca.gc.aafc.objectstore.api.testsupport.DBBackedIntegrationTest;
 
@@ -24,6 +25,7 @@ import ca.gc.aafc.objectstore.api.testsupport.DBBackedIntegrationTest;
  */
 @SpringBootTest
 @Transactional
+@ActiveProfiles("test")
 public abstract class BaseEntityCRUDIT extends DBBackedIntegrationTest {
 
   /**

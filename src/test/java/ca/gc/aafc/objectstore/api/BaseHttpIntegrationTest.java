@@ -1,7 +1,6 @@
 package ca.gc.aafc.objectstore.api;
 
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.boot.web.server.LocalServerPort;
 
 /**
@@ -11,10 +10,10 @@ import org.springframework.boot.web.server.LocalServerPort;
  *
  */
 @SpringBootTest(
-    classes = ObjectStoreApiLauncher.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 public abstract class BaseHttpIntegrationTest extends BaseIntegrationTest { 
   @LocalServerPort
   protected int testPort;
+  
 }

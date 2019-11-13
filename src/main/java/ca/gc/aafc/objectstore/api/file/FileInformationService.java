@@ -1,5 +1,8 @@
 package ca.gc.aafc.objectstore.api.file;
 
+import java.io.IOException;
+import java.util.Optional;
+
 /**
  * 
  * Service allowing read access to file information. 
@@ -23,5 +26,19 @@ public interface FileInformationService {
    * @return
    */
   boolean isFileWithPrefixExists(String bucketName, String fileNamePrefix);
+  
+  /**
+   * Get information about a file as {@link FileObjectInfo}.
+   * 
+   * @param fileName
+   * @param bucketName
+   * @return {@link FileObjectInfo} instance or {@link Optional#empty} if the filename or the bucket
+   *         don't exist
+   * @throws IOException
+   */
+  Optional<FileObjectInfo> getFileInfo(String fileName, String bucketName) throws IOException;
+  
+  
+  Optional<String> getFileNameByPrefix(String bucketName, String prefix);
 
 }
