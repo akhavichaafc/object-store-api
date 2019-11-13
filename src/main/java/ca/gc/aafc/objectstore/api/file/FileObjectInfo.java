@@ -22,9 +22,9 @@ public class FileObjectInfo {
       return Collections.emptyList();
     }
     
-    for(String key : headerMap.keySet()) {
-      if(key.equalsIgnoreCase(header)) {
-         return headerMap.get(key);
+    for(Map.Entry<String, List<String>> entry: headerMap.entrySet()) {
+      if(entry.getKey().equalsIgnoreCase(header)) {
+         return entry.getValue();
       }
     }
     return Collections.emptyList();
