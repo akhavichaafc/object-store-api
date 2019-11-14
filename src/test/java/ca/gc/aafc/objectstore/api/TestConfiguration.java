@@ -30,7 +30,6 @@ import io.minio.messages.Item;
  *
  */
 @Configuration
-@Import(MainConfiguration.class)
 public class TestConfiguration {
   
   @Primary
