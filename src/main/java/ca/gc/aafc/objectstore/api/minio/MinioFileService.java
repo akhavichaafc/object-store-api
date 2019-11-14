@@ -2,17 +2,15 @@ package ca.gc.aafc.objectstore.api.minio;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.apache.http.client.utils.URIBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -40,31 +38,20 @@ import lombok.extern.slf4j.Slf4j;
 public class MinioFileService implements FileInformationService {
 
   private final MinioClient minioClient;
-
-  @Inject
-  public MinioFileService(
-      @Value("${minio.scheme:}") String scheme,
-      @Value("${minio.host:}") String host,
-      @Value("${minio.port:}") int port,
-      @Value("${minio.accessKey:}") String accessKey,
-      @Value("${minio.secretKey:}") String secretKey)
-      throws InvalidEndpointException, InvalidPortException, URISyntaxException {
-    
-    URI uri = new URIBuilder().setScheme(scheme).setHost(host).build();
-    this.minioClient = new MinioClient(uri.toString(), port, accessKey, secretKey);
-  }
   
+  @Inject
   public MinioFileService(MinioClient minioClient) {
     this.minioClient = minioClient;
   }
 
   /**
-   * Store a file (received as a InputStream) on Minio into a specific bucket.
+   * Store a file (received as an InputStream) on Minio into a specific bucket.
    * The bucket is expected to exist.
    * 
    * @param fileName filename to be used in Minio
-   * @param iStream inputstream to send through Minio client (won't be closed)
-   * @param bucket name of the bucket (will eb created if doesn't exist)
+   * @param iStream inputstream to send to Minio (won't be closed)
+   * @param bucket name of the bucket (will NOT be created if doesn't exist)
+   * @param headersMap optional, null if none
    * @throws NoSuchAlgorithmException
    * @throws IOException
    * @throws InvalidKeyException
@@ -81,14 +68,14 @@ public class MinioFileService implements FileInformationService {
    * @throws InvalidPortException
    * @throws URISyntaxException
    */
-  public void storeFile(String fileName, InputStream iStream, String contentType, String bucket)
+  public void storeFile(String fileName, InputStream iStream, String contentType, String bucket, Map<String, String> headersMap)
       throws NoSuchAlgorithmException, IOException, InvalidKeyException, InvalidBucketNameException,
       NoResponseException, ErrorResponseException, InternalException, InvalidArgumentException,
       InsufficientDataException, InvalidResponseException, XmlPullParserException,
       RegionConflictException, InvalidEndpointException, InvalidPortException, URISyntaxException {
 
     // Upload the file to the bucket
-    minioClient.putObject(bucket, fileName, iStream, null, null, null, contentType);
+    minioClient.putObject(bucket, fileName, iStream, null, headersMap, null, contentType);
   }
   
   public void ensureBucketExists(String bucketName) throws IOException {
@@ -127,20 +114,19 @@ public class MinioFileService implements FileInformationService {
     }
   }
   
+
   /**
-   * Get information about a file as {@link FileObjectInfo}.
-   * @param fileName
-   * @param bucketName
-   * @return
-   * @throws IOException
+   * See {@link FileInformationService#getFileInfo(String, String)}
    */
   public Optional<FileObjectInfo> getFileInfo(String fileName, String bucketName) throws IOException {
     ObjectStat objectStat;
     try {
       objectStat = minioClient.statObject(bucketName, fileName);
+      
       return Optional.of(FileObjectInfo.builder()
           .length(objectStat.length())
           .contentType(objectStat.contentType())
+          .headerMap(objectStat.httpHeaders())
           .build());
     } catch (ErrorResponseException erEx) {
       if (ErrorCode.NO_SUCH_KEY == erEx.errorResponse().errorCode()

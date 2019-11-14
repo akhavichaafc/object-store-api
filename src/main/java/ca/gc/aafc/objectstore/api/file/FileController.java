@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,8 +46,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FileController {
 
-  private static final int MAX_NUMBER_OF_ATTEMPT_RANDOM_UUID = 5;
+  public static final String HEADER_ORIGINAL_FILENAME = "original-filename";
   
+  private static final int MAX_NUMBER_OF_ATTEMPT_RANDOM_UUID = 5;
+
   private final MinioFileService minioService;
 
   @Inject
@@ -69,8 +73,11 @@ public class FileController {
 
     // Detect media type and file extension with a library instead of relying on the provided filename (#17825)
     String ext = StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
+    
+    Map<String, String> headerMap = new HashMap<>();
+    headerMap.put(HEADER_ORIGINAL_FILENAME, file.getOriginalFilename());
 
-    minioService.storeFile(uuid.toString() + "." + ext, file.getInputStream(), file.getContentType(), bucket);
+    minioService.storeFile(uuid.toString() + "." + ext, file.getInputStream(), file.getContentType(), bucket, headerMap);
     
     return new FileUploadResponse(uuid.toString(), file.getContentType(),
         file.getSize());
@@ -81,7 +88,6 @@ public class FileController {
       @PathVariable UUID fileId) throws IOException {
     
     try {
-
       // We should get the extension from the database, not scanning files in Minio by prefix
       Optional<String> possibleFileName = minioService.getFileNameByPrefix(bucket,
           fileId.toString());
@@ -93,7 +99,7 @@ public class FileController {
       FileObjectInfo foi = minioService.getFileInfo(fileName, bucket)
           .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
               fileId + " or bucket " + bucket + " Not Found", null));
-
+      
       HttpHeaders respHeaders = new HttpHeaders();
       respHeaders.setContentType(MediaType.parseMediaType(foi.getContentType()));
       respHeaders.setContentLength(foi.getLength());

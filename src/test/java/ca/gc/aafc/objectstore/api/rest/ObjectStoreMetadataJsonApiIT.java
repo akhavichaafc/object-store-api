@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import ca.gc.aafc.objectstore.api.TestConfiguration.MinioClientStub;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.Agent;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
@@ -61,6 +62,7 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
        .acDigitizationDate(dateTime4Test)
        .xmpMetadataDate(dateTime4Test)
        .dcFormat("testFormat")
+       .fileIdentifier(MinioClientStub.TEST_FILE_IDENTIFIER)
       .build();
     
     ObjectStoreMetadataDto objectStoreMetadatadto = mapper.toDto(objectStoreMetadata, null);
