@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ca.gc.aafc.objectstore.api.testsupport.DBBackedIntegrationTest;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = MainConfiguration.class)
+@SpringBootTest(classes = ObjectStoreApiLauncher.class)
 @Transactional
 @ActiveProfiles("test")
 public abstract class BaseIntegrationTest extends DBBackedIntegrationTest {

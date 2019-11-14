@@ -1,7 +1,6 @@
 package ca.gc.aafc.objectstore.api;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,6 @@ import io.minio.errors.InvalidEndpointException;
 import io.minio.errors.InvalidPortException;
 
 @Configuration
-@SpringBootApplication
 @EntityScan("ca.gc.aafc.objectstore.api.entities")
 public class MainConfiguration {
   
