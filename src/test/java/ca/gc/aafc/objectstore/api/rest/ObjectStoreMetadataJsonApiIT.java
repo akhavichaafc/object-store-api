@@ -61,7 +61,6 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
        .acHashFunction("MD5")
        .acDigitizationDate(dateTime4Test)
        .xmpMetadataDate(dateTime4Test)
-       .dcFormat("testFormat")
        .fileIdentifier(MinioClientStub.TEST_FILE_IDENTIFIER)
       .build();
     
@@ -76,7 +75,6 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
     objectStoreMetadata.setAcHashFunction("SHA1");
     objectStoreMetadata.setAcDigitizationDate(dateTime4TestUpdate);
     objectStoreMetadata.setXmpMetadataDate(dateTime4TestUpdate);
-    objectStoreMetadata.setDcFormat("updatedTestFormat");
     ObjectStoreMetadataDto objectStoreMetadatadto = mapper.toDto(objectStoreMetadata, null);
     return toAttributeMap(objectStoreMetadatadto);
   }

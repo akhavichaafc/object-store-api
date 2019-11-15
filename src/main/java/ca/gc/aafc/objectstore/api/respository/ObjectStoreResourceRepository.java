@@ -170,10 +170,18 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     }
     
     try {
-      Optional<String> possibleFileName = fileInformationService.getFileNameByPrefix(objectMetadata.getBucket(),
-          objectMetadata.getFileIdentifier().toString());
-      Optional<FileObjectInfo> fileObjectInfo =  fileInformationService.getFileInfo(possibleFileName.orElse(""), objectMetadata.getBucket());
-      objectMetadata.setOriginalFilename(fileObjectInfo.map( foi -> foi.extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.HEADER_ORIGINAL_FILENAME).get(0)).orElse("?"));
+      Optional<String> possibleFileName = fileInformationService.getFileNameByPrefix(
+          objectMetadata.getBucket(), objectMetadata.getFileIdentifier().toString());
+      Optional<FileObjectInfo> fileObjectInfo = fileInformationService
+          .getFileInfo(possibleFileName.orElse(""), objectMetadata.getBucket());
+      
+      objectMetadata.setOriginalFilename(fileObjectInfo.map(foi -> foi
+          .extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.HEADER_ORIGINAL_FILENAME)
+          .get(0)).orElse("?"));
+      
+      objectMetadata.setDcFormat(fileObjectInfo.map(foi -> foi
+          .extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.MEDIA_TYPE)
+          .get(0)).orElse("?"));
     } catch (IOException e) {
       log.error(e.getMessage());
     }

@@ -10,8 +10,8 @@ import java.util.UUID;
 import org.apache.http.entity.ContentType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.MediaType;
 import org.xmlpull.v1.XmlPullParserException;
 
 import ca.gc.aafc.objectstore.api.file.FileController;
@@ -83,8 +83,12 @@ public class TestConfiguration {
       rh.setLastModified("Tue, 15 Nov 1994 12:45:26 GMT");
       
       Map<String, List<String>> httpHeaders = new HashMap<>();
-      httpHeaders.put(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.HEADER_ORIGINAL_FILENAME, 
+      httpHeaders.put(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.HEADER_ORIGINAL_FILENAME,
           Collections.singletonList(TEST_ORIGINAL_FILENAME));
+      httpHeaders.put(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.MEDIA_TYPE,
+          Collections.singletonList(MediaType.IMAGE_JPEG.toString()));
+      httpHeaders.put(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.FILE_EXTENSION,
+          Collections.singletonList(".jpg"));
       
       return new ObjectStat(bucketName, fileName, rh, httpHeaders);
     }

@@ -1,7 +1,9 @@
 package ca.gc.aafc.objectstore.api.file;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.SequenceInputStream;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -12,7 +14,12 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.detect.DefaultDetector;
+import org.apache.tika.detect.Detector;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MimeType;
+import org.apache.tika.mime.MimeTypeException;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,6 +46,8 @@ import io.minio.errors.InvalidPortException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -46,15 +55,26 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FileController {
 
-  public static final String HEADER_ORIGINAL_FILENAME = "original-filename";
-  
   private static final int MAX_NUMBER_OF_ATTEMPT_RANDOM_UUID = 5;
+  private static final TikaConfig TIKA_CONFIG = TikaConfig.getDefaultConfig();
+
+  public static final String HEADER_ORIGINAL_FILENAME = "original-filename";
+  public static final String MEDIA_TYPE = "media-type";
+  public static final String FILE_EXTENSION = "file-extension";
 
   private final MinioFileService minioService;
 
   @Inject
   public FileController(MinioFileService minioService) {
     this.minioService = minioService;
+  }
+  
+  @Builder
+  @Getter
+  private static class MediaTypeDetectionResult {
+    private InputStream inputStream;
+    private org.apache.tika.mime.MediaType mediaType;
+    private MimeType mimeType;
   }
 
   @PostMapping("/file/{bucket}")
@@ -63,23 +83,25 @@ public class FileController {
       InvalidBucketNameException, NoResponseException, ErrorResponseException, InternalException,
       InvalidArgumentException, InsufficientDataException, InvalidResponseException,
       RegionConflictException, InvalidEndpointException, InvalidPortException, IOException,
-      XmlPullParserException, URISyntaxException {
+      XmlPullParserException, URISyntaxException, MimeTypeException {
     
     // Temporary, we will need to check if the user is an admin
     minioService.ensureBucketExists(bucket);
-
+    
+    MediaTypeDetectionResult mtdr = detectMediaType(file.getInputStream());
+    
     // Check that the UUID is not already assigned. It is very unlikely but not impossible
     UUID uuid = getNewUUID(bucket);
 
-    // Detect media type and file extension with a library instead of relying on the provided filename (#17825)
-    String ext = StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
-    
     Map<String, String> headerMap = new HashMap<>();
     headerMap.put(HEADER_ORIGINAL_FILENAME, file.getOriginalFilename());
-
-    minioService.storeFile(uuid.toString() + "." + ext, file.getInputStream(), file.getContentType(), bucket, headerMap);
+    headerMap.put(MEDIA_TYPE, mtdr.getMediaType().toString());
+    headerMap.put(FILE_EXTENSION, mtdr.getMimeType().getExtension());
     
-    return new FileUploadResponse(uuid.toString(), file.getContentType(),
+    minioService.storeFile(uuid.toString() + mtdr.getMimeType().getExtension(), mtdr.getInputStream(),
+        mtdr.getMediaType().toString(), bucket, headerMap);
+
+    return new FileUploadResponse(uuid.toString(), mtdr.getMediaType().toString(),
         file.getSize());
   }
   
@@ -127,6 +149,35 @@ public class FileController {
       numberOfAttempt++;
     }
     throw new IllegalStateException("Can't assign unique UUID. Giving up.");
+  }
+  
+  /**
+   * Detect the MediaType and MimeType of an InputStream by reading the beginning of the stream.
+   * A new InputStream is returned to make sure the caller can read the entire stream from the beginning.
+   * 
+   * TODO: take the media type submitted by the user in case we can not detect it.
+   * 
+   * @param is
+   * @return
+   * @throws IOException
+   * @throws MimeTypeException
+   */
+  private MediaTypeDetectionResult detectMediaType(InputStream is) throws IOException, MimeTypeException {
+    
+    // Read the beginning of the Stream to allow Tika to detect the mediaType
+    byte[] buffer = new byte[10 * 1024];
+    int lenght = is.read(buffer);
+    ByteArrayInputStream bais = new ByteArrayInputStream(buffer, 0, lenght);
+
+    Detector detector = new DefaultDetector();
+    org.apache.tika.mime.MediaType mediaType = detector.detect(bais, new Metadata());
+    MimeType mimeType = TIKA_CONFIG.getMimeRepository().forName(mediaType.toString());
+    
+    return MediaTypeDetectionResult.builder()
+      .inputStream(new SequenceInputStream(bais, is))
+      .mediaType(mediaType)
+      .mimeType(mimeType)
+      .build();
   }
 
 }
