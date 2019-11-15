@@ -7,6 +7,8 @@ import java.io.SequenceInputStream;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -55,7 +57,11 @@ public class FileController {
 
   private static final int MAX_NUMBER_OF_ATTEMPT_RANDOM_UUID = 5;
   private static final TikaConfig TIKA_CONFIG = TikaConfig.getDefaultConfig();
-  
+
+  public static final String HEADER_ORIGINAL_FILENAME = "original-filename";
+  public static final String MEDIA_TYPE = "media-type";
+  public static final String FILE_EXTENSION = "file-extension";
+
   private final MinioFileService minioService;
 
   @Inject
@@ -87,9 +93,14 @@ public class FileController {
     // Check that the UUID is not already assigned. It is very unlikely but not impossible
     UUID uuid = getNewUUID(bucket);
 
-    minioService.storeFile(uuid.toString() + mtdr.getMimeType().getExtension(), 
-        mtdr.getInputStream(), mtdr.getMediaType().toString(), bucket);
+    Map<String, String> headerMap = new HashMap<>();
+    headerMap.put(HEADER_ORIGINAL_FILENAME, file.getOriginalFilename());
+    headerMap.put(MEDIA_TYPE, mtdr.getMediaType().toString());
+    headerMap.put(FILE_EXTENSION, mtdr.getMimeType().getExtension());
     
+    minioService.storeFile(uuid.toString() + mtdr.getMimeType().getExtension(), mtdr.getInputStream(),
+        mtdr.getMediaType().toString(), bucket, headerMap);
+
     return new FileUploadResponse(uuid.toString(), mtdr.getMediaType().toString(),
         file.getSize());
   }
@@ -99,7 +110,6 @@ public class FileController {
       @PathVariable UUID fileId) throws IOException {
     
     try {
-
       // We should get the extension from the database, not scanning files in Minio by prefix
       Optional<String> possibleFileName = minioService.getFileNameByPrefix(bucket,
           fileId.toString());
@@ -111,7 +121,7 @@ public class FileController {
       FileObjectInfo foi = minioService.getFileInfo(fileName, bucket)
           .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
               fileId + " or bucket " + bucket + " Not Found", null));
-
+      
       HttpHeaders respHeaders = new HttpHeaders();
       respHeaders.setContentType(MediaType.parseMediaType(foi.getContentType()));
       respHeaders.setContentLength(foi.getLength());
@@ -144,6 +154,8 @@ public class FileController {
   /**
    * Detect the MediaType and MimeType of an InputStream by reading the beginning of the stream.
    * A new InputStream is returned to make sure the caller can read the entire stream from the beginning.
+   * 
+   * TODO: take the media type submitted by the user in case we can not detect it.
    * 
    * @param is
    * @return

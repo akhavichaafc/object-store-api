@@ -48,6 +48,7 @@
 			<column name="original_filename" type="VARCHAR(250)" />
 			<column name="ac_hash_function" type="VARCHAR(50)" />
 			<column name="ac_hash_value" type="VARCHAR(128)" />
+			<column name="ac_tags" type="text[]" />
 			<column name="ac_metadata_creator_id" type="INTEGER" />
 		</createTable>
 	</changeSet>

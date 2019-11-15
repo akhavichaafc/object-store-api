@@ -2,7 +2,11 @@ package ca.gc.aafc.objectstore.api.dto;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
 import io.crnk.core.resource.annotations.JsonApiId;
@@ -30,6 +34,9 @@ public class ObjectStoreMetadataDto {
 
   private String acHashFunction;
   private String acHashValue;
+  
+  @JsonInclude(Include.NON_EMPTY)
+  private Set<String> acTags;
   
   @JsonApiRelation
   private List<MetadataManagedAttributeDto> managedAttribute;

@@ -1,6 +1,8 @@
 package ca.gc.aafc.objectstore.api.respository;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -18,7 +20,9 @@ import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.Agent;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
+import ca.gc.aafc.objectstore.api.file.FileController;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
+import ca.gc.aafc.objectstore.api.file.FileObjectInfo;
 import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
@@ -91,8 +95,6 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   @Override
   public ResourceList<ObjectStoreMetadataDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<ObjectStoreMetadata> jq = queryFactory.query(ObjectStoreMetadata.class);
-    
-    log.info("QuerySpec:" + querySpec);
    
     List<ObjectStoreMetadataDto> l = jq.buildExecutor(querySpec).getResultList().stream()
     .map( objectStoreMetadata -> mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName)))
@@ -111,7 +113,6 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     ObjectStoreMetadata objectMetadata = mapper
         .toEntity((ObjectStoreMetadataDto) resource);
     
-    
     handleFileRelatedData(objectMetadata);
    
     // relationships
@@ -121,7 +122,6 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     }
     
     dao.save(objectMetadata);
-
     return resource;
   }
   
@@ -150,7 +150,8 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   }
   
   /**
-   * Method responsible for making sure that the bucket and fileIdentifier exist.
+   * Method responsible for dealing with validation and setting of data related to 
+   * files.
    * 
    * @param objectMetadata
    * @throws ValidationException
@@ -166,6 +167,23 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
       throw new ValidationException(
           "fileIdentifier: " + objectMetadata.getFileIdentifier().toString()
               + " could not be found in bucket: " + objectMetadata.getBucket());
+    }
+    
+    try {
+      Optional<String> possibleFileName = fileInformationService.getFileNameByPrefix(
+          objectMetadata.getBucket(), objectMetadata.getFileIdentifier().toString());
+      Optional<FileObjectInfo> fileObjectInfo = fileInformationService
+          .getFileInfo(possibleFileName.orElse(""), objectMetadata.getBucket());
+      
+      objectMetadata.setOriginalFilename(fileObjectInfo.map(foi -> foi
+          .extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.HEADER_ORIGINAL_FILENAME)
+          .get(0)).orElse("?"));
+      
+      objectMetadata.setDcFormat(fileObjectInfo.map(foi -> foi
+          .extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.MEDIA_TYPE)
+          .get(0)).orElse("?"));
+    } catch (IOException e) {
+      log.error(e.getMessage());
     }
   }
 }

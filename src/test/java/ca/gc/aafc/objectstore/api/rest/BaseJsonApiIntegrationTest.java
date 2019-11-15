@@ -54,14 +54,12 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
   public static final String JSON_API_CONTENT_TYPE = "application/vnd.api+json";
   
   private static final ObjectMapper IT_OBJECT_MAPPER = new ObjectMapper();
-
   private static final TypeReference<Map<String, Object>> IT_OM_TYPE_REF = new TypeReference<Map<String, Object>>() {};
    
   public static final URI IT_BASE_URI;
   public static final URI SCHEMA_BASE_URI;
   
   static {
-    
     URIBuilder uriBuilder = new URIBuilder();
     uriBuilder.setScheme("http");
     uriBuilder.setHost("localhost");
