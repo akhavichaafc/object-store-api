@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -56,6 +57,7 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   private UUID uuid;
   private String bucket;
   private UUID fileIdentifier;
+  private String fileExtension;
 
   private String dcFormat;
   private DcType dcType;
@@ -136,6 +138,26 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
 
   public void setFileIdentifier(UUID fileIdentifier) {
     this.fileIdentifier = fileIdentifier;
+  }
+  
+  @NotNull
+  @Column(name = "file_extension")
+  @Size(max = 10)
+  public String getFileExtension() {
+    return fileExtension;
+  }
+
+  public void setFileExtension(String fileExtension) {
+    this.fileExtension = fileExtension;
+  }
+  
+  /**
+   * Returns ileIdentifier + fileExtension
+   * @return
+   */
+  @Transient
+  public String getFilename() {
+    return fileIdentifier + fileExtension;
   }
 
   @NotNull

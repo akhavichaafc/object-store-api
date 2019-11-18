@@ -78,6 +78,28 @@ public class BaseDAO {
   }
   
   /**
+   * Find an entity by a specific property. The method assumes that the property is unique.
+   * 
+   * @param clazz
+   * @param property
+   * @param value
+   * @return
+   */
+  public <T> T findOneByProperty(Class<T> clazz, String property, Object value) {
+    // Create a criteria to retrieve the specific property.
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<T> criteria = criteriaBuilder.createQuery(clazz);
+    Root<T> root = criteria.from(clazz);
+
+    criteria.where(criteriaBuilder.equal(root.get(property), value));
+    criteria.select(root);
+
+    TypedQuery<T> query = entityManager.createQuery(criteria);
+
+    return query.getSingleResult();
+  }
+  
+  /**
    * Check for the existence of a record by natural id (as uuid).
    * @param uuid
    * @param entityClass
