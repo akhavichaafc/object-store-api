@@ -98,8 +98,7 @@ public class BaseDAO {
     TypedQuery<T> query = entityManager.createQuery(criteria);
     try {
       return query.getSingleResult();
-    }
-    catch (NoResultException nrEx) {
+    } catch (NoResultException nrEx) {
       return null;
     }
   }
