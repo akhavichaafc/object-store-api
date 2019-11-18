@@ -114,13 +114,10 @@ public class FileController {
       @PathVariable UUID fileId) throws IOException {
     
     try {
-      // We should get the extension from the database, not scanning files in Minio by prefix
-      Optional<String> possibleFileName = minioService.getFileNameByPrefix(bucket,
-          fileId.toString());
-      
+
       Optional<ObjectStoreMetadata> loadedMetadata = objectStoreMetadataReadService.loadObjectStoreMetadataByFileId(fileId);
       ObjectStoreMetadata metadata = loadedMetadata.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-              possibleFileName + " or bucket " + bucket + " Not Found", null));
+          "FileIdentifier " + fileId + " or bucket " + bucket + " Not Found", null));
 
       FileObjectInfo foi = minioService.getFileInfo(metadata.getFilename(), bucket)
           .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,

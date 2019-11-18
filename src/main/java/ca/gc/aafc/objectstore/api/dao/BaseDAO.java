@@ -11,6 +11,7 @@ import java.util.function.Function;
 import javax.inject.Inject;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.TypedQuery;
@@ -83,7 +84,7 @@ public class BaseDAO {
    * @param clazz
    * @param property
    * @param value
-   * @return
+   * @return the entity or null if not found
    */
   public <T> T findOneByProperty(Class<T> clazz, String property, Object value) {
     // Create a criteria to retrieve the specific property.
@@ -95,8 +96,12 @@ public class BaseDAO {
     criteria.select(root);
 
     TypedQuery<T> query = entityManager.createQuery(criteria);
-
-    return query.getSingleResult();
+    try {
+      return query.getSingleResult();
+    }
+    catch (NoResultException nrEx) {
+      return null;
+    }
   }
   
   /**
