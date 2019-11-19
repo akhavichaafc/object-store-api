@@ -5,15 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.security.DigestInputStream;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.detect.Detector;
@@ -25,6 +27,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +37,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.xmlpull.v1.XmlPullParserException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.minio.MinioFileService;
@@ -66,11 +72,14 @@ public class FileController {
 
   private final MinioFileService minioService;
   private final ObjectStoreMetadataReadService objectStoreMetadataReadService;
+  private final ObjectMapper objectMapper;
 
   @Inject
-  public FileController(MinioFileService minioService, ObjectStoreMetadataReadService objectStoreMetadataReadService) {
+  public FileController(MinioFileService minioService, ObjectStoreMetadataReadService objectStoreMetadataReadService, Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
     this.minioService = minioService;
     this.objectStoreMetadataReadService = objectStoreMetadataReadService;
+    this.objectMapper = jackson2ObjectMapperBuilder.build();
+    objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
   }
   
   @Builder
@@ -97,13 +106,26 @@ public class FileController {
     // Check that the UUID is not already assigned. It is very unlikely but not impossible
     UUID uuid = getNewUUID(bucket);
 
-    Map<String, String> headerMap = new HashMap<>();
-    headerMap.put(HEADER_ORIGINAL_FILENAME, file.getOriginalFilename());
-    headerMap.put(MEDIA_TYPE, mtdr.getMediaType().toString());
-    headerMap.put(FILE_EXTENSION, mtdr.getMimeType().getExtension());
+    FileMetaEntry fileMetaFile = new FileMetaEntry();
+    fileMetaFile.setOriginalFilename(file.getOriginalFilename());
+    fileMetaFile.setMediaType(mtdr.getMediaType().toString());
+    fileMetaFile.setFileExtension(mtdr.getMimeType().getExtension());
     
-    minioService.storeFile(uuid.toString() + mtdr.getMimeType().getExtension(), mtdr.getInputStream(),
-        mtdr.getMediaType().toString(), bucket, headerMap);
+    // Decorate the InputStream in order to compute the hash
+    MessageDigest md = MessageDigest.getInstance("SHA-1");
+    DigestInputStream dis = new DigestInputStream(mtdr.getInputStream(), md);
+    
+    minioService.storeFile(uuid.toString() + mtdr.getMimeType().getExtension(), dis,
+        mtdr.getMediaType().toString(), bucket, null);
+    
+    String sha1Hex = DigestUtils.sha1Hex(md.digest());
+    fileMetaFile.setSha1Hex(sha1Hex);
+    
+    String json = objectMapper.writeValueAsString(fileMetaFile);
+    
+    InputStream inputStream = new ByteArrayInputStream(json.getBytes(Charset.forName("UTF-8")));
+    minioService.storeFile(uuid.toString() + FileMetaEntry.SUFFIX, inputStream,
+        mtdr.getMediaType().toString(), bucket, null);
 
     return new FileUploadResponse(uuid.toString(), mtdr.getMediaType().toString(),
         file.getSize());
@@ -114,7 +136,6 @@ public class FileController {
       @PathVariable UUID fileId) throws IOException {
     
     try {
-
       Optional<ObjectStoreMetadata> loadedMetadata = objectStoreMetadataReadService.loadObjectStoreMetadataByFileId(fileId);
       ObjectStoreMetadata metadata = loadedMetadata.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
           "FileIdentifier " + fileId + " or bucket " + bucket + " Not Found", null));
