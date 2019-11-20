@@ -38,7 +38,14 @@ public interface FileInformationService {
    */
   Optional<FileObjectInfo> getFileInfo(String fileName, String bucketName) throws IOException;
   
-  
-  Optional<String> getFileNameByPrefix(String bucketName, String prefix);
+  /**
+   * Read and return a json file as an instance of the provided class.
+   * @param bucketName
+   * @param filename
+   * @param clazz
+   * @return
+   * @throws IOException
+   */
+  <T> T getJsonFileContentAs(String bucketName, String filename, Class<T> clazz) throws IOException;
 
 }

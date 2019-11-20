@@ -1,5 +1,9 @@
 package ca.gc.aafc.objectstore.api.file;
 
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +20,13 @@ public class FileMetaEntry {
   
   private String version = VERSION_1_0;
   
+  private final UUID fileIdentifier;
+  
+  @JsonCreator
+  public FileMetaEntry(UUID fileIdentifier) {
+    this.fileIdentifier = fileIdentifier;
+  }
+  
   @Setter
   private String originalFilename;
   
@@ -23,9 +34,16 @@ public class FileMetaEntry {
   private String sha1Hex;
   
   @Setter
-  private String mediaType;
+  private String receivedMediaType;
+  
+  @Setter
+  private String detectedMediaType;
   
   @Setter
   private String fileExtension;
+  
+  public String getFileMetaEntryFilename() {
+    return fileIdentifier + SUFFIX;
+  }
 
 }

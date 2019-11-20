@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.DigestInputStream;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -63,12 +63,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FileController {
 
+  public static final String DIGEST_ALGORITHM = "SHA-1";
+  
   private static final int MAX_NUMBER_OF_ATTEMPT_RANDOM_UUID = 5;
   private static final TikaConfig TIKA_CONFIG = TikaConfig.getDefaultConfig();
-
-  public static final String HEADER_ORIGINAL_FILENAME = "original-filename";
-  public static final String MEDIA_TYPE = "media-type";
-  public static final String FILE_EXTENSION = "file-extension";
 
   private final MinioFileService minioService;
   private final ObjectStoreMetadataReadService objectStoreMetadataReadService;
@@ -106,29 +104,61 @@ public class FileController {
     // Check that the UUID is not already assigned. It is very unlikely but not impossible
     UUID uuid = getNewUUID(bucket);
 
-    FileMetaEntry fileMetaFile = new FileMetaEntry();
-    fileMetaFile.setOriginalFilename(file.getOriginalFilename());
-    fileMetaFile.setMediaType(mtdr.getMediaType().toString());
-    fileMetaFile.setFileExtension(mtdr.getMimeType().getExtension());
+    FileMetaEntry fileMetaEntry = new FileMetaEntry(uuid);
+    fileMetaEntry.setOriginalFilename(file.getOriginalFilename());
+    fileMetaEntry.setReceivedMediaType(file.getContentType());
+    fileMetaEntry.setDetectedMediaType(mtdr.getMediaType().toString());
+    fileMetaEntry.setFileExtension(mtdr.getMimeType().getExtension());
     
     // Decorate the InputStream in order to compute the hash
-    MessageDigest md = MessageDigest.getInstance("SHA-1");
+    MessageDigest md = MessageDigest.getInstance(DIGEST_ALGORITHM);
     DigestInputStream dis = new DigestInputStream(mtdr.getInputStream(), md);
     
     minioService.storeFile(uuid.toString() + mtdr.getMimeType().getExtension(), dis,
         mtdr.getMediaType().toString(), bucket, null);
     
     String sha1Hex = DigestUtils.sha1Hex(md.digest());
-    fileMetaFile.setSha1Hex(sha1Hex);
+    fileMetaEntry.setSha1Hex(sha1Hex);
     
-    String json = objectMapper.writeValueAsString(fileMetaFile);
-    
-    InputStream inputStream = new ByteArrayInputStream(json.getBytes(Charset.forName("UTF-8")));
-    minioService.storeFile(uuid.toString() + FileMetaEntry.SUFFIX, inputStream,
-        mtdr.getMediaType().toString(), bucket, null);
+    storeFileMetaEntry(fileMetaEntry, bucket);
 
     return new FileUploadResponse(uuid.toString(), mtdr.getMediaType().toString(),
         file.getSize());
+  }
+  
+  /**
+   * Store a {@link FileMetaEntry} in Minio as a json file.
+   * 
+   * @param fileMetaEntry
+   * @param bucket
+   * @throws InvalidKeyException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidBucketNameException
+   * @throws NoResponseException
+   * @throws ErrorResponseException
+   * @throws InternalException
+   * @throws InvalidArgumentException
+   * @throws InsufficientDataException
+   * @throws InvalidResponseException
+   * @throws RegionConflictException
+   * @throws InvalidEndpointException
+   * @throws InvalidPortException
+   * @throws IOException
+   * @throws XmlPullParserException
+   * @throws URISyntaxException
+   */
+  private void storeFileMetaEntry(FileMetaEntry fileMetaEntry, String bucket)
+      throws InvalidKeyException, NoSuchAlgorithmException, InvalidBucketNameException,
+      NoResponseException, ErrorResponseException, InternalException, InvalidArgumentException,
+      InsufficientDataException, InvalidResponseException, RegionConflictException,
+      InvalidEndpointException, InvalidPortException, IOException, XmlPullParserException,
+      URISyntaxException {
+    
+    String jsonContent = objectMapper.writeValueAsString(fileMetaEntry);
+    InputStream inputStream = new ByteArrayInputStream(
+        jsonContent.getBytes(StandardCharsets.UTF_8));
+    minioService.storeFile(fileMetaEntry.getFileMetaEntryFilename(), inputStream,
+        fileMetaEntry.getDetectedMediaType(), bucket, null);
   }
   
   @GetMapping("/file/{bucket}/{fileId}")

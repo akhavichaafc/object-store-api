@@ -21,7 +21,7 @@ import ca.gc.aafc.objectstore.api.entities.Agent;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.file.FileController;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
-import ca.gc.aafc.objectstore.api.file.FileObjectInfo;
+import ca.gc.aafc.objectstore.api.file.FileMetaEntry;
 import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
 import ca.gc.aafc.objectstore.api.service.ObjectStoreMetadataReadService;
 import io.crnk.core.exception.ResourceNotFoundException;
@@ -145,7 +145,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
    * @param objectMetadata
    * @throws ValidationException
    */
-  private void handleFileRelatedData(ObjectStoreMetadata objectMetadata)
+  private ObjectStoreMetadata handleFileRelatedData(ObjectStoreMetadata objectMetadata)
       throws ValidationException {
     // we need to validate at least that bucket name and fileIdentifier are there
     if (StringUtils.isBlank(objectMetadata.getBucket())
@@ -153,36 +153,25 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
       throw new ValidationException("fileIdentifier and bucket should be provided");
     }
 
-    // how do we get the bucket from here?
-    if (!fileInformationService.isFileWithPrefixExists(objectMetadata.getBucket(),
-        objectMetadata.getFileIdentifier().toString())) {
-      throw new ValidationException(
-          "fileIdentifier: " + objectMetadata.getFileIdentifier().toString()
-              + " could not be found in bucket: " + objectMetadata.getBucket());
-    }
-    
     try {
-      Optional<String> possibleFileName = fileInformationService.getFileNameByPrefix(
-          objectMetadata.getBucket(), objectMetadata.getFileIdentifier().toString());
-      Optional<FileObjectInfo> fileObjectInfo = fileInformationService
-          .getFileInfo(possibleFileName.orElse(""), objectMetadata.getBucket());
-      
-      objectMetadata.setOriginalFilename(fileObjectInfo.map(foi -> foi
-          .extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.HEADER_ORIGINAL_FILENAME)
-          .get(0)).orElse("?"));
-      
-      objectMetadata.setDcFormat(fileObjectInfo.map(foi -> foi
-          .extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.MEDIA_TYPE)
-          .get(0)).orElse("?"));
-      
-      objectMetadata.setFileExtension(fileObjectInfo.map(foi -> foi
-          .extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.FILE_EXTENSION)
-          .get(0)).orElse("?"));
-      
+      // TODO handle missing file
+      FileMetaEntry fileMetaEntry = fileInformationService.getJsonFileContentAs(
+          objectMetadata.getBucket(),
+          objectMetadata.getFileIdentifier().toString() + FileMetaEntry.SUFFIX,
+          FileMetaEntry.class);
+
+      objectMetadata.setFileExtension(fileMetaEntry.getFileExtension());
+      objectMetadata.setOriginalFilename(fileMetaEntry.getOriginalFilename());
+      objectMetadata.setDcFormat(fileMetaEntry.getDetectedMediaType());
+      objectMetadata.setAcHashValue(fileMetaEntry.getSha1Hex());
+      objectMetadata.setAcHashFunction(FileController.DIGEST_ALGORITHM);
+
+      return objectMetadata;
+
     } catch (IOException e) {
       log.error(e.getMessage());
     }
+    return null;
   }
-
 
 }

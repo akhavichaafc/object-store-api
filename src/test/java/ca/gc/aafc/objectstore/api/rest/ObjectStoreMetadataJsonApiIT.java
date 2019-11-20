@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import ca.gc.aafc.objectstore.api.TestConfiguration.MinioClientStub;
+import ca.gc.aafc.objectstore.api.TestConfiguration;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.Agent;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
@@ -57,11 +57,15 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
   protected Map<String, Object> buildCreateAttributeMap() {
     
     OffsetDateTime dateTime4Test = OffsetDateTime.now();
+    // file related data has to match what is set by TestConfiguration
     objectStoreMetadata = ObjectStoreMetadataFactory.newObjectStoreMetadata()
-       .acHashFunction("MD5")
+       .acHashFunction("SHA-1")
        .acDigitizationDate(dateTime4Test)
        .xmpMetadataDate(dateTime4Test)
-       .fileIdentifier(MinioClientStub.TEST_FILE_IDENTIFIER)
+       .fileIdentifier(TestConfiguration.TEST_FILE_IDENTIFIER)
+       .fileExtension(TestConfiguration.TEST_FILE_EXT)
+       .bucket(TestConfiguration.TEST_BUCKET)
+       .acHashValue("123")
       .build();
     
     ObjectStoreMetadataDto objectStoreMetadatadto = mapper.toDto(objectStoreMetadata, null);
@@ -72,7 +76,6 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
   protected Map<String, Object> buildUpdateAttributeMap() {
 
     OffsetDateTime dateTime4TestUpdate = OffsetDateTime.now();
-    objectStoreMetadata.setAcHashFunction("SHA1");
     objectStoreMetadata.setAcDigitizationDate(dateTime4TestUpdate);
     objectStoreMetadata.setXmpMetadataDate(dateTime4TestUpdate);
     ObjectStoreMetadataDto objectStoreMetadatadto = mapper.toDto(objectStoreMetadata, null);
