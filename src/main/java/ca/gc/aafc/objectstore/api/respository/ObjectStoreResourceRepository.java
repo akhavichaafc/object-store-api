@@ -2,18 +2,17 @@ package ca.gc.aafc.objectstore.api.respository;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import ca.gc.aafc.objectstore.api.dao.BaseDAO;
@@ -24,6 +23,7 @@ import ca.gc.aafc.objectstore.api.file.FileController;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileObjectInfo;
 import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
+import ca.gc.aafc.objectstore.api.service.ObjectStoreMetadataReadService;
 import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Repository
 @Transactional
-public class ObjectStoreResourceRepository extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID> {
+public class ObjectStoreResourceRepository extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID> implements ObjectStoreMetadataReadService {
 
   private final BaseDAO dao;
   private final ObjectStoreMetadataMapper mapper;
@@ -82,14 +82,19 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
 
   @Override
   public ObjectStoreMetadataDto findOne(UUID uuid, QuerySpec querySpec) {
-    ObjectStoreMetadata objectStoreMetadata = dao.findOneByNaturalId(uuid, ObjectStoreMetadata.class);
-    if(objectStoreMetadata ==null){
-    // Throw the 404 exception if the resource is not found.
-      throw new ResourceNotFoundException(
-          this.getClass().getSimpleName() + " with ID " + uuid + " Not Found."
-      );
-    }
+    ObjectStoreMetadata objectStoreMetadata = loadObjectStoreMetadata(uuid).orElseThrow( () -> new ResourceNotFoundException(
+          this.getClass().getSimpleName() + " with ID " + uuid + " Not Found."));
     return mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName));
+  }
+  
+  @Override
+  public Optional<ObjectStoreMetadata> loadObjectStoreMetadata(UUID id) {
+    return Optional.ofNullable(dao.findOneByNaturalId(id, ObjectStoreMetadata.class));
+  }
+  
+  @Override
+  public Optional<ObjectStoreMetadata> loadObjectStoreMetadataByFileId(UUID fileId) {
+    return Optional.ofNullable(dao.findOneByProperty(ObjectStoreMetadata.class, "fileIdentifier", fileId));
   }
 
   @Override
@@ -134,22 +139,6 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   }
   
   /**
-   * Triggers validation of the provided entity.
-   * 
-   * @param objectMetadata
-   * @throws ConstraintViolationException
-   */
-  private void triggerValidation(ObjectStoreMetadata objectMetadata)
-      throws ConstraintViolationException {
-    Set<ConstraintViolation<ObjectStoreMetadata>> violations = dao.validateEntity(objectMetadata);
-
-    if (violations.isEmpty()) {
-      return;
-    }
-    throw new ConstraintViolationException(violations);
-  }
-  
-  /**
    * Method responsible for dealing with validation and setting of data related to 
    * files.
    * 
@@ -159,7 +148,10 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   private void handleFileRelatedData(ObjectStoreMetadata objectMetadata)
       throws ValidationException {
     // we need to validate at least that bucket name and fileIdentifier are there
-    triggerValidation(objectMetadata);
+    if (StringUtils.isBlank(objectMetadata.getBucket())
+        || StringUtils.isBlank(Objects.toString(objectMetadata.getFileIdentifier(), ""))) {
+      throw new ValidationException("fileIdentifier and bucket should be provided");
+    }
 
     // how do we get the bucket from here?
     if (!fileInformationService.isFileWithPrefixExists(objectMetadata.getBucket(),
@@ -182,8 +174,15 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
       objectMetadata.setDcFormat(fileObjectInfo.map(foi -> foi
           .extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.MEDIA_TYPE)
           .get(0)).orElse("?"));
+      
+      objectMetadata.setFileExtension(fileObjectInfo.map(foi -> foi
+          .extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.FILE_EXTENSION)
+          .get(0)).orElse("?"));
+      
     } catch (IOException e) {
       log.error(e.getMessage());
     }
   }
+
+
 }

@@ -35,7 +35,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.xmlpull.v1.XmlPullParserException;
 
+import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.minio.MinioFileService;
+import ca.gc.aafc.objectstore.api.service.ObjectStoreMetadataReadService;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -63,10 +65,12 @@ public class FileController {
   public static final String FILE_EXTENSION = "file-extension";
 
   private final MinioFileService minioService;
+  private final ObjectStoreMetadataReadService objectStoreMetadataReadService;
 
   @Inject
-  public FileController(MinioFileService minioService) {
+  public FileController(MinioFileService minioService, ObjectStoreMetadataReadService objectStoreMetadataReadService) {
     this.minioService = minioService;
+    this.objectStoreMetadataReadService = objectStoreMetadataReadService;
   }
   
   @Builder
@@ -110,24 +114,21 @@ public class FileController {
       @PathVariable UUID fileId) throws IOException {
     
     try {
-      // We should get the extension from the database, not scanning files in Minio by prefix
-      Optional<String> possibleFileName = minioService.getFileNameByPrefix(bucket,
-          fileId.toString());
 
-      String fileName = possibleFileName
-          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-              possibleFileName + " or bucket " + bucket + " Not Found", null));
+      Optional<ObjectStoreMetadata> loadedMetadata = objectStoreMetadataReadService.loadObjectStoreMetadataByFileId(fileId);
+      ObjectStoreMetadata metadata = loadedMetadata.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+          "FileIdentifier " + fileId + " or bucket " + bucket + " Not Found", null));
 
-      FileObjectInfo foi = minioService.getFileInfo(fileName, bucket)
+      FileObjectInfo foi = minioService.getFileInfo(metadata.getFilename(), bucket)
           .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
               fileId + " or bucket " + bucket + " Not Found", null));
       
       HttpHeaders respHeaders = new HttpHeaders();
-      respHeaders.setContentType(MediaType.parseMediaType(foi.getContentType()));
+      respHeaders.setContentType(MediaType.parseMediaType(metadata.getDcFormat()));
       respHeaders.setContentLength(foi.getLength());
-      respHeaders.setContentDispositionFormData("attachment", fileName);
+      respHeaders.setContentDispositionFormData("attachment", metadata.getFilename());
 
-      InputStream is = minioService.getFile(fileName, bucket);
+      InputStream is = minioService.getFile(metadata.getFilename(), bucket);
 
       InputStreamResource isr = new InputStreamResource(is);
       return new ResponseEntity<InputStreamResource>(isr, respHeaders, HttpStatus.OK);

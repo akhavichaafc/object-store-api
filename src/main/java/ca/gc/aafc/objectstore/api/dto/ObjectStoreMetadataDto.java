@@ -23,6 +23,7 @@ public class ObjectStoreMetadataDto {
   
   private String bucket;
   private UUID fileIdentifier;
+  private String fileExtension;
 
   private String dcFormat;
   private DcType dcType;

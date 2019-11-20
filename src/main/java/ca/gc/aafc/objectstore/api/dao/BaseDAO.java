@@ -11,6 +11,7 @@ import java.util.function.Function;
 import javax.inject.Inject;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.TypedQuery;
@@ -75,6 +76,31 @@ public class BaseDAO {
         .bySimpleNaturalId(entityClass)
         .load(uuid);
     return objectStoreMetadata;
+  }
+  
+  /**
+   * Find an entity by a specific property. The method assumes that the property is unique.
+   * 
+   * @param clazz
+   * @param property
+   * @param value
+   * @return the entity or null if not found
+   */
+  public <T> T findOneByProperty(Class<T> clazz, String property, Object value) {
+    // Create a criteria to retrieve the specific property.
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<T> criteria = criteriaBuilder.createQuery(clazz);
+    Root<T> root = criteria.from(clazz);
+
+    criteria.where(criteriaBuilder.equal(root.get(property), value));
+    criteria.select(root);
+
+    TypedQuery<T> query = entityManager.createQuery(criteria);
+    try {
+      return query.getSingleResult();
+    } catch (NoResultException nrEx) {
+      return null;
+    }
   }
   
   /**
