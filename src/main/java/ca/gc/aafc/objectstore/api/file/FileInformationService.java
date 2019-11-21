@@ -46,6 +46,6 @@ public interface FileInformationService {
    * @return
    * @throws IOException
    */
-  <T> T getJsonFileContentAs(String bucketName, String filename, Class<T> clazz) throws IOException;
+  <T> Optional<T> getJsonFileContentAs(String bucketName, String filename, Class<T> clazz) throws IOException;
 
 }

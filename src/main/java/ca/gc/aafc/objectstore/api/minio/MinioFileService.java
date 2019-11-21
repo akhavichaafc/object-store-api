@@ -45,6 +45,12 @@ public class MinioFileService implements FileInformationService {
     this.minioClient = minioClient;
     this.objectMapper = jackson2ObjectMapperBuilder.build();
   }
+  
+  private static boolean isNotFoundException(ErrorResponseException erEx) {
+    return ErrorCode.NO_SUCH_KEY == erEx.errorResponse().errorCode()
+        || ErrorCode.NO_SUCH_OBJECT == erEx.errorResponse().errorCode()
+        || ErrorCode.NO_SUCH_BUCKET == erEx.errorResponse().errorCode();
+  }
 
   /**
    * Store a file (received as an InputStream) on Minio into a specific bucket.
@@ -105,21 +111,28 @@ public class MinioFileService implements FileInformationService {
     return false;
   }
   
-  public InputStream getFile(String fileName, String bucketName) throws IOException {
+  public Optional<InputStream> getFile(String fileName, String bucketName) throws IOException {
     try {
-      return minioClient.getObject(bucketName, fileName);
+      return Optional.of(minioClient.getObject(bucketName, fileName));
+    } catch (ErrorResponseException erEx) {
+      if (isNotFoundException(erEx)) {
+        return Optional.empty();
+      }
+      throw new IOException(erEx);
     } catch (InvalidKeyException | InvalidBucketNameException | NoSuchAlgorithmException
-        | InsufficientDataException | NoResponseException | ErrorResponseException
-        | InternalException | InvalidArgumentException | InvalidResponseException
-        | XmlPullParserException e) {
+        | InsufficientDataException | NoResponseException | InternalException
+        | InvalidArgumentException | InvalidResponseException | XmlPullParserException e) {
       throw new IOException(e);
     }
   }
   
-
-  public <T> T getJsonFileContentAs(String bucketName, String filename, Class<T> clazz)
+  public <T> Optional<T> getJsonFileContentAs(String bucketName, String filename, Class<T> clazz)
       throws IOException {
-    return objectMapper.readValue(getFile(filename, bucketName), clazz);
+    Optional<InputStream> is = getFile(filename, bucketName);
+    if (!is.isPresent()) {
+      return Optional.empty();
+    }
+    return Optional.of(objectMapper.readValue(is.get(), clazz));
   }
 
   /**

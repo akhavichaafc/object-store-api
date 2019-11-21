@@ -24,6 +24,7 @@ import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileMetaEntry;
 import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
 import ca.gc.aafc.objectstore.api.service.ObjectStoreMetadataReadService;
+import io.crnk.core.exception.BadRequestException;
 import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
@@ -68,7 +69,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(dto.getUuid(), ObjectStoreMetadata.class);
     mapper.updateObjectStoreMetadataFromDto(dto, objectMetadata);
 
-    handleFileRelatedData(objectMetadata);
+    objectMetadata = handleFileRelatedData(objectMetadata);
     
     // relationships
     if (resource.getAcMetadataCreator() != null) {
@@ -118,7 +119,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     ObjectStoreMetadata objectMetadata = mapper
         .toEntity((ObjectStoreMetadataDto) resource);
     
-    handleFileRelatedData(objectMetadata);
+    objectMetadata = handleFileRelatedData(objectMetadata);
    
     // relationships
     if (resource.getAcMetadataCreator() != null) {
@@ -154,11 +155,11 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     }
 
     try {
-      // TODO handle missing file
       FileMetaEntry fileMetaEntry = fileInformationService.getJsonFileContentAs(
           objectMetadata.getBucket(),
           objectMetadata.getFileIdentifier().toString() + FileMetaEntry.SUFFIX,
-          FileMetaEntry.class);
+          FileMetaEntry.class).orElseThrow( () -> new BadRequestException(
+              this.getClass().getSimpleName() + " with ID " + objectMetadata.getFileIdentifier() + " Not Found."));
 
       objectMetadata.setFileExtension(fileMetaEntry.getFileExtension());
       objectMetadata.setOriginalFilename(fileMetaEntry.getOriginalFilename());
@@ -170,8 +171,9 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
 
     } catch (IOException e) {
       log.error(e.getMessage());
+      throw new BadRequestException("Can't process " + objectMetadata.getFileIdentifier());
     }
-    return null;
+
   }
 
 }

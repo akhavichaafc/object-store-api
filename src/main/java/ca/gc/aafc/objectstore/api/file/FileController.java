@@ -179,7 +179,8 @@ public class FileController {
       respHeaders.setContentLength(foi.getLength());
       respHeaders.setContentDispositionFormData("attachment", metadata.getFilename());
 
-      InputStream is = minioService.getFile(metadata.getFilename(), bucket);
+      InputStream is = minioService.getFile(metadata.getFilename(), bucket).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+          "FileIdentifier " + fileId + " or bucket " + bucket + " Not Found", null));
 
       InputStreamResource isr = new InputStreamResource(is);
       return new ResponseEntity<InputStreamResource>(isr, respHeaders, HttpStatus.OK);
