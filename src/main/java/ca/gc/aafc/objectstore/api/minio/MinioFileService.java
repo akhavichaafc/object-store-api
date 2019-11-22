@@ -5,21 +5,22 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import org.xmlpull.v1.XmlPullParserException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileObjectInfo;
 import io.minio.ErrorCode;
 import io.minio.MinioClient;
 import io.minio.ObjectStat;
-import io.minio.Result;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -30,7 +31,6 @@ import io.minio.errors.InvalidPortException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
-import io.minio.messages.Item;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -38,10 +38,18 @@ import lombok.extern.slf4j.Slf4j;
 public class MinioFileService implements FileInformationService {
 
   private final MinioClient minioClient;
+  private final ObjectMapper objectMapper;
   
   @Inject
-  public MinioFileService(MinioClient minioClient) {
+  public MinioFileService(MinioClient minioClient,  Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
     this.minioClient = minioClient;
+    this.objectMapper = jackson2ObjectMapperBuilder.build();
+  }
+  
+  private static boolean isNotFoundException(ErrorResponseException erEx) {
+    return ErrorCode.NO_SUCH_KEY == erEx.errorResponse().errorCode()
+        || ErrorCode.NO_SUCH_OBJECT == erEx.errorResponse().errorCode()
+        || ErrorCode.NO_SUCH_BUCKET == erEx.errorResponse().errorCode();
   }
 
   /**
@@ -103,17 +111,29 @@ public class MinioFileService implements FileInformationService {
     return false;
   }
   
-  public InputStream getFile(String fileName, String bucketName) throws IOException {
+  public Optional<InputStream> getFile(String fileName, String bucketName) throws IOException {
     try {
-      return minioClient.getObject(bucketName, fileName);
+      return Optional.of(minioClient.getObject(bucketName, fileName));
+    } catch (ErrorResponseException erEx) {
+      if (isNotFoundException(erEx)) {
+        return Optional.empty();
+      }
+      throw new IOException(erEx);
     } catch (InvalidKeyException | InvalidBucketNameException | NoSuchAlgorithmException
-        | InsufficientDataException | NoResponseException | ErrorResponseException
-        | InternalException | InvalidArgumentException | InvalidResponseException
-        | XmlPullParserException e) {
+        | InsufficientDataException | NoResponseException | InternalException
+        | InvalidArgumentException | InvalidResponseException | XmlPullParserException e) {
       throw new IOException(e);
     }
   }
   
+  public <T> Optional<T> getJsonFileContentAs(String bucketName, String filename, Class<T> clazz)
+      throws IOException {
+    Optional<InputStream> is = getFile(filename, bucketName);
+    if (!is.isPresent()) {
+      return Optional.empty();
+    }
+    return Optional.of(objectMapper.readValue(is.get(), clazz));
+  }
 
   /**
    * See {@link FileInformationService#getFileInfo(String, String)}
@@ -157,30 +177,6 @@ public class MinioFileService implements FileInformationService {
       log.info("listObjects exception:", e);
     }
     return false;
-  }
-  
-  public Optional<String> getFileNameByPrefix(String bucketName, String prefix) {
-    try {
-      Iterable<Result<Item>> objects = minioClient.listObjects(bucketName, prefix);
-      Iterator<Result<Item>> it = objects.iterator();
-
-      if (!it.hasNext()) {
-        return Optional.empty();
-      }
-
-      String possibleName = it.next().get().objectName();
-
-      // if there is another element, do not return it since it's not unique
-      if (!it.hasNext()) {
-        return Optional.ofNullable(possibleName);
-      }
-      
-    } catch (XmlPullParserException | InvalidKeyException | InvalidBucketNameException
-        | NoSuchAlgorithmException | InsufficientDataException | NoResponseException
-        | ErrorResponseException | InternalException | IOException e) {
-      log.info("getFileNameByPrefix exception:", e);
-    }
-    return Optional.empty();
   }
 
 }

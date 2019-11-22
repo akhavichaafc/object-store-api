@@ -21,9 +21,10 @@ import ca.gc.aafc.objectstore.api.entities.Agent;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.file.FileController;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
-import ca.gc.aafc.objectstore.api.file.FileObjectInfo;
+import ca.gc.aafc.objectstore.api.file.FileMetaEntry;
 import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
 import ca.gc.aafc.objectstore.api.service.ObjectStoreMetadataReadService;
+import io.crnk.core.exception.BadRequestException;
 import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
@@ -68,7 +69,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(dto.getUuid(), ObjectStoreMetadata.class);
     mapper.updateObjectStoreMetadataFromDto(dto, objectMetadata);
 
-    handleFileRelatedData(objectMetadata);
+    objectMetadata = handleFileRelatedData(objectMetadata);
     
     // relationships
     if (resource.getAcMetadataCreator() != null) {
@@ -118,7 +119,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     ObjectStoreMetadata objectMetadata = mapper
         .toEntity((ObjectStoreMetadataDto) resource);
     
-    handleFileRelatedData(objectMetadata);
+    objectMetadata = handleFileRelatedData(objectMetadata);
    
     // relationships
     if (resource.getAcMetadataCreator() != null) {
@@ -145,7 +146,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
    * @param objectMetadata
    * @throws ValidationException
    */
-  private void handleFileRelatedData(ObjectStoreMetadata objectMetadata)
+  private ObjectStoreMetadata handleFileRelatedData(ObjectStoreMetadata objectMetadata)
       throws ValidationException {
     // we need to validate at least that bucket name and fileIdentifier are there
     if (StringUtils.isBlank(objectMetadata.getBucket())
@@ -153,36 +154,26 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
       throw new ValidationException("fileIdentifier and bucket should be provided");
     }
 
-    // how do we get the bucket from here?
-    if (!fileInformationService.isFileWithPrefixExists(objectMetadata.getBucket(),
-        objectMetadata.getFileIdentifier().toString())) {
-      throw new ValidationException(
-          "fileIdentifier: " + objectMetadata.getFileIdentifier().toString()
-              + " could not be found in bucket: " + objectMetadata.getBucket());
-    }
-    
     try {
-      Optional<String> possibleFileName = fileInformationService.getFileNameByPrefix(
-          objectMetadata.getBucket(), objectMetadata.getFileIdentifier().toString());
-      Optional<FileObjectInfo> fileObjectInfo = fileInformationService
-          .getFileInfo(possibleFileName.orElse(""), objectMetadata.getBucket());
-      
-      objectMetadata.setOriginalFilename(fileObjectInfo.map(foi -> foi
-          .extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.HEADER_ORIGINAL_FILENAME)
-          .get(0)).orElse("?"));
-      
-      objectMetadata.setDcFormat(fileObjectInfo.map(foi -> foi
-          .extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.MEDIA_TYPE)
-          .get(0)).orElse("?"));
-      
-      objectMetadata.setFileExtension(fileObjectInfo.map(foi -> foi
-          .extractHeader(FileObjectInfo.CUSTOM_HEADER_PREFIX + FileController.FILE_EXTENSION)
-          .get(0)).orElse("?"));
-      
+      FileMetaEntry fileMetaEntry = fileInformationService.getJsonFileContentAs(
+          objectMetadata.getBucket(),
+          objectMetadata.getFileIdentifier().toString() + FileMetaEntry.SUFFIX,
+          FileMetaEntry.class).orElseThrow( () -> new BadRequestException(
+              this.getClass().getSimpleName() + " with ID " + objectMetadata.getFileIdentifier() + " Not Found."));
+
+      objectMetadata.setFileExtension(fileMetaEntry.getFileExtension());
+      objectMetadata.setOriginalFilename(fileMetaEntry.getOriginalFilename());
+      objectMetadata.setDcFormat(fileMetaEntry.getDetectedMediaType());
+      objectMetadata.setAcHashValue(fileMetaEntry.getSha1Hex());
+      objectMetadata.setAcHashFunction(FileController.DIGEST_ALGORITHM);
+
+      return objectMetadata;
+
     } catch (IOException e) {
       log.error(e.getMessage());
+      throw new BadRequestException("Can't process " + objectMetadata.getFileIdentifier());
     }
-  }
 
+  }
 
 }
