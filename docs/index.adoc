@@ -4,6 +4,8 @@
 
 :leveloffset: 1
 
+include::object_storage.adoc[]
+
 include::design.adoc[]
 
 
