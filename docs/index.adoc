@@ -7,5 +7,3 @@
 include::object_storage.adoc[]
 
 include::design.adoc[]
-
-
