@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileObjectInfo;
+import ca.gc.aafc.objectstore.api.file.FolderStructureStrategy;
 import io.minio.ErrorCode;
 import io.minio.MinioClient;
 import io.minio.ObjectStat;
@@ -38,12 +39,25 @@ import lombok.extern.slf4j.Slf4j;
 public class MinioFileService implements FileInformationService {
 
   private final MinioClient minioClient;
+  private final FolderStructureStrategy folderStructureStrategy;
   private final ObjectMapper objectMapper;
   
   @Inject
-  public MinioFileService(MinioClient minioClient,  Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
+  public MinioFileService(MinioClient minioClient, FolderStructureStrategy folderStructureStrategy,
+      Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
     this.minioClient = minioClient;
+    this.folderStructureStrategy = folderStructureStrategy;
     this.objectMapper = jackson2ObjectMapperBuilder.build();
+  }
+  
+  /**
+   * Return the file location following the {@link FolderStructureStrategy}
+   * 
+   * @param filename
+   * @return
+   */
+  private String getFileLocation(String filename) {
+    return folderStructureStrategy.getPathFor(filename).toString();
   }
   
   private static boolean isNotFoundException(ErrorResponseException erEx) {
@@ -83,7 +97,7 @@ public class MinioFileService implements FileInformationService {
       RegionConflictException, InvalidEndpointException, InvalidPortException, URISyntaxException {
 
     // Upload the file to the bucket
-    minioClient.putObject(bucket, fileName, iStream, null, headersMap, null, contentType);
+    minioClient.putObject(bucket, getFileLocation(fileName), iStream, null, headersMap, null, contentType);
   }
   
   public void ensureBucketExists(String bucketName) throws IOException {
@@ -113,7 +127,7 @@ public class MinioFileService implements FileInformationService {
   
   public Optional<InputStream> getFile(String fileName, String bucketName) throws IOException {
     try {
-      return Optional.of(minioClient.getObject(bucketName, fileName));
+      return Optional.of(minioClient.getObject(bucketName, getFileLocation(fileName)));
     } catch (ErrorResponseException erEx) {
       if (isNotFoundException(erEx)) {
         return Optional.empty();
@@ -141,7 +155,7 @@ public class MinioFileService implements FileInformationService {
   public Optional<FileObjectInfo> getFileInfo(String fileName, String bucketName) throws IOException {
     ObjectStat objectStat;
     try {
-      objectStat = minioClient.statObject(bucketName, fileName);
+      objectStat = minioClient.statObject(bucketName, getFileLocation(fileName));
       
       return Optional.of(FileObjectInfo.builder()
           .length(objectStat.length())
@@ -172,7 +186,7 @@ public class MinioFileService implements FileInformationService {
   @Override
   public boolean isFileWithPrefixExists(String bucketName, String prefix) {
     try {
-      return minioClient.listObjects(bucketName, prefix).iterator().hasNext();
+      return minioClient.listObjects(bucketName, getFileLocation(prefix)).iterator().hasNext();
     } catch (XmlPullParserException e) {
       log.info("listObjects exception:", e);
     }

@@ -23,6 +23,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ca.gc.aafc.objectstore.api.file.FileMetaEntry;
+import ca.gc.aafc.objectstore.api.file.FolderStructureStrategy;
 import io.minio.MinioClient;
 import io.minio.ObjectStat;
 import io.minio.ResponseHeader;
@@ -42,12 +43,13 @@ import io.minio.messages.Item;
 /**
  * 
  * Configuration used to override bean in the context of Integration testing.
- * A MinioClient stub with 1 entry will be created for testing purpose (see {@link #setupFile(MinioClient)
+ * A MinioClient stub with 1 entry will be created for testing purpose (see {@link #setupFile(MinioClient)})
  *
  */
 @Configuration
 public class TestConfiguration {
-  
+
+  private final FolderStructureStrategy folderStructureStrategy = new FolderStructureStrategy();
   public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   public static final String TEST_BUCKET = "test";
   public static final UUID TEST_FILE_IDENTIFIER = UUID.randomUUID();
@@ -79,7 +81,8 @@ public class TestConfiguration {
     String testFile = "This is a test\n";
     InputStream is = new ByteArrayInputStream(
         testFile.getBytes(StandardCharsets.UTF_8));
-    minioClient.putObject(TEST_BUCKET, TEST_FILE_IDENTIFIER + TEST_FILE_EXT, is, null,
+    // since we are storing files directly (without the FRileController) we need to apply the folderStructureStrategy
+    minioClient.putObject(TEST_BUCKET, folderStructureStrategy.getPathFor(TEST_FILE_IDENTIFIER + TEST_FILE_EXT).toString(), is, null,
         null, null, MediaType.TEXT_PLAIN_VALUE);
     
     FileMetaEntry fme = new FileMetaEntry(TEST_FILE_IDENTIFIER);
@@ -90,7 +93,7 @@ public class TestConfiguration {
     String jsonContent = OBJECT_MAPPER.writeValueAsString(fme);
     is = new ByteArrayInputStream(
         jsonContent.getBytes(StandardCharsets.UTF_8));
-    minioClient.putObject(TEST_BUCKET, TEST_FILE_IDENTIFIER + FileMetaEntry.SUFFIX, is, null,
+    minioClient.putObject(TEST_BUCKET, folderStructureStrategy.getPathFor(TEST_FILE_IDENTIFIER + FileMetaEntry.SUFFIX).toString(), is, null,
         null, null, MediaType.TEXT_PLAIN_VALUE);
   }
   
