@@ -73,7 +73,8 @@ public class FileController {
   private final ObjectMapper objectMapper;
 
   @Inject
-  public FileController(MinioFileService minioService, ObjectStoreMetadataReadService objectStoreMetadataReadService, Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
+  public FileController(MinioFileService minioService, ObjectStoreMetadataReadService objectStoreMetadataReadService, 
+      Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
     this.minioService = minioService;
     this.objectStoreMetadataReadService = objectStoreMetadataReadService;
     this.objectMapper = jackson2ObjectMapperBuilder.build();
@@ -157,8 +158,8 @@ public class FileController {
     String jsonContent = objectMapper.writeValueAsString(fileMetaEntry);
     InputStream inputStream = new ByteArrayInputStream(
         jsonContent.getBytes(StandardCharsets.UTF_8));
-    minioService.storeFile(fileMetaEntry.getFileMetaEntryFilename(), inputStream,
-        fileMetaEntry.getDetectedMediaType(), bucket, null);
+    minioService.storeFile(fileMetaEntry.getFileMetaEntryFilename().toString(), 
+        inputStream, fileMetaEntry.getDetectedMediaType(), bucket, null);
   }
   
   @GetMapping("/file/{bucket}/{fileId}")
