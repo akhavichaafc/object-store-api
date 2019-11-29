@@ -18,6 +18,7 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
+import org.springframework.stereotype.Service;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +34,7 @@ import lombok.Getter;
  * be used (if provided).
  *
  */
+@Service
 public class MediaTypeDetectionStrategy {
   
   private static final TikaConfig TIKA_CONFIG = TikaConfig.getDefaultConfig();
