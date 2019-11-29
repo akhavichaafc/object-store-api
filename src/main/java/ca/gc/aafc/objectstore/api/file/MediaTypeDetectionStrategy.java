@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.detect.Detector;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeType;
@@ -67,8 +68,13 @@ public class MediaTypeDetectionStrategy {
     byte[] buffer = new byte[10 * 1024];
     int lenght = is.read(buffer);
     ByteArrayInputStream bais = new ByteArrayInputStream(buffer, 0, lenght);
+    
+    Metadata metadata = new Metadata();
+    if(StringUtils.isNotBlank(originalFilename)) {
+      metadata.set(Metadata.RESOURCE_NAME_KEY, originalFilename);
+    }
 
-    MediaType mediaType = TIKA_DETECTOR.detect(bais, new Metadata());
+    MediaType mediaType = TIKA_DETECTOR.detect(TikaInputStream.get(bais), metadata);
     MimeType mimeType = TIKA_CONFIG.getMimeRepository().forName(mediaType.toString());
 
     MediaType parsedReceivedMediaType = StringUtils.isNotBlank(receivedMediaType)
@@ -84,7 +90,9 @@ public class MediaTypeDetectionStrategy {
     // If the detected type is too generic, try to use what was provided by the user
     if (isGenericMediaType) {
       mtdrBldr.mediaType(ObjectUtils.defaultIfNull(parsedReceivedMediaType, mediaType));
-      mtdrBldr.fileExtension(originalFilename != null ? "." + FilenameUtils.getExtension(originalFilename) : mimeType.getExtension());
+      mtdrBldr.fileExtension(
+          originalFilename != null ? "." + FilenameUtils.getExtension(originalFilename)
+              : mimeType.getExtension());
     } else {
       mtdrBldr.mediaType(mediaType);
       mtdrBldr.fileExtension(mimeType.getExtension());
