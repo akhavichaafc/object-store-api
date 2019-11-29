@@ -1,0 +1,13 @@
+= Media Type Detection
+
+== Library
+The Object Store module uses https://tika.apache.org/[Apache Tika] to try to automagically detect the media type when possible.
+
+== Expected behavior
+The Object Store module will behave differently depending on the information included in the multipart upload.
+
+=== Content-Type provided
+If the Content-Type of the file is specified in the multipart upload, the Object Store will still detect the media-type but will only store it in the metadata field and return it to the user as information.
+
+=== No Content-Type provided
+If the Content-Type of the file is NOT specified in the multipart upload, the Object Store will detect the media-type. Then the extension of the uploaded file will be compared against the possible extensions for the detected media-type. If no match can be found the upload will be rejected unless the detected type is application/octet-stream.
