@@ -75,8 +75,8 @@ public class MediaTypeDetectionStrategy {
         ? MediaType.parse(receivedMediaType)
         : null;
 
-    boolean isGenericMediaType = (MediaType.OCTET_STREAM == mediaType
-        || MediaType.TEXT_PLAIN == mediaType);
+    boolean isGenericMediaType = MediaType.OCTET_STREAM == mediaType
+        || MediaType.TEXT_PLAIN == mediaType;
 
     MediaTypeDetectionResult.MediaTypeDetectionResultBuilder mtdrBldr = MediaTypeDetectionResult
         .builder().inputStream(new SequenceInputStream(bais, is));
