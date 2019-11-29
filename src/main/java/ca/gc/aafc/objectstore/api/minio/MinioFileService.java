@@ -7,6 +7,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Streams;
 
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileObjectInfo;
@@ -57,7 +59,9 @@ public class MinioFileService implements FileInformationService {
    * @return
    */
   private String getFileLocation(String filename) {
-    return folderStructureStrategy.getPathFor(filename).toString();
+    return Streams.stream(folderStructureStrategy.getPathFor(filename).iterator())
+        .map(p -> p.getFileName().toString())
+        .collect(Collectors.joining("/"));
   }
   
   private static boolean isNotFoundException(ErrorResponseException erEx) {
