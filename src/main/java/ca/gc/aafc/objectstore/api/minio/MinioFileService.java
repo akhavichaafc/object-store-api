@@ -5,7 +5,9 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,6 +26,7 @@ import ca.gc.aafc.objectstore.api.file.FolderStructureStrategy;
 import io.minio.ErrorCode;
 import io.minio.MinioClient;
 import io.minio.ObjectStat;
+import io.minio.Result;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -34,6 +37,7 @@ import io.minio.errors.InvalidPortException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
+import io.minio.messages.Item;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -181,18 +185,31 @@ public class MinioFileService implements FileInformationService {
   }
   
   /**
-   * Check if at least 1 object on the provided bucket starts with a specific prefix.
+   * @see FileInformationService#isFileWithPrefixExists(String, String)
    * 
-   * @param bucketName
-   * @param prefix
-   * @return at least 1 object with the provided prefix exists
    */
   @Override
-  public boolean isFileWithPrefixExists(String bucketName, String prefix) {
+  public boolean isFileWithPrefixExists(String bucketName, String prefix) throws IllegalStateException, IOException {
     try {
-      return minioClient.listObjects(bucketName, getFileLocation(prefix)).iterator().hasNext();
-    } catch (XmlPullParserException e) {
-      log.info("listObjects exception:", e);
+      Iterator<Result<Item>> result = minioClient.listObjects(bucketName, getFileLocation(prefix)).iterator();
+      if (result.hasNext()) {
+        return true;
+      }
+      
+      // when hasNext returns false it could also mean an error
+      Result<Item> nextResult = result.next();
+      if (nextResult != null) {
+        // get will throw an exception if one occurred in the call to Minio
+        nextResult.get();
+      }
+    } catch (NoSuchElementException e) {
+      // ignore. Just a safety catch since MinioClient uses the iterator that is not exactly what the interface defines.
+      // next hasNext returns false but there is an element in the iterator that triggers an exception
+    }
+    catch (XmlPullParserException | InvalidKeyException | InvalidBucketNameException
+        | NoSuchAlgorithmException | InsufficientDataException | NoResponseException
+        | ErrorResponseException | InternalException e) {
+      throw new IllegalStateException(e);
     }
     return false;
   }
