@@ -189,13 +189,15 @@ public class MinioFileService implements FileInformationService {
    * 
    */
   @Override
-  public boolean isFileWithPrefixExists(String bucketName, String prefix) throws IllegalStateException, IOException {
+  public boolean isFileWithPrefixExists(String bucketName, String prefix)
+      throws IllegalStateException, IOException {
     try {
-      Iterator<Result<Item>> result = minioClient.listObjects(bucketName, getFileLocation(prefix)).iterator();
+      Iterator<Result<Item>> result = minioClient.listObjects(bucketName, getFileLocation(prefix))
+          .iterator();
       if (result.hasNext()) {
         return true;
       }
-      
+
       // when hasNext returns false it could also mean an error
       Result<Item> nextResult = result.next();
       if (nextResult != null) {
@@ -203,10 +205,11 @@ public class MinioFileService implements FileInformationService {
         nextResult.get();
       }
     } catch (NoSuchElementException e) {
-      // ignore. Just a safety catch since MinioClient uses the iterator that is not exactly what the interface defines.
-      // next hasNext returns false but there is an element in the iterator that triggers an exception
-    }
-    catch (XmlPullParserException | InvalidKeyException | InvalidBucketNameException
+      // ignore. Just a safety catch since MinioClient uses the iterator that is not exactly what
+      // the interface defines.
+      // next hasNext returns false but there is an element in the iterator that triggers an
+      // exception
+    } catch (XmlPullParserException | InvalidKeyException | InvalidBucketNameException
         | NoSuchAlgorithmException | InsufficientDataException | NoResponseException
         | ErrorResponseException | InternalException e) {
       throw new IllegalStateException(e);
