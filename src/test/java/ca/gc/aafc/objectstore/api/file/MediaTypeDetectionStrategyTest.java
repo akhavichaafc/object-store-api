@@ -36,6 +36,30 @@ public class MediaTypeDetectionStrategyTest {
   }
   
   @Test
+  public void detectMediaType_onTextFileWithSpecificExt_extIsPreserved() throws FileNotFoundException, URISyntaxException {
+    try (FileInputStream fis = new FileInputStream(
+        Resources.getResource("testfile.txt").toURI().getPath())) {
+
+      assertDetectedMediaType(fis, MediaType.TEXT_PLAIN_VALUE, "testfile.ab2",
+          MediaType.TEXT_PLAIN_VALUE, ".ab2");
+    } catch (IOException e) {
+      fail(e);
+    }
+  }
+  
+  @Test
+  public void detectMediaType_onExcelSpreadsheet_mediaTypeDetected() throws FileNotFoundException, URISyntaxException {
+    try (FileInputStream fis = new FileInputStream(
+        Resources.getResource("test_spreadsheet.xlsx").toURI().getPath())) {
+
+      assertDetectedMediaType(fis, null, "test_spreadsheet.xlsx",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlsx");
+    } catch (IOException e) {
+      fail(e);
+    }
+  }
+  
+  @Test
   public void detectMediaType_onNoMediaTypeProvided_typeDetected() {
     ByteArrayInputStream bais = new ByteArrayInputStream(
         "Test content".getBytes(StandardCharsets.UTF_8));
