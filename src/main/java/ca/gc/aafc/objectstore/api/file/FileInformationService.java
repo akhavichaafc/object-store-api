@@ -20,12 +20,16 @@ public interface FileInformationService {
   boolean bucketExists(String bucketName);
 
   /**
-   * Temporary method to be replaced by fileExists after #17825
+   * Check if at least 1 object in the provided bucket starts with a specific prefix. 
+   * 
    * @param bucketName
    * @param fileNamePrefix
-   * @return
+   * @return at least 1 object with the provided prefix exists
+   * @throws IllegalStateException if something wrong with the request or response. For example, invalid bucket name.
+   * @throws IOException
    */
-  boolean isFileWithPrefixExists(String bucketName, String fileNamePrefix);
+  boolean isFileWithPrefixExists(String bucketName, String fileNamePrefix)
+      throws IllegalStateException, IOException;
   
   /**
    * Get information about a file as {@link FileObjectInfo}.

@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
@@ -55,6 +56,7 @@ public class TestConfiguration {
   public static final UUID TEST_FILE_IDENTIFIER = UUID.randomUUID();
   public static final String TEST_FILE_EXT = ".txt";
   public static final String TEST_ORIGINAL_FILENAME = "myfile" + TEST_FILE_EXT;
+  public static final String ILLEGAL_BUCKET_CHAR = "~";
   
   @Primary
   @Bean
@@ -68,9 +70,8 @@ public class TestConfiguration {
         | ErrorResponseException | InternalException | InvalidArgumentException
         | InsufficientDataException | InvalidResponseException | IOException
         | XmlPullParserException e) {
-      e.printStackTrace();
+      throw new RuntimeException("Can't setup Minio client for testing", e);
     }
-    return null;
   }
   
   private void setupFile(MinioClient minioClient)
@@ -136,18 +137,48 @@ public class TestConfiguration {
       return new ByteArrayInputStream(INTERNAL_OBJECTS.get(bucketName + objectName));
     }
     
+    /**
+     * If {@link TestConfiguration#ILLEGAL_BUCKET_CHAR} is present in the bucket name, {@link InvalidBucketNameException}
+     * will be thrown. Otherwise, the item for {@link TestConfiguration#TEST_FILE_IDENTIFIER} will be returned.
+     */
     @Override
     public Iterable<Result<Item>> listObjects(String bucketName, String prefix) {
-      Item item;
+      // Trying to mimic what Minio Java SDK will do.
+      Iterator<Result<Item>> iterator = null;
       try {
-        item = new Item(TEST_FILE_IDENTIFIER + TEST_FILE_EXT, false);
-        Result<Item> result = new Result<Item>(item, null);
-        Iterator<Result<Item>> iterator = Collections.singletonList(result).iterator();
-        return () -> iterator;
+        Result<Item> result;
+        if(bucketName.contains(ILLEGAL_BUCKET_CHAR)) {
+          result = new Result<Item>(null, new InvalidBucketNameException(bucketName, "generated for testing purpose"));
+          iterator = new Iterator<Result<Item>>() {
+
+            @Override
+            public boolean hasNext() {
+              return false;
+            }
+
+            @Override
+            public Result<Item> next() {
+              return result;
+            }
+          };
+        }
+        else {
+          Optional<String> potentialKey = INTERNAL_OBJECTS.keySet().stream()
+              .filter(key -> key.startsWith(prefix)).findFirst();
+          if (potentialKey.isPresent()) {
+            Item item = new Item(potentialKey.get(), false);
+            result = new Result<Item>(item, null);
+            iterator = Collections.singletonList(result).iterator();
+          } else {
+            iterator = Collections.emptyIterator();
+          }  
+        }
+        
+        final Iterator<Result<Item>> finalIterator = iterator;
+        return () -> finalIterator;
       } catch (XmlPullParserException e) {
-        e.printStackTrace();
+        throw new RuntimeException(e);
       }
-      return null;
     }
     
     @Override

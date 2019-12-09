@@ -193,7 +193,7 @@ public class FileController {
         HttpStatus.INTERNAL_SERVER_ERROR, null);
   }
   
-  private UUID getNewUUID(String bucketName) throws IllegalStateException {
+  private UUID getNewUUID(String bucketName) throws IllegalStateException, IOException {
     int numberOfAttempt = 0;
     while (numberOfAttempt < MAX_NUMBER_OF_ATTEMPT_RANDOM_UUID) {
       UUID uuid = UUID.randomUUID();
