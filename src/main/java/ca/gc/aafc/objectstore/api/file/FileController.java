@@ -9,6 +9,7 @@ import java.security.DigestInputStream;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -93,23 +94,27 @@ public class FileController {
     FileMetaEntry fileMetaEntry = new FileMetaEntry(uuid);
     fileMetaEntry.setOriginalFilename(file.getOriginalFilename());
     fileMetaEntry.setReceivedMediaType(file.getContentType());
-    fileMetaEntry.setDetectedMediaType(mtdr.getMediaType().toString());
-    fileMetaEntry.setFileExtension(mtdr.getFileExtension());
+    
+    fileMetaEntry.setDetectedMediaType(Objects.toString(mtdr.getDetectedMediaType()));
+    fileMetaEntry.setDetectedFileExtension(mtdr.getDetectedMimeType().getExtension());
+    
+    fileMetaEntry.setEvaluatedMediaType(mtdr.getEvaluatedMediatype());
+    fileMetaEntry.setEvaluatedFileExtension(mtdr.getEvaluatedExtension());
     
     // Decorate the InputStream in order to compute the hash
     MessageDigest md = MessageDigest.getInstance(DIGEST_ALGORITHM);
     DigestInputStream dis = new DigestInputStream(mtdr.getInputStream(), md);
     
-    minioService.storeFile(uuid.toString() + mtdr.getFileExtension(), dis,
-        mtdr.getMediaType().toString(), bucket, null);
+    minioService.storeFile(uuid.toString() + mtdr.getEvaluatedExtension(), dis,
+        mtdr.getEvaluatedMediatype(), bucket, null);
     
     String sha1Hex = DigestUtils.sha1Hex(md.digest());
     fileMetaEntry.setSha1Hex(sha1Hex);
     
     storeFileMetaEntry(fileMetaEntry, bucket);
 
-    return new FileUploadResponse(uuid.toString(), mtdr.getMediaType().toString(),
-        file.getSize());
+    return new FileUploadResponse(uuid.toString(), mtdr.getEvaluatedMediatype().toString(),
+        mtdr.getEvaluatedExtension(), file.getSize());
   }
   
   /**

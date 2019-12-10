@@ -24,12 +24,13 @@ public class MediaTypeDetectionStrategyTest {
   private static final MediaTypeDetectionStrategy MTDS = new MediaTypeDetectionStrategy();
  
   @Test
-  public void detectMediaType_onWrongSpecificMediaType_mediaTypeIsChanged() throws FileNotFoundException, URISyntaxException {
+  public void detectMediaType_onNoMediaType_mediaTypeIsDetectedExtPreserved() throws FileNotFoundException, URISyntaxException {
     try (FileInputStream fis = new FileInputStream(
         Resources.getResource("drawing.png").toURI().getPath())) {
 
-      assertDetectedMediaType(fis, MediaType.TEXT_PLAIN_VALUE, "my_file.ab1",
-          MediaType.IMAGE_PNG_VALUE, ".png");
+      assertDetectedMediaType(fis, null, "my_file.ab1",
+          MediaType.IMAGE_PNG_VALUE, ".png", // png should be detected
+          MediaType.IMAGE_PNG_VALUE, ".ab1");//but the original extension should be preserved
     } catch (IOException e) {
       fail(e);
     }
@@ -41,7 +42,8 @@ public class MediaTypeDetectionStrategyTest {
         Resources.getResource("testfile.txt").toURI().getPath())) {
 
       assertDetectedMediaType(fis, MediaType.TEXT_PLAIN_VALUE, "testfile.ab2",
-          MediaType.TEXT_PLAIN_VALUE, ".ab2");
+          MediaType.TEXT_PLAIN_VALUE, ".txt", // txt should be detected
+          MediaType.TEXT_PLAIN_VALUE, ".ab2");//but the original extension should be preserved
     } catch (IOException e) {
       fail(e);
     }
@@ -96,6 +98,12 @@ public class MediaTypeDetectionStrategyTest {
     assertDetectedMediaType(bais, null, null, MediaType.APPLICATION_OCTET_STREAM_VALUE, ".bin");
   }
   
+  private void assertDetectedMediaType(InputStream is, @Nullable String receivedMediaType,
+      @Nullable String originalFilename, String evaluatedMediaType, String evaluatedExt) {
+    assertDetectedMediaType(is, receivedMediaType, originalFilename, null, null, evaluatedMediaType,
+        evaluatedExt);
+  }
+  
   /**
    * Method responsible to detect the mediatype/extension and assert the result against the provided
    * values.
@@ -107,15 +115,26 @@ public class MediaTypeDetectionStrategyTest {
    * @param expectedExt
    */
   private void assertDetectedMediaType(InputStream is, @Nullable String receivedMediaType,
-      @Nullable String originalFilename, String expectedMediaType, String expectedExt) {
+      @Nullable String originalFilename, String detectedMediaType, String detectedExt,
+      String evaluatedMediaType, String evaluatedExt) {
     try {
       MediaTypeDetectionStrategy.MediaTypeDetectionResult mtdr = MTDS.detectMediaType(is,
           receivedMediaType, originalFilename);
-      assertEquals(expectedMediaType, mtdr.getMediaType().toString());
-      assertEquals(expectedExt, mtdr.getFileExtension());
+      
+      if (detectedMediaType != null) {
+        assertEquals(detectedMediaType, mtdr.getDetectedMediaType().toString());
+      }
+      if (detectedExt != null) {
+        assertEquals(detectedExt, mtdr.getDetectedMimeType().getExtension());
+      }
+      
+      assertEquals(evaluatedMediaType, mtdr.getEvaluatedMediatype());
+      assertEquals(evaluatedExt, mtdr.getEvaluatedExtension());
     } catch (MimeTypeException | IOException e) {
       fail(e);
     }
   }
+  
+
 
 }

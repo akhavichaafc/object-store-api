@@ -9,7 +9,6 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.detect.DefaultDetector;
@@ -45,8 +44,27 @@ public class MediaTypeDetectionStrategy {
   @Getter
   public static class MediaTypeDetectionResult {
     private InputStream inputStream;
-    private org.apache.tika.mime.MediaType mediaType;
-    private String fileExtension;
+
+    private String receivedMediaType;
+    private String receivedFileName;
+
+    private org.apache.tika.mime.MediaType detectedMediaType;
+    private org.apache.tika.mime.MimeType detectedMimeType;
+    
+    private String evaluatedMediatype;
+    private String evaluatedExtension;
+
+    public boolean isKnownExtensionForMediaType() {
+      if (StringUtils.isBlank(getFileExtension(receivedFileName)) || detectedMimeType == null) {
+        return false;
+      }
+      return detectedMimeType.getExtensions().stream()
+          .filter(s -> s.equalsIgnoreCase(getFileExtension(receivedFileName))).findFirst().isPresent();
+    }
+  }
+  
+  private static String getFileExtension(@Nullable String filename) {
+    return  StringUtils.isBlank(filename) ? null : "." + FilenameUtils.getExtension(filename);
   }
   
   /**
@@ -54,6 +72,8 @@ public class MediaTypeDetectionStrategy {
    * A new InputStream is returned to make sure the caller can read the entire stream from the beginning.
    * 
    * @param is
+   * @param receivedMediaType
+   * @param originalFilename
    * @return
    * @throws IOException
    * @throws MimeTypeException
@@ -74,29 +94,24 @@ public class MediaTypeDetectionStrategy {
       metadata.set(Metadata.RESOURCE_NAME_KEY, originalFilename);
     }
 
-    MediaType mediaType = TIKA_DETECTOR.detect(TikaInputStream.get(bais), metadata);
-    MimeType mimeType = TIKA_CONFIG.getMimeRepository().forName(mediaType.toString());
-
-    MediaType parsedReceivedMediaType = StringUtils.isNotBlank(receivedMediaType)
-        ? MediaType.parse(receivedMediaType)
-        : null;
-
-    boolean isGenericMediaType = MediaType.OCTET_STREAM == mediaType
-        || MediaType.TEXT_PLAIN == mediaType;
+    MediaType detectedMediaType = TIKA_DETECTOR.detect(TikaInputStream.get(bais), metadata);
+    MimeType detectedMimeType = TIKA_CONFIG.getMimeRepository().forName(detectedMediaType.toString());
 
     MediaTypeDetectionResult.MediaTypeDetectionResultBuilder mtdrBldr = MediaTypeDetectionResult
-        .builder().inputStream(new SequenceInputStream(bais, is));
+        .builder()
+        .inputStream(new SequenceInputStream(bais, is))
+        .receivedMediaType(receivedMediaType)
+        .receivedFileName(originalFilename)
+        .detectedMediaType(detectedMediaType)
+        .detectedMimeType(detectedMimeType);
     
-    // If the detected type is too generic, try to use what was provided by the user
-    if (isGenericMediaType) {
-      mtdrBldr.mediaType(ObjectUtils.defaultIfNull(parsedReceivedMediaType, mediaType));
-      mtdrBldr.fileExtension(
-          originalFilename != null ? "." + FilenameUtils.getExtension(originalFilename)
-              : mimeType.getExtension());
-    } else {
-      mtdrBldr.mediaType(mediaType);
-      mtdrBldr.fileExtension(mimeType.getExtension());
-    }
+    // Decide on the MediaType and extension that should be used    
+    mtdrBldr.evaluatedMediatype(
+        StringUtils.isBlank(receivedMediaType) ? detectedMediaType.toString() : receivedMediaType);
+    
+    mtdrBldr.evaluatedExtension(
+        getFileExtension(originalFilename) == null ? detectedMimeType.getExtension()
+            : getFileExtension(originalFilename));
     
     return mtdrBldr.build();
   }
