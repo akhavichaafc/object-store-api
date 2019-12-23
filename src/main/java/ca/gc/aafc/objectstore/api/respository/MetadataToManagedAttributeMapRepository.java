@@ -17,6 +17,7 @@ import ca.gc.aafc.objectstore.api.dto.ManagedAttributeMapDto.ManagedAttributeMap
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
+import io.crnk.core.exception.MethodNotAllowedException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.OneRelationshipRepository;
 import io.crnk.core.repository.RelationshipMatcher;
@@ -42,7 +43,7 @@ public class MetadataToManagedAttributeMapRepository
 
   @Override
   public void setRelation(ObjectStoreMetadataDto source, UUID targetId, String fieldName) {
-    // TODO Auto-generated method stub
+    throw new MethodNotAllowedException("method not allowed");
   }
 
   @Override

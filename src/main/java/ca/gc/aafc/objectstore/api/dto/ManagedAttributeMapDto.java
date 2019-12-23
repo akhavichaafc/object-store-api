@@ -5,14 +5,19 @@ import java.util.Map;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiId;
+import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @Data
 @JsonApiResource(type = "managed-attribute-map")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ManagedAttributeMapDto {
 
   @JsonApiId
@@ -23,6 +28,9 @@ public class ManagedAttributeMapDto {
    */
   @Builder.Default
   private Map<String, ManagedAttributeMapValue> values = new HashMap<>();
+
+  @JsonApiRelation
+  private ObjectStoreMetadataDto metadata;
 
   @Data
   @Builder
