@@ -45,7 +45,7 @@ public class ManagedAttributeMapRepository extends ResourceRepositoryBase<Manage
   }
 
   @Override
-  public ManagedAttributeMapDto create(final ManagedAttributeMapDto resource) {
+  public <S extends ManagedAttributeMapDto> S create(final S resource) {
     // Get the target metadata:
     final UUID metadataUuid = Optional.ofNullable(resource.getMetadata())
       .map(m -> m.getUuid())
@@ -58,11 +58,10 @@ public class ManagedAttributeMapRepository extends ResourceRepositoryBase<Manage
     for (final Entry<String, ManagedAttributeMapValue> entry : resource.getValues().entrySet()) {
       final UUID changedAttributeUuid = UUID.fromString(entry.getKey());
       final ManagedAttribute changedAttribute = dao.findOneByNaturalId(changedAttributeUuid, ManagedAttribute.class);
-      String newValue = entry.getValue().getValue();
-      
-      Optional<MetadataManagedAttribute> existingAttributeValue = existingAttributes.stream()
-          .filter(existingAttr -> existingAttr.getManagedAttribute() == changedAttribute)
-          .findFirst();
+      final String newValue = entry.getValue().getValue();
+
+      final Optional<MetadataManagedAttribute> existingAttributeValue = existingAttributes.stream()
+          .filter(existingAttr -> existingAttr.getManagedAttribute() == changedAttribute).findFirst();
 
       // If this attribute is already set then update the value :
       existingAttributeValue.ifPresent(val -> {
@@ -75,7 +74,7 @@ public class ManagedAttributeMapRepository extends ResourceRepositoryBase<Manage
 
       // If there is no existing value then create a new one:
       if (!existingAttributeValue.isPresent() && !StringUtils.isBlank(newValue)) {
-        MetadataManagedAttribute newAttributeValue = MetadataManagedAttribute.builder()
+        final MetadataManagedAttribute newAttributeValue = MetadataManagedAttribute.builder()
           .managedAttribute(changedAttribute)
           .objectStoreMetadata(metadata)
           .assignedValue(newValue)
