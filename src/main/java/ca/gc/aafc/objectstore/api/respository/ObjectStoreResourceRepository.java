@@ -19,6 +19,7 @@ import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.Agent;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
+import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
 import ca.gc.aafc.objectstore.api.file.FileController;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileMetaEntry;
@@ -120,6 +121,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
         .toEntity((ObjectStoreMetadataDto) resource);
     
     objectMetadata = handleFileRelatedData(objectMetadata);
+    objectMetadata = assignDefaultValues(objectMetadata);
    
     // relationships
     if (resource.getAcMetadataCreator() != null) {
@@ -174,6 +176,19 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
       throw new BadRequestException("Can't process " + objectMetadata.getFileIdentifier());
     }
 
+  }
+  
+  /**
+   * Method to assign default values to mandatory fields not provided at creation time.
+   * If no value can be found, null with be used.
+   * @param objectMetadata
+   * @return the provided object with default values set (if required)
+   */
+  private ObjectStoreMetadata assignDefaultValues(ObjectStoreMetadata objectMetadata) {
+    if (objectMetadata.getDcType() == null) {
+      objectMetadata.setDcType(DcType.fromDcFormat(objectMetadata.getDcFormat()).orElse(null));
+    }
+    return objectMetadata;
   }
 
 }
