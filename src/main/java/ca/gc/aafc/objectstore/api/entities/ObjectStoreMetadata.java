@@ -65,6 +65,9 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
 
   private OffsetDateTime acDigitizationDate;
   private OffsetDateTime xmpMetadataDate;
+  
+  private String xmpRightsWebStatement;
+  private String dcRights;
 
   private String originalFilename;
   
@@ -277,7 +280,7 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   public void setAcHashValue(String acHashValue) {
     this.acHashValue = acHashValue;
   }
-  
+    
   @Type( type = "string-array" )
   @Column(name = "ac_tags", 
       columnDefinition = "text[]"
@@ -308,6 +311,28 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
 
   public void setAcMetadataCreator(Agent acMetadataCreator) {
     this.acMetadataCreator = acMetadataCreator;
+  }
+  
+  @NotNull
+  @Column(name = "xmp_rights_web_statement")
+  @Size(max = 250)
+  public String getXmpRightsWebStatement() {
+    return xmpRightsWebStatement;
+  }
+
+  public void setXmpRightsWebStatement(String xmpRightsWebStatement) {
+    this.xmpRightsWebStatement = xmpRightsWebStatement;
+  }
+
+  @NotNull
+  @Column(name = "ac_rights")
+  @Size(max = 250)
+  public String getDcRights() {
+    return dcRights;
+  }
+
+  public void setDcRights(String dcRights) {
+    this.dcRights = dcRights;
   }
   
 }
