@@ -38,7 +38,6 @@ import lombok.RequiredArgsConstructor;
 /**
  * The Class ObjectStoreMetadata.
  */
-
 @Entity
 @Table(name = "metadata")
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)

@@ -1,23 +1,17 @@
 package ca.gc.aafc.objectstore.api;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
 
+@ConstructorBinding
 @ConfigurationProperties(prefix = "objectstore")
 public class ObjectStoreConfiguration {
   
   private String defaultLicenceURL;
   private String defaultCopyright;
   
-/*  public ObjectStoreConfiguration(String defaultLicence, String defaultCopyright) {
-    this.defaultLicence = defaultLicence;
-    this.defaultCopyright = defaultCopyright;
-  }*/
-
-  public void setDefaultLicenceURL(String defaultLicenceURL) {
+  public ObjectStoreConfiguration(String defaultLicenceURL, String defaultCopyright) {
     this.defaultLicenceURL = defaultLicenceURL;
-  }
-
-  public void setDefaultCopyright(String defaultCopyright) {
     this.defaultCopyright = defaultCopyright;
   }
 
