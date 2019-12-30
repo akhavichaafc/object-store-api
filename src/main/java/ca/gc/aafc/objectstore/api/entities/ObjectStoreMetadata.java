@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
@@ -76,18 +77,36 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
 
   public enum DcType {
     IMAGE("Image"), 
-    MOVING_IMAGE("Moving Image"), 
+    MOVING_IMAGE("Moving Image", "video"), 
     SOUND("Sound"), 
     TEXT("Text");
 
     private final String value;
+    private final String dcFormatType;
 
     DcType(String value) {
+      this(value, value.toLowerCase());
+    }
+    
+    /**
+     * Main DcType constructor.
+     * 
+     * @param value
+     * @param dcFormatType
+     *          represent the first part of the media type. For text/csv the dcFormatType would be
+     *          "text".
+     */
+    DcType(String value, String dcFormatType) {
       this.value = value;
+      this.dcFormatType = dcFormatType;
     }
 
     public String getValue() {
       return value;
+    }
+    
+    public String getDcFormatType() {
+      return dcFormatType;
     }
 
     /**
@@ -101,6 +120,30 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
     public static Optional<DcType> fromValue(String value) {
       for (DcType currType : values()) {
         if (currType.getValue().equalsIgnoreCase(value)) {
+          return Optional.of(currType);
+        }
+      }
+      return Optional.empty();
+    }
+    
+    /**
+     * Get the {@link DcType} value associated with the provided dcFormat. The string is matched in
+     * a case insensitive manner. dcFormat is expected to be in the form of media type (e.g.
+     * text/csv).
+     * 
+     * @param value
+     *          in the form of media type (e.g. text/csv)
+     * @return the {@link DcType} wrapped in an {@link Optional} or {@link Optional#empty()} if
+     *         there is no match.
+     */
+    public static Optional<DcType> fromDcFormat(String dcFormat) {
+      if (dcFormat == null) {
+        return Optional.empty();
+      }
+      String dcFormatType = StringUtils.substringBefore(dcFormat, "/");
+
+      for (DcType currType : values()) {
+        if (currType.getDcFormatType().equalsIgnoreCase(dcFormatType)) {
           return Optional.of(currType);
         }
       }
@@ -266,9 +309,5 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   public void setAcMetadataCreator(Agent acMetadataCreator) {
     this.acMetadataCreator = acMetadataCreator;
   }
-
-
   
-  
-
 }

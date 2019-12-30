@@ -60,6 +60,7 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
     // file related data has to match what is set by TestConfiguration
     objectStoreMetadata = ObjectStoreMetadataFactory.newObjectStoreMetadata()
        .acHashFunction("SHA-1")
+       .dcType(null) //on creation null should be accepted
        .acDigitizationDate(dateTime4Test)
        .xmpMetadataDate(dateTime4Test)
        .fileIdentifier(TestConfiguration.TEST_FILE_IDENTIFIER)
