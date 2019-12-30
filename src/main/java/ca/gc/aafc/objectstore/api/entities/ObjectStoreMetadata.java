@@ -255,6 +255,7 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
     this.xmpMetadataDate = xmpMetadataDate;
   }
   
+  @Column(name = "original_filename")
   public String getOriginalFilename() {
     return originalFilename;
   }
