@@ -88,6 +88,14 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
       this(value, value.toLowerCase());
     }
     
+    /**
+     * Main DcType constructor.
+     * 
+     * @param value
+     * @param dcFormatType
+     *          represent the first part of the media type. For text/csv the dcFormatType would be
+     *          "text".
+     */
     DcType(String value, String dcFormatType) {
       this.value = value;
       this.dcFormatType = dcFormatType;
@@ -119,10 +127,12 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
     }
     
     /**
-     * Get the {@link DcType} value associated with the provided dcFormat. The string is matched in a case
-     * insensitive manner.
+     * Get the {@link DcType} value associated with the provided dcFormat. The string is matched in
+     * a case insensitive manner. dcFormat is expected to be in the form of media type (e.g.
+     * text/csv).
      * 
      * @param value
+     *          in the form of media type (e.g. text/csv)
      * @return the {@link DcType} wrapped in an {@link Optional} or {@link Optional#empty()} if
      *         there is no match.
      */
@@ -299,9 +309,5 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   public void setAcMetadataCreator(Agent acMetadataCreator) {
     this.acMetadataCreator = acMetadataCreator;
   }
-
-
   
-  
-
 }

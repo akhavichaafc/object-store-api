@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -120,8 +121,11 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     ObjectStoreMetadata objectMetadata = mapper
         .toEntity((ObjectStoreMetadataDto) resource);
     
-    objectMetadata = handleFileRelatedData(objectMetadata);
-    objectMetadata = assignDefaultValues(objectMetadata);
+    Function<ObjectStoreMetadata, ObjectStoreMetadata> handleFileDataFct = this::handleFileRelatedData;
+
+    // same as assignDefaultValues(handleFileRelatedData(handleDefaultValues)) but easier to follow in my option (C.G.)
+    objectMetadata = handleFileDataFct.andThen(ObjectStoreResourceRepository::assignDefaultValues)
+        .apply(objectMetadata);
    
     // relationships
     if (resource.getAcMetadataCreator() != null) {
@@ -184,7 +188,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
    * @param objectMetadata
    * @return the provided object with default values set (if required)
    */
-  private ObjectStoreMetadata assignDefaultValues(ObjectStoreMetadata objectMetadata) {
+  private static ObjectStoreMetadata assignDefaultValues(ObjectStoreMetadata objectMetadata) {
     if (objectMetadata.getDcType() == null) {
       objectMetadata.setDcType(DcType.fromDcFormat(objectMetadata.getDcFormat()).orElse(null));
     }
