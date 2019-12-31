@@ -1,4 +1,4 @@
-package ca.gc.aafc.objectstore.api.respository;
+package ca.gc.aafc.objectstore.api.respository.managedattributemap;
 
 import java.util.List;
 import java.util.Map.Entry;
