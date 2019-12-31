@@ -1,0 +1,2 @@
+./stop.sh
+./erase.sh

@@ -44,3 +44,16 @@ To run the integration tests:
 ```
  mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/object_store_test -Dspring.datasource.username=test -Dspring.datasource.password=test
 ```
+
+# docker experimental mode
+create /etc/docker/daemon.json
+add "debug:true"
+
+{
+  "debug": true,
+  "tls": true,
+  "tlscert": "/var/docker/server.pem",
+  "tlskey": "/var/docker/serverkey.pem",
+  "hosts": ["tcp://192.168.59.3:2376"],
+  "log-level": "debug"
+}
