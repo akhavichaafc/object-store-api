@@ -28,7 +28,9 @@ public class ObjectStoreMetadataFactory implements TestableEntityFactory<ObjectS
         .fileExtension(".jpg")
         .bucket("mybucket")
         .acHashValue("abc")
-        .dcType(DcType.IMAGE);
+        .dcType(DcType.IMAGE)
+        .xmpRightsWebStatement("https://open.canada.ca/en/open-government-licence-canada")
+        .dcRights("Government of Canada");
    }  
     
   /**

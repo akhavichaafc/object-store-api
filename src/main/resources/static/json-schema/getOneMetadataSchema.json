@@ -27,6 +27,7 @@
           "description": "The type of the object of the data being returned."
         },
         "attributes": {
+        "additionalProperties": false,
           "description": "Schema representing the metadata associated with objects",
           "type": "object",
           "required": [
@@ -34,6 +35,7 @@
             "acDigitizationDate"
           ],
           "properties": {
+            
             "dcFormat": {
               "type": "string",
               "description": "A string describing the technical format of the resource. IANA media type. https://tdwg.github.io/ac/termlist/#dc_format"
@@ -47,6 +49,14 @@
               ],
               "description": "Type of object stored. Higher level than mediaType. https://tdwg.github.io/ac/termlist/#dc_type"
             },
+            "fileIdentifier": {
+              "type": "string",
+              "description": "Identifier (as UUID) of the file described by the metadata"
+            },
+            "originalFilename": {
+              "type": "string",
+              "description": "Name of the file at the source without the folder structure"
+            },
             "acDigitizationDate": {
               "type": "string",
               "description": "Date (ISO 8601 Date/Time) the first digital version was created. https://tdwg.github.io/ac/termlist/#ac_digitizationDate"
@@ -54,6 +64,26 @@
             "xmpMetadataDate": {
               "type": "string",
               "description": "Point in time (ISO 8601 Date/Time) recording when the last modification to metadata (not necessarily the media object itself) occurred. Automaticaly set. https://tdwg.github.io/ac/termlist/#xmp_MetadataDate"
+            },
+            "xmpUsageTerms": {
+              "type": "string",
+              "description": "Text instructions on how a resource can be legally used. https://tdwg.github.io/ac/termlist/#xmpRights_UsageTerms"
+            },
+            "bucket": {
+              "type": "string",
+              "description": "Name of the bucket"
+            },
+            "fileExtension": {
+              "type": "string",
+              "description": "fileExtension"
+            },
+            "xmpRightsWebStatement": {
+              "type": "string",
+              "description": "A URL defining or further elaborating on the license statement. https://tdwg.github.io/ac/termlist/#xmpRights_WebStatement"
+            },
+            "dcRights": {
+              "type": "string",
+              "description": "Information about rights held in and over the resource. https://tdwg.github.io/ac/termlist/#dc_rights"
             },
             "uploadedBy": {
               "type": "string",

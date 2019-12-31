@@ -16,6 +16,7 @@ import javax.validation.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import ca.gc.aafc.objectstore.api.ObjectStoreConfiguration;
 import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.Agent;
@@ -42,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 public class ObjectStoreResourceRepository extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID> implements ObjectStoreMetadataReadService {
 
+  private final ObjectStoreConfiguration config;
   private final BaseDAO dao;
   private final ObjectStoreMetadataMapper mapper;
   private final FileInformationService fileInformationService;
@@ -49,8 +51,9 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   private JpaCriteriaQueryFactory queryFactory;
 
   @Inject
-  public ObjectStoreResourceRepository(BaseDAO dao, ObjectStoreMetadataMapper mapper, FileInformationService fileInformationService) {
+  public ObjectStoreResourceRepository(ObjectStoreConfiguration config, BaseDAO dao, ObjectStoreMetadataMapper mapper, FileInformationService fileInformationService) {
     super(ObjectStoreMetadataDto.class);
+    this.config = config;
     this.dao = dao;
     this.mapper = mapper;
     this.fileInformationService = fileInformationService;
@@ -125,7 +128,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     Function<ObjectStoreMetadata, ObjectStoreMetadata> handleFileDataFct = this::handleFileRelatedData;
 
     // same as assignDefaultValues(handleFileRelatedData(handleDefaultValues)) but easier to follow in my option (C.G.)
-    objectMetadata = handleFileDataFct.andThen(ObjectStoreResourceRepository::assignDefaultValues)
+    objectMetadata = handleFileDataFct.andThen(this::assignDefaultValues)
         .apply(objectMetadata);
    
     // relationships
@@ -189,9 +192,17 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
    * @param objectMetadata
    * @return the provided object with default values set (if required)
    */
-  private static ObjectStoreMetadata assignDefaultValues(ObjectStoreMetadata objectMetadata) {
+  private ObjectStoreMetadata assignDefaultValues(ObjectStoreMetadata objectMetadata) {
     if (objectMetadata.getDcType() == null) {
       objectMetadata.setDcType(DcType.fromDcFormat(objectMetadata.getDcFormat()).orElse(null));
+    }
+    
+    if (objectMetadata.getXmpRightsWebStatement() == null) {
+      objectMetadata.setXmpRightsWebStatement(config.getDefaultLicenceURL());
+    }
+
+    if (objectMetadata.getDcRights() == null) {
+      objectMetadata.setDcRights(config.getDefaultCopyright());
     }
     return objectMetadata;
   }
