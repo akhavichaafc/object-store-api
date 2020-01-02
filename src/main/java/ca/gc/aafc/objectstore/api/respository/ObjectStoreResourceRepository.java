@@ -26,6 +26,7 @@ import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
 import ca.gc.aafc.objectstore.api.service.ObjectStoreMetadataReadService;
 import io.crnk.core.exception.BadRequestException;
 import io.crnk.core.exception.ResourceNotFoundException;
+import io.crnk.core.queryspec.IncludeRelationSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
@@ -102,7 +103,12 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   public ResourceList<ObjectStoreMetadataDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<ObjectStoreMetadata> jq = queryFactory.query(ObjectStoreMetadata.class);
    
-    List<ObjectStoreMetadataDto> l = jq.buildExecutor(querySpec).getResultList().stream()
+    // Omit "managedAttributeMap" from the JPA include spec, because it is a generated object, not on the JPA model.
+    QuerySpec jpaFriendlyQuerySpec = querySpec.clone();
+    jpaFriendlyQuerySpec.getIncludedRelations()
+      .removeIf(include -> include.getPath().toString().equals("managedAttributeMap"));
+
+    List<ObjectStoreMetadataDto> l = jq.buildExecutor(jpaFriendlyQuerySpec).getResultList().stream()
     .map( objectStoreMetadata -> mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName)))
     .collect(Collectors.toList());
     

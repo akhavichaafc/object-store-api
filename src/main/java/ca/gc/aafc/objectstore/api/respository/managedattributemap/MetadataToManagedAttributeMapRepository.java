@@ -17,15 +17,19 @@ import ca.gc.aafc.objectstore.api.dto.ManagedAttributeMapDto.ManagedAttributeMap
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
-import io.crnk.core.exception.MethodNotAllowedException;
 import io.crnk.core.queryspec.QuerySpec;
-import io.crnk.core.repository.OneRelationshipRepository;
+import io.crnk.core.repository.OneRelationshipRepositoryBase;
 import io.crnk.core.repository.RelationshipMatcher;
 
+/**
+ * Fetches the ManagedAttributeMap for a given Metadata.
+ * 
+ * ManagedAttributeMap is a derived object to conveniently/compactly get/set a Metadata's ManagedAttribute values.
+ */
 @Repository
 @Transactional
 public class MetadataToManagedAttributeMapRepository
-    implements OneRelationshipRepository<ObjectStoreMetadataDto, UUID, ManagedAttributeMapDto, UUID> {
+    extends OneRelationshipRepositoryBase<ObjectStoreMetadataDto, UUID, ManagedAttributeMapDto, UUID> {
 
   private final BaseDAO dao;
 
@@ -39,11 +43,6 @@ public class MetadataToManagedAttributeMapRepository
     RelationshipMatcher matcher = new RelationshipMatcher();
     matcher.rule().source(ObjectStoreMetadataDto.class).target(ManagedAttributeMapDto.class).add();
     return matcher;
-  }
-
-  @Override
-  public void setRelation(ObjectStoreMetadataDto source, UUID targetId, String fieldName) {
-    throw new MethodNotAllowedException("method not allowed");
   }
 
   @Override

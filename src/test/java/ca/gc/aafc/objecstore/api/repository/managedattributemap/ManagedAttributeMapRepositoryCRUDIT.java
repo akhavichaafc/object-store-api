@@ -1,15 +1,18 @@
-package ca.gc.aafc.objecstore.api.repository;
+package ca.gc.aafc.objecstore.api.repository.managedattributemap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.validation.ValidationException;
 
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import ca.gc.aafc.objecstore.api.repository.BaseRepositoryTest;
 import ca.gc.aafc.objectstore.api.dto.ManagedAttributeMapDto;
 import ca.gc.aafc.objectstore.api.dto.ManagedAttributeMapDto.ManagedAttributeMapValue;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
@@ -78,6 +81,7 @@ public class ManagedAttributeMapRepositoryCRUDIT extends BaseRepositoryTest {
     entityManager.flush();
     entityManager.refresh(testMetadata);
 
+    // The managed attribute value (MetadataManagedAttribute) should have been created:
     assertEquals(2, testMetadata.getManagedAttribute().size());
     assertEquals("New attr2 value", testMetadata.getManagedAttribute().get(1).getAssignedValue());
   }
@@ -96,8 +100,46 @@ public class ManagedAttributeMapRepositoryCRUDIT extends BaseRepositoryTest {
         .build()
     );
 
+    // The managed attribute value (MetadataManagedAttribute) should have been changed:
     assertEquals(1, testMetadata.getManagedAttribute().size());
     assertEquals("New attr1 value", testMetadata.getManagedAttribute().get(0).getAssignedValue());
+  }
+
+  @Test
+  public void setAttributeValueToNull_whenMMAExists_MMADeleted() {
+    // Set attr1 value to null:
+    managedAttributeMapRepository.create(
+      ManagedAttributeMapDto.builder()
+        .metadata(metadataRepository.findOne(testMetadata.getUuid(), new QuerySpec(ObjectStoreMetadataDto.class)))
+        .values(ImmutableMap.<String, ManagedAttributeMapValue>builder()
+          .put(testManagedAttribute1.getUuid().toString(), ManagedAttributeMapValue.builder()
+            .value(null)
+            .build())
+          .build())
+        .build()
+    );
+
+    entityManager.flush();
+    entityManager.refresh(testMetadata);
+
+    // The managed attribute value (MetadataManagedAttribute) should have been deleted:
+    assertEquals(0, testMetadata.getManagedAttribute().size());
+  }
+
+  @Test
+  public void setAttributeValue_whenMetadataNotSpecified_throwValidationException() {
+    assertThrows(ValidationException.class, () -> {
+      managedAttributeMapRepository.create(
+        ManagedAttributeMapDto.builder()
+          // Do not specify metadata:
+          .values(ImmutableMap.<String, ManagedAttributeMapValue>builder()
+            .put(testManagedAttribute1.getUuid().toString(), ManagedAttributeMapValue.builder()
+              .value("New attr1 value")
+              .build())
+            .build())
+          .build()
+      );
+    });
   }
 
 }

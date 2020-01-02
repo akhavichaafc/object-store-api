@@ -24,8 +24,33 @@ import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.ResourceList;
 
 /**
- * Crnk requires a repository for each resource type. However,
- * ManagedAttributeMap is a derived/generated object that
+ * Resource repository for adding Managed Attribute values in a more client-friendly way than
+ * manually adding MetadataManagedAttributes.
+ * 
+ * ManagedAttributeMap is a derived object to conveniently/compactly get/set a Metadata's ManagedAttribute values.
+ * 
+ * Provides a POST endpoint for adding new ManagedAttribute values for a Metadata.
+ * 
+ * Example POST request body to /api/managed-attribute-map:
+ * {
+ *   "data": {
+ *     "type": "managed-attribute-map",
+ *     "attributes": {
+ *       "values": {
+ *         // The UUID refers to the ManagedAttribute's UUID
+ *         "51451dcd-a2c5-45fb-8dba-d4c26b60169e": { "value": "example value" },
+ *         "d7c0d0a7-aef2-462d-9dc0-deb85f4ce85b": { "value": "example value 2" }
+ *       }
+ *     }
+ *     "relationships": {
+ *       "metadata": {
+ *         "data": {
+ *           { "type": "metadata", "id": "de29c062-6686-412a-b71e-677c83d0c3aa" }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
  */
 @Repository
 @Transactional
@@ -61,7 +86,8 @@ public class ManagedAttributeMapRepository extends ResourceRepositoryBase<Manage
       final String newValue = entry.getValue().getValue();
 
       final Optional<MetadataManagedAttribute> existingAttributeValue = existingAttributes.stream()
-          .filter(existingAttr -> existingAttr.getManagedAttribute() == changedAttribute).findFirst();
+          .filter(existingAttr -> existingAttr.getManagedAttribute() == changedAttribute)
+          .findFirst();
 
       // If this attribute is already set then update the value :
       existingAttributeValue.ifPresent(val -> {
@@ -83,6 +109,9 @@ public class ManagedAttributeMapRepository extends ResourceRepositoryBase<Manage
         dao.save(newAttributeValue);
       }
     }
+
+    // Crnk requires a created resource to have an ID. Create one here if the client did not provide one.
+    resource.setId(Optional.ofNullable(resource.getId()).orElse("N/A"));
 
     return resource;
   }

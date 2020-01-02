@@ -6,4 +6,6 @@
 
 include::object_storage.adoc[]
 
+include::managed_attributes.adoc[]
+
 include::design.adoc[]
