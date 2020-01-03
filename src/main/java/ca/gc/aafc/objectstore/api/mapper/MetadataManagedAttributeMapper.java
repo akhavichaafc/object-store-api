@@ -1,5 +1,8 @@
 package ca.gc.aafc.objectstore.api.mapper;
 
+import java.util.List;
+
+import org.mapstruct.Context;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,7 +27,9 @@ public interface MetadataManagedAttributeMapper {
    * @return
    */
   @Mapping(target = "objectStoreMetadata", qualifiedByName = "objectStoreMetadataIdOnly")
-  MetadataManagedAttributeDto toDto(MetadataManagedAttribute entity);
+  MetadataManagedAttributeDto toDto(MetadataManagedAttribute entity, @Context CycleAvoidingMappingContext context);
+  
+  List<MetadataManagedAttributeDto> toDtoList(List<MetadataManagedAttribute> entities, @Context CycleAvoidingMappingContext context);
 
   @Mapping(target = "objectStoreMetadata", ignore = true)
   @Mapping(target = "managedAttribute", ignore = true)
@@ -42,7 +47,7 @@ public interface MetadataManagedAttributeMapper {
    * @return
    */
   @Named("objectStoreMetadataIdOnly")
-  default ObjectStoreMetadataDto objectStoreMetadataToObjectStoreMetadataDto(ObjectStoreMetadata osm) {
+  default ObjectStoreMetadataDto objectStoreMetadataToObjectStoreMetadataDto(ObjectStoreMetadata osm, @Context CycleAvoidingMappingContext context) {
     if (osm == null) {
       return null;
     }
@@ -51,7 +56,7 @@ public interface MetadataManagedAttributeMapper {
     ObjectStoreMetadata osm2 = osm.toBuilder()
         .managedAttribute(null)
         .build();
-    return ObjectStoreMetadataMapper.INSTANCE.toDto(osm2, null);
+    return ObjectStoreMetadataMapper.INSTANCE.toDto(osm2, null, context);
   }
   
 }

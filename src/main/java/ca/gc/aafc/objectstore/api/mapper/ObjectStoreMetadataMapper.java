@@ -1,6 +1,5 @@
 package ca.gc.aafc.objectstore.api.mapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -23,7 +22,7 @@ public interface ObjectStoreMetadataMapper {
   ObjectStoreMetadataMapper INSTANCE = Mappers.getMapper(ObjectStoreMetadataMapper.class);
 
   @Mapping(target = "managedAttribute", qualifiedByName="metadataManagedAttributeIdOnly")
-  ObjectStoreMetadataDto toDto(ObjectStoreMetadata entity, @Context Function<String, Boolean> isAvailable);
+  ObjectStoreMetadataDto toDto(ObjectStoreMetadata entity, @Context Function<String, Boolean> isAvailable, @Context CycleAvoidingMappingContext context);
   
 
   @Mapping(target = "id", ignore = true)
@@ -36,24 +35,18 @@ public interface ObjectStoreMetadataMapper {
    
   /**
    * Used to avoid cyclic reference since managedAttribute points back to ObjectStoreMetadata.
-   * @param mma
+   * @param mma list to transform
+   * @param isAvailable function to check if a specific attribute is available (can be loaded without lazy-loading)
+   * @param context mapping context used to avoid cyclic references
    * @return
    */
   @Named("metadataManagedAttributeIdOnly")
-  default List<MetadataManagedAttributeDto> metadataManagedAttributeListToMetadataManagedAttributeDtoList(List<MetadataManagedAttribute> mma, @Context Function<String, Boolean> isAvailable) {
+  default List<MetadataManagedAttributeDto> metadataManagedAttributeListToMetadataManagedAttributeDtoList(List<MetadataManagedAttribute> mma, @Context Function<String, Boolean> isAvailable, 
+      @Context CycleAvoidingMappingContext context) {
     if (mma == null || isAvailable == null || !isAvailable.apply("managedAttribute")) {
       return null;
     }
-    List<MetadataManagedAttributeDto> result = new ArrayList<>(mma.size());
-    for( MetadataManagedAttribute currMma : mma) {
-      // Get a builder from the current instance and set the relationships to null
-      MetadataManagedAttribute mma2 = currMma.toBuilder()
-          .objectStoreMetadata(null)
-          .managedAttribute(null)
-          .build();
-      result.add(MetadataManagedAttributeMapper.INSTANCE.toDto(mma2));
-    }
-    return result;
+    return MetadataManagedAttributeMapper.INSTANCE.toDtoList(mma, context);
   }
 
 }
