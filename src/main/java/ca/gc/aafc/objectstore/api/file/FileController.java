@@ -152,14 +152,25 @@ public class FileController {
         inputStream, fileMetaEntry.getDetectedMediaType(), bucket, null);
   }
   
+  /**
+   * Triggers a download of a file. Note that the file requires a metadata entry in the database to
+   * be available for download.
+   * 
+   * @param bucket
+   * @param fileId
+   * @return
+   * @throws IOException
+   */
   @GetMapping("/file/{bucket}/{fileId}")
   public ResponseEntity<InputStreamResource> downloadObject(@PathVariable String bucket,
       @PathVariable UUID fileId) throws IOException {
     
     try {
-      Optional<ObjectStoreMetadata> loadedMetadata = objectStoreMetadataReadService.loadObjectStoreMetadataByFileId(fileId);
-      ObjectStoreMetadata metadata = loadedMetadata.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-          "FileIdentifier " + fileId + " or bucket " + bucket + " Not Found", null));
+      Optional<ObjectStoreMetadata> loadedMetadata = objectStoreMetadataReadService
+          .loadObjectStoreMetadataByFileId(fileId);
+      ObjectStoreMetadata metadata = loadedMetadata
+          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+              "No metadata found for FileIdentifier " + fileId + " or bucket " + bucket, null));
 
       FileObjectInfo foi = minioService.getFileInfo(metadata.getFilename(), bucket)
           .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
