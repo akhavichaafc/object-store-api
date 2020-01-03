@@ -2,6 +2,7 @@ package ca.gc.aafc.objectstore.api.respository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -15,6 +16,7 @@ import ca.gc.aafc.objectstore.api.dto.MetadataManagedAttributeDto;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
+import ca.gc.aafc.objectstore.api.filter.RsqlFilterHandler;
 import ca.gc.aafc.objectstore.api.mapper.CycleAvoidingMappingContext;
 import ca.gc.aafc.objectstore.api.mapper.MetadataManagedAttributeMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
@@ -22,6 +24,7 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
+import io.crnk.data.jpa.query.JpaQueryExecutor;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQuery;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -33,14 +36,19 @@ public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<M
 
   private final BaseDAO dao;
   private final MetadataManagedAttributeMapper mapper;
+  private final RsqlFilterHandler rsqlFilterHandler;
   
   private JpaCriteriaQueryFactory queryFactory;
 
   @Inject
-  public MetadataManagedAttributeRepository(BaseDAO dao, MetadataManagedAttributeMapper mapper) {
+  public MetadataManagedAttributeRepository(
+    BaseDAO dao,
+    MetadataManagedAttributeMapper mapper,
+    RsqlFilterHandler rsqlFilterHandler) {
     super(MetadataManagedAttributeDto.class);
     this.dao = dao;
     this.mapper = mapper;
+    this.rsqlFilterHandler = rsqlFilterHandler;
   }
   
   @PostConstruct
@@ -80,7 +88,11 @@ public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<M
   public ResourceList<MetadataManagedAttributeDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<MetadataManagedAttribute> jq = queryFactory.query(MetadataManagedAttribute.class);
     
-    List<MetadataManagedAttributeDto> l = jq.buildExecutor(querySpec).getResultList().stream()
+    Consumer<JpaQueryExecutor<?>> rsqlApplier = rsqlFilterHandler.getRestrictionApplier(querySpec);
+    JpaQueryExecutor<MetadataManagedAttribute> executor = jq.buildExecutor(querySpec);
+    rsqlApplier.accept(executor);
+
+    List<MetadataManagedAttributeDto> l = executor.getResultList().stream()
     .map( e -> mapper.toDto(e, new CycleAvoidingMappingContext()))
     .collect(Collectors.toList());
     

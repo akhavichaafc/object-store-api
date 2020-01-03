@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -15,12 +16,14 @@ import org.springframework.stereotype.Repository;
 import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ManagedAttributeDto;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
+import ca.gc.aafc.objectstore.api.filter.RsqlFilterHandler;
 import ca.gc.aafc.objectstore.api.mapper.ManagedAttributeMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
+import io.crnk.data.jpa.query.JpaQueryExecutor;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQuery;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
 
@@ -30,6 +33,7 @@ public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<M
 
   private final BaseDAO dao;
   private final ManagedAttributeMapper mapper;
+  private final RsqlFilterHandler rsqlFilterHandler;
 
   private JpaCriteriaQueryFactory queryFactory;  
 
@@ -38,10 +42,15 @@ public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<M
     queryFactory = dao.createWithEntityManager(JpaCriteriaQueryFactory::newInstance);
   }
 
-  public ManagedAttributeResourceRepository(BaseDAO dao, ManagedAttributeMapper mapper) {
+  public ManagedAttributeResourceRepository(
+    BaseDAO dao,
+    ManagedAttributeMapper mapper,
+    RsqlFilterHandler rsqlFilterHandler
+  ) {
     super(ManagedAttributeDto.class);
     this.dao = dao;
     this.mapper = mapper;
+    this.rsqlFilterHandler = rsqlFilterHandler;
   }
 
   /**
@@ -73,7 +82,11 @@ public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<M
   public ResourceList<ManagedAttributeDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<ManagedAttribute> jq = queryFactory.query(ManagedAttribute.class);
     
-    List<ManagedAttributeDto> l = jq.buildExecutor(querySpec).getResultList().stream()
+    Consumer<JpaQueryExecutor<?>> rsqlApplier = rsqlFilterHandler.getRestrictionApplier(querySpec);
+    JpaQueryExecutor<ManagedAttribute> executor = jq.buildExecutor(querySpec);
+    rsqlApplier.accept(executor);
+
+    List<ManagedAttributeDto> l = executor.getResultList().stream()
     .map(mapper::toDto)
     .collect(Collectors.toList());
     
