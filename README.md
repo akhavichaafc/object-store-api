@@ -44,3 +44,5 @@ To run the integration tests:
 ```
  mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/object_store_test -Dspring.datasource.username=test -Dspring.datasource.password=test
 ```
+# Additional License
+`CycleAvoidingMappingContext` class is licensed under the Apache License, Version 2.0. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0

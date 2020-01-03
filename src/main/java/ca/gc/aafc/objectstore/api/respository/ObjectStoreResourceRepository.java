@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -15,13 +16,16 @@ import javax.validation.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import ca.gc.aafc.objectstore.api.ObjectStoreConfiguration;
 import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.Agent;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
+import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
 import ca.gc.aafc.objectstore.api.file.FileController;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileMetaEntry;
+import ca.gc.aafc.objectstore.api.mapper.CycleAvoidingMappingContext;
 import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
 import ca.gc.aafc.objectstore.api.service.ObjectStoreMetadataReadService;
 import io.crnk.core.exception.BadRequestException;
@@ -39,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 public class ObjectStoreResourceRepository extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID> implements ObjectStoreMetadataReadService {
 
+  private final ObjectStoreConfiguration config;
   private final BaseDAO dao;
   private final ObjectStoreMetadataMapper mapper;
   private final FileInformationService fileInformationService;
@@ -46,8 +51,9 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   private JpaCriteriaQueryFactory queryFactory;
 
   @Inject
-  public ObjectStoreResourceRepository(BaseDAO dao, ObjectStoreMetadataMapper mapper, FileInformationService fileInformationService) {
+  public ObjectStoreResourceRepository(ObjectStoreConfiguration config, BaseDAO dao, ObjectStoreMetadataMapper mapper, FileInformationService fileInformationService) {
     super(ObjectStoreMetadataDto.class);
+    this.config = config;
     this.dao = dao;
     this.mapper = mapper;
     this.fileInformationService = fileInformationService;
@@ -85,7 +91,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   public ObjectStoreMetadataDto findOne(UUID uuid, QuerySpec querySpec) {
     ObjectStoreMetadata objectStoreMetadata = loadObjectStoreMetadata(uuid).orElseThrow( () -> new ResourceNotFoundException(
           this.getClass().getSimpleName() + " with ID " + uuid + " Not Found."));
-    return mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName));
+    return mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName), new CycleAvoidingMappingContext());
   }
   
   @Override
@@ -101,14 +107,14 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   @Override
   public ResourceList<ObjectStoreMetadataDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<ObjectStoreMetadata> jq = queryFactory.query(ObjectStoreMetadata.class);
-   
+
     // Omit "managedAttributeMap" from the JPA include spec, because it is a generated object, not on the JPA model.
     QuerySpec jpaFriendlyQuerySpec = querySpec.clone();
     jpaFriendlyQuerySpec.getIncludedRelations()
       .removeIf(include -> include.getPath().toString().equals("managedAttributeMap"));
 
     List<ObjectStoreMetadataDto> l = jq.buildExecutor(jpaFriendlyQuerySpec).getResultList().stream()
-    .map( objectStoreMetadata -> mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName)))
+    .map( objectStoreMetadata -> mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName), new CycleAvoidingMappingContext()))
     .collect(Collectors.toList());
     
     return new DefaultResourceList<ObjectStoreMetadataDto>(l, null, null);
@@ -124,7 +130,11 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     ObjectStoreMetadata objectMetadata = mapper
         .toEntity((ObjectStoreMetadataDto) resource);
     
-    objectMetadata = handleFileRelatedData(objectMetadata);
+    Function<ObjectStoreMetadata, ObjectStoreMetadata> handleFileDataFct = this::handleFileRelatedData;
+
+    // same as assignDefaultValues(handleFileRelatedData(handleDefaultValues)) but easier to follow in my option (C.G.)
+    objectMetadata = handleFileDataFct.andThen(this::assignDefaultValues)
+        .apply(objectMetadata);
    
     // relationships
     if (resource.getAcMetadataCreator() != null) {
@@ -179,6 +189,27 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
       throw new BadRequestException("Can't process " + objectMetadata.getFileIdentifier());
     }
 
+  }
+  
+  /**
+   * Method to assign default values to mandatory fields not provided at creation time.
+   * If no value can be found, null with be used.
+   * @param objectMetadata
+   * @return the provided object with default values set (if required)
+   */
+  private ObjectStoreMetadata assignDefaultValues(ObjectStoreMetadata objectMetadata) {
+    if (objectMetadata.getDcType() == null) {
+      objectMetadata.setDcType(DcType.fromDcFormat(objectMetadata.getDcFormat()).orElse(null));
+    }
+    
+    if (objectMetadata.getXmpRightsWebStatement() == null) {
+      objectMetadata.setXmpRightsWebStatement(config.getDefaultLicenceURL());
+    }
+
+    if (objectMetadata.getDcRights() == null) {
+      objectMetadata.setDcRights(config.getDefaultCopyright());
+    }
+    return objectMetadata;
   }
 
 }
