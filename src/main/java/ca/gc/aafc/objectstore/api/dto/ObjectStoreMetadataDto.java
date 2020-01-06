@@ -32,6 +32,10 @@ public class ObjectStoreMetadataDto {
   private OffsetDateTime acDigitizationDate;
   private OffsetDateTime xmpMetadataDate;
   
+  private String xmpRightsWebStatement;
+  private String dcRights;
+  
+  @JsonInclude(Include.NON_EMPTY)
   private String originalFilename;
 
   private String acHashFunction;

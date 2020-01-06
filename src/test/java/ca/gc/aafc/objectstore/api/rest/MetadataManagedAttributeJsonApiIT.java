@@ -11,6 +11,7 @@ import ca.gc.aafc.objectstore.api.dto.MetadataManagedAttributeDto;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
+import ca.gc.aafc.objectstore.api.mapper.CycleAvoidingMappingContext;
 import ca.gc.aafc.objectstore.api.mapper.MetadataManagedAttributeMapper;
 import ca.gc.aafc.objectstore.api.testsupport.factories.ManagedAttributeFactory;
 import ca.gc.aafc.objectstore.api.testsupport.factories.MetadataManagedAttributeFactory;
@@ -63,14 +64,14 @@ public class MetadataManagedAttributeJsonApiIT extends BaseJsonApiIntegrationTes
         .objectStoreMetadata(null)
         .build();
 
-    MetadataManagedAttributeDto objectStoreMetadatadto = mapper.toDto(mmaCreated);
+    MetadataManagedAttributeDto objectStoreMetadatadto = mapper.toDto(mmaCreated, new CycleAvoidingMappingContext());
     return toAttributeMap(objectStoreMetadatadto);
   }
 
   @Override
   protected Map<String, Object> buildUpdateAttributeMap() {
     mmaCreated.setAssignedValue("zxy");
-    MetadataManagedAttributeDto objectStoreMetadatadto = mapper.toDto(mmaCreated);
+    MetadataManagedAttributeDto objectStoreMetadatadto = mapper.toDto(mmaCreated, new CycleAvoidingMappingContext());
     return toAttributeMap(objectStoreMetadatadto);
   }
 
