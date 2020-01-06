@@ -82,9 +82,11 @@ public class MetadataToManagedAttributeMapRepositoryCRUDIT extends BaseRepositor
     ManagedAttributeMapValue attr2Value = attributeMap.getValues()
       .get(testManagedAttribute2.getUuid().toString());
 
+    // The ManagedAttributeMap should have an ID based on its Metadata:
+    assertEquals("metadata/" + testMetadata.getUuid() + "/managedAttributeMap", attributeMap.getId());
+
     assertEquals("attr1", attr1Value.getName());
     assertEquals("test attr1 value", attr1Value.getValue());
-
 
     assertEquals("attr2", attr2Value.getName());
     assertEquals("test attr2 value", attr2Value.getValue());
