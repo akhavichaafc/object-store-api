@@ -6,4 +6,6 @@
 
 include::object_storage.adoc[]
 
+include::media_type_detection.adoc[]
+
 include::design.adoc[]

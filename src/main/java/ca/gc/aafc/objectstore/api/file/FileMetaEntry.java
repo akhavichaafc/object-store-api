@@ -40,7 +40,13 @@ public class FileMetaEntry {
   private String detectedMediaType;
   
   @Setter
-  private String fileExtension;
+  private String detectedFileExtension;
+  
+  @Setter
+  private String evaluatedMediaType;
+  
+  @Setter
+  private String evaluatedFileExtension;
   
   public String getFileMetaEntryFilename() {
     return fileIdentifier + SUFFIX;

@@ -87,7 +87,7 @@ public class TestConfiguration {
         null, null, MediaType.TEXT_PLAIN_VALUE);
     
     FileMetaEntry fme = new FileMetaEntry(TEST_FILE_IDENTIFIER);
-    fme.setFileExtension(TEST_FILE_EXT);
+    fme.setEvaluatedFileExtension(TEST_FILE_EXT);
     fme.setReceivedMediaType(MediaType.TEXT_PLAIN_VALUE);
     fme.setDetectedMediaType(MediaType.TEXT_PLAIN_VALUE);
     fme.setSha1Hex("123");
