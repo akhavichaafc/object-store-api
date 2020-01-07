@@ -8,4 +8,6 @@ include::object_storage.adoc[]
 
 include::managed_attributes.adoc[]
 
+include::media_type_detection.adoc[]
+
 include::design.adoc[]

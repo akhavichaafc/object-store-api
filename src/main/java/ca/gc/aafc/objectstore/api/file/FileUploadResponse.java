@@ -3,12 +3,14 @@ package ca.gc.aafc.objectstore.api.file;
 public class FileUploadResponse {
 
   private final String fileName;
-  private final String fileType;
+  private final String mediaType;
+  private final String fileExtension;
   private final long size;
 
-  public FileUploadResponse(String fileName, String fileType, long size) {
+  public FileUploadResponse(String fileName, String mediaType, String fileExtension, long size) {
     this.fileName = fileName;
-    this.fileType = fileType;
+    this.mediaType = mediaType;
+    this.fileExtension = fileExtension;
     this.size = size;
   }
 
@@ -16,8 +18,12 @@ public class FileUploadResponse {
     return fileName;
   }
 
-  public String getFileType() {
-    return fileType;
+  public String getMediaType() {
+    return mediaType;
+  }
+  
+  public String getFileExtension() {
+    return fileExtension;
   }
 
   public long getSize() {

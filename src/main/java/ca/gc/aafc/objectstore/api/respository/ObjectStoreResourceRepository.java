@@ -176,7 +176,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
           FileMetaEntry.class).orElseThrow( () -> new BadRequestException(
               this.getClass().getSimpleName() + " with ID " + objectMetadata.getFileIdentifier() + " Not Found."));
 
-      objectMetadata.setFileExtension(fileMetaEntry.getFileExtension());
+      objectMetadata.setFileExtension(fileMetaEntry.getEvaluatedFileExtension());
       objectMetadata.setOriginalFilename(fileMetaEntry.getOriginalFilename());
       objectMetadata.setDcFormat(fileMetaEntry.getDetectedMediaType());
       objectMetadata.setAcHashValue(fileMetaEntry.getSha1Hex());
