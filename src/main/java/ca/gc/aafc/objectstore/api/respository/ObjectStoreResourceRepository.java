@@ -107,8 +107,13 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   @Override
   public ResourceList<ObjectStoreMetadataDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<ObjectStoreMetadata> jq = queryFactory.query(ObjectStoreMetadata.class);
-   
-    List<ObjectStoreMetadataDto> l = jq.buildExecutor(querySpec).getResultList().stream()
+
+    // Omit "managedAttributeMap" from the JPA include spec, because it is a generated object, not on the JPA model.
+    QuerySpec jpaFriendlyQuerySpec = querySpec.clone();
+    jpaFriendlyQuerySpec.getIncludedRelations()
+      .removeIf(include -> include.getPath().toString().equals("managedAttributeMap"));
+
+    List<ObjectStoreMetadataDto> l = jq.buildExecutor(jpaFriendlyQuerySpec).getResultList().stream()
     .map( objectStoreMetadata -> mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName), new CycleAvoidingMappingContext()))
     .collect(Collectors.toList());
     
