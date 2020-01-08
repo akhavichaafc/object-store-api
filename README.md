@@ -46,7 +46,30 @@ To run the integration tests:
 ```
 
 # docker experimental mode
-create /etc/docker/daemon.json
+create /etversion: '3'
+services:
+  db:
+    image: "postgres:9.6"
+    container_name: "objectstore_test_postgres"
+    environment:
+      POSTGRES_DB: object_store_test
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./src/test/resources/create-test-users.sql:/docker-entrypoint-initdb.d/1-init-schema.sql
+    ports:
+      - "5432:5432"
+      
+  minio:
+    image: minio/minio
+    container_name: minio
+    volumes:
+       - ./minio-data:/data
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    ports:
+      - "9000:9000"
+    command: server /datac/docker/daemon.json
 add "debug:true"
 
 {
