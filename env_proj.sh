@@ -1,4 +1,4 @@
-export BIC_PROJ='seqdb_api'
+export BIC_PROJ='object_store_api'
 #printenv BIC_PROJ
 
 export BIC_PORT=8081
@@ -7,9 +7,21 @@ export BIC_PORT=8081
 export BIC_USER="user"
 #printenv BIC_USER
 
-export spring_datasource_url='jdbc:postgresql://database:5432/seqdb_prod?currentSchema=seqdb'
-export spring_datasource_username=seqdb_webapp
-export spring_atasource_password=changeme
-export spring_liquibase_user=seqdb_migration
-export spring_liquibase_password=changeme2
-export import_sample_accounts=true
+export SPRING_DATASOURCE_URL='jdbc:postgresql://database:5432/object_store'
+printenv SPRING_DATASOURCE_URL
+
+export SPRING_DATASOURCE_USERNAME='postgres'
+printenv SPRING_DATASOURCE_USERNAME
+
+export SPRING_DATASOURCE_PASSWORD='postgres'
+printenv SPRING_DATASOURCE_PASSWORD
+
+export SPRING_LIQUIBASE_USER='seqdb_migration'
+printenv SPRING_LIQUIBASE_USER
+
+export SPRING_LIQUIBASE_PASSWORD='changeme2'
+printenv SPRING_LIQUIBASE_PASSWORD
+
+export IMPORT_SAMPLE_ACCOUNTS=true
+printenv IMPORT_SAMPLE_ACCOUNTS
+

@@ -15,7 +15,3 @@ export BIC_CONT_PROJ="cont_"$BIC_PROJ
 export BIC_IMG_PROJ="img_"$BIC_PROJ
 #printenv BIC_IMG_PROJ
 
-export BIC_IMG_PROJ_BASE=$BIC_IMG_PROJ"_base"
-#printenv BIC_IMG_PROJ_BASE
-
-
