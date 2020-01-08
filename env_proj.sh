@@ -1,8 +1,11 @@
 export BIC_PROJ='object_store_api'
 #printenv BIC_PROJ
 
-export BIC_PORT=9001
-#printenv BIC_PORT
+export BIC_PORT_INT=8080
+#printenv BIC_PORT_INT
+
+export BIC_PORT_EXT=8081
+#printenv BIC_PORT_EXT
 
 export BIC_USER="user"
 #printenv BIC_USER
