@@ -8,6 +8,14 @@ The Object Store module uses https://min.io/[MinIO] as a storage abstraction lay
 
 The Object Store workflow consists of the upload of an object (a file) and the submission of the associated metadata. Some data available at the upload stage should be preserved and transfered to the associated metadata once the latter is submitted. For example: the original filename, the hash of the file, the received media type, the detected media type, etc.
 
+== Expected Sequence
+
+ * Multipart upload of a file in a specific bucket
+ * The backend returns a uuid representing the `fileIdentifier`
+ * Post of the metadata with `fileIdentifier` set to the uuid return be the previous step
+ * The file is available for download using the bucket and the `fileIdentifier`
+ 
+
 == MinIO Metadata
 
 MinIO Java client supports `headerMap` in the http://minio.github.io/minio-java/io/minio/MinioClient.html#putObject-java.lang.String-java.lang.String-java.io.InputStream-java.lang.Long-java.util.Map-io.minio.ServerSideEncryption-java.lang.String-[putObject] method as a mechanism to store metadata associated with an object. Even if this method works in most cases, it has 2 main drawbacks:

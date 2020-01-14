@@ -114,14 +114,18 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   @Override
   public ResourceList<ObjectStoreMetadataDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<ObjectStoreMetadata> jq = queryFactory.query(ObjectStoreMetadata.class);
-    
+    // Omit "managedAttributeMap" from the JPA include spec, because it is a generated object, not on the JPA model.
+    QuerySpec jpaFriendlyQuerySpec = querySpec.clone();
+    jpaFriendlyQuerySpec.getIncludedRelations()
+      .removeIf(include -> include.getPath().toString().equals("managedAttributeMap"));
+
     Consumer<JpaQueryExecutor<?>> rsqlApplier = rsqlFilterHandler.getRestrictionApplier(querySpec);
     JpaQueryExecutor<ObjectStoreMetadata> executor = jq.buildExecutor(querySpec);
     rsqlApplier.accept(executor);
-
+  
     List<ObjectStoreMetadataDto> l = executor.getResultList().stream()
-    .map( objectStoreMetadata -> mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName), new CycleAvoidingMappingContext()))
-    .collect(Collectors.toList());
+      .map( objectStoreMetadata -> mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName), new CycleAvoidingMappingContext()))
+      .collect(Collectors.toList());
     
     return new DefaultResourceList<ObjectStoreMetadataDto>(l, null, null);
   }
@@ -182,7 +186,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
           FileMetaEntry.class).orElseThrow( () -> new BadRequestException(
               this.getClass().getSimpleName() + " with ID " + objectMetadata.getFileIdentifier() + " Not Found."));
 
-      objectMetadata.setFileExtension(fileMetaEntry.getFileExtension());
+      objectMetadata.setFileExtension(fileMetaEntry.getEvaluatedFileExtension());
       objectMetadata.setOriginalFilename(fileMetaEntry.getOriginalFilename());
       objectMetadata.setDcFormat(fileMetaEntry.getDetectedMediaType());
       objectMetadata.setAcHashValue(fileMetaEntry.getSha1Hex());
