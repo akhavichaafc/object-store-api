@@ -10,7 +10,7 @@ export BIC_PORT_EXT=8081
 export BIC_USER="user"
 #printenv BIC_USER
 
-export SPRING_DATASOURCE_URL='jdbc:postgresql://localhost:5532/object_store_test/'
+export SPRING_DATASOURCE_URL='jdbc:postgresql://localhost:5532/object_store_test'
 printenv SPRING_DATASOURCE_URL
 
 export SPRING_DATASOURCE_USERNAME='postgres'
