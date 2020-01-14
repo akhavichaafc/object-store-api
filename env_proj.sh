@@ -13,8 +13,8 @@ export BIC_USER="user"
 export SPRING_DATASOURCE_URL='jdbc:postgresql://localhost:5532/object_store_test/'
 printenv SPRING_DATASOURCE_URL
 
-#export SPRING_DATASOURCE_USERNAME='postgres'
+export SPRING_DATASOURCE_USERNAME='postgres'
 printenv SPRING_DATASOURCE_USERNAME
 
-#export SPRING_DATASOURCE_PASSWORD='postgres'
+export SPRING_DATASOURCE_PASSWORD='postgres'
 printenv SPRING_DATASOURCE_PASSWORD
