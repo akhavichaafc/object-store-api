@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5532/object_store/
+    url: jdbc:postgresql://localhost:5532/object_store_test
     username: postgres
     password: postgres
   servlet:
@@ -29,3 +29,5 @@ crnk:
 objectstore:
   defaultLicenceURL: https://open.canada.ca/en/open-government-licence-canada
   defaultCopyright: Government of Canada
+server:
+  port: 8081
