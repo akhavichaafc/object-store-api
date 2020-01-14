@@ -35,7 +35,7 @@ public class MetadataManagedAttributeMapperTest {
         .build();
 
     // when
-    MetadataManagedAttributeDto managedAttributeDto = MAPPER.toDto(mma);
+    MetadataManagedAttributeDto managedAttributeDto = MAPPER.toDto(mma, new CycleAvoidingMappingContext());
 
     // then
     assertEquals(mma.getAssignedValue(), managedAttributeDto.getAssignedValue());
@@ -86,7 +86,7 @@ public class MetadataManagedAttributeMapperTest {
     objectStoreMetadata.setManagedAttribute(Collections.singletonList(mma));
 
     // when
-    MetadataManagedAttributeDto managedAttributeDto = MAPPER.toDto(mma);
+    MetadataManagedAttributeDto managedAttributeDto = MAPPER.toDto(mma, new CycleAvoidingMappingContext());
 
     // then
     assertEquals(mma.getAssignedValue(), managedAttributeDto.getAssignedValue());

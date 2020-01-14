@@ -3,29 +3,23 @@ package ca.gc.aafc.objectstore.api.file;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.SequenceInputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.security.DigestInputStream;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.tika.config.TikaConfig;
-import org.apache.tika.detect.DefaultDetector;
-import org.apache.tika.detect.Detector;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,8 +48,6 @@ import io.minio.errors.InvalidPortException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -64,29 +56,22 @@ import lombok.extern.slf4j.Slf4j;
 public class FileController {
 
   public static final String DIGEST_ALGORITHM = "SHA-1";
-  
   private static final int MAX_NUMBER_OF_ATTEMPT_RANDOM_UUID = 5;
-  private static final TikaConfig TIKA_CONFIG = TikaConfig.getDefaultConfig();
 
   private final MinioFileService minioService;
   private final ObjectStoreMetadataReadService objectStoreMetadataReadService;
+  private final MediaTypeDetectionStrategy mediaTypeDetectionStrategy;
   private final ObjectMapper objectMapper;
 
   @Inject
   public FileController(MinioFileService minioService, ObjectStoreMetadataReadService objectStoreMetadataReadService, 
+      MediaTypeDetectionStrategy mediaTypeDetectionStrategy,
       Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
     this.minioService = minioService;
     this.objectStoreMetadataReadService = objectStoreMetadataReadService;
+    this.mediaTypeDetectionStrategy = mediaTypeDetectionStrategy;
     this.objectMapper = jackson2ObjectMapperBuilder.build();
     objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-  }
-  
-  @Builder
-  @Getter
-  private static class MediaTypeDetectionResult {
-    private InputStream inputStream;
-    private org.apache.tika.mime.MediaType mediaType;
-    private MimeType mimeType;
   }
 
   @PostMapping("/file/{bucket}")
@@ -100,7 +85,8 @@ public class FileController {
     // Temporary, we will need to check if the user is an admin
     minioService.ensureBucketExists(bucket);
     
-    MediaTypeDetectionResult mtdr = detectMediaType(file.getInputStream());
+    MediaTypeDetectionStrategy.MediaTypeDetectionResult mtdr = mediaTypeDetectionStrategy
+        .detectMediaType(file.getInputStream(), file.getContentType(), file.getOriginalFilename());
     
     // Check that the UUID is not already assigned. It is very unlikely but not impossible
     UUID uuid = getNewUUID(bucket);
@@ -108,23 +94,27 @@ public class FileController {
     FileMetaEntry fileMetaEntry = new FileMetaEntry(uuid);
     fileMetaEntry.setOriginalFilename(file.getOriginalFilename());
     fileMetaEntry.setReceivedMediaType(file.getContentType());
-    fileMetaEntry.setDetectedMediaType(mtdr.getMediaType().toString());
-    fileMetaEntry.setFileExtension(mtdr.getMimeType().getExtension());
+    
+    fileMetaEntry.setDetectedMediaType(Objects.toString(mtdr.getDetectedMediaType()));
+    fileMetaEntry.setDetectedFileExtension(mtdr.getDetectedMimeType().getExtension());
+    
+    fileMetaEntry.setEvaluatedMediaType(mtdr.getEvaluatedMediatype());
+    fileMetaEntry.setEvaluatedFileExtension(mtdr.getEvaluatedExtension());
     
     // Decorate the InputStream in order to compute the hash
     MessageDigest md = MessageDigest.getInstance(DIGEST_ALGORITHM);
     DigestInputStream dis = new DigestInputStream(mtdr.getInputStream(), md);
     
-    minioService.storeFile(uuid.toString() + mtdr.getMimeType().getExtension(), dis,
-        mtdr.getMediaType().toString(), bucket, null);
+    minioService.storeFile(uuid.toString() + mtdr.getEvaluatedExtension(), dis,
+        mtdr.getEvaluatedMediatype(), bucket, null);
     
     String sha1Hex = DigestUtils.sha1Hex(md.digest());
     fileMetaEntry.setSha1Hex(sha1Hex);
     
     storeFileMetaEntry(fileMetaEntry, bucket);
 
-    return new FileUploadResponse(uuid.toString(), mtdr.getMediaType().toString(),
-        file.getSize());
+    return new FileUploadResponse(uuid.toString(), mtdr.getEvaluatedMediatype().toString(),
+        mtdr.getEvaluatedExtension(), file.getSize());
   }
   
   /**
@@ -162,21 +152,32 @@ public class FileController {
         inputStream, fileMetaEntry.getDetectedMediaType(), bucket, null);
   }
   
+  /**
+   * Triggers a download of a file. Note that the file requires a metadata entry in the database to
+   * be available for download.
+   * 
+   * @param bucket
+   * @param fileId
+   * @return
+   * @throws IOException
+   */
   @GetMapping("/file/{bucket}/{fileId}")
   public ResponseEntity<InputStreamResource> downloadObject(@PathVariable String bucket,
       @PathVariable UUID fileId) throws IOException {
     
     try {
-      Optional<ObjectStoreMetadata> loadedMetadata = objectStoreMetadataReadService.loadObjectStoreMetadataByFileId(fileId);
-      ObjectStoreMetadata metadata = loadedMetadata.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-          "FileIdentifier " + fileId + " or bucket " + bucket + " Not Found", null));
+      Optional<ObjectStoreMetadata> loadedMetadata = objectStoreMetadataReadService
+          .loadObjectStoreMetadataByFileId(fileId);
+      ObjectStoreMetadata metadata = loadedMetadata
+          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+              "No metadata found for FileIdentifier " + fileId + " or bucket " + bucket, null));
 
       FileObjectInfo foi = minioService.getFileInfo(metadata.getFilename(), bucket)
           .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
               fileId + " or bucket " + bucket + " Not Found", null));
       
       HttpHeaders respHeaders = new HttpHeaders();
-      respHeaders.setContentType(MediaType.parseMediaType(metadata.getDcFormat()));
+      respHeaders.setContentType(org.springframework.http.MediaType.parseMediaType(metadata.getDcFormat()));
       respHeaders.setContentLength(foi.getLength());
       respHeaders.setContentDispositionFormData("attachment", metadata.getFilename());
 
@@ -203,35 +204,6 @@ public class FileController {
       numberOfAttempt++;
     }
     throw new IllegalStateException("Can't assign unique UUID. Giving up.");
-  }
-  
-  /**
-   * Detect the MediaType and MimeType of an InputStream by reading the beginning of the stream.
-   * A new InputStream is returned to make sure the caller can read the entire stream from the beginning.
-   * 
-   * TODO: take the media type submitted by the user in case we can not detect it.
-   * 
-   * @param is
-   * @return
-   * @throws IOException
-   * @throws MimeTypeException
-   */
-  private MediaTypeDetectionResult detectMediaType(InputStream is) throws IOException, MimeTypeException {
-    
-    // Read the beginning of the Stream to allow Tika to detect the mediaType
-    byte[] buffer = new byte[10 * 1024];
-    int lenght = is.read(buffer);
-    ByteArrayInputStream bais = new ByteArrayInputStream(buffer, 0, lenght);
-
-    Detector detector = new DefaultDetector();
-    org.apache.tika.mime.MediaType mediaType = detector.detect(bais, new Metadata());
-    MimeType mimeType = TIKA_CONFIG.getMimeRepository().forName(mediaType.toString());
-    
-    return MediaTypeDetectionResult.builder()
-      .inputStream(new SequenceInputStream(bais, is))
-      .mediaType(mediaType)
-      .mimeType(mimeType)
-      .build();
   }
 
 }

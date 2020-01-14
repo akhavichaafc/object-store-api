@@ -56,7 +56,7 @@ public class ObjectStoreMetadataDtoMapperTest {
 
     // when
     ObjectStoreMetadataDto objectStoreMetadataDto = DTO_MAPPER
-        .toDto(objectStoreMetadata, (s) -> true);
+        .toDto(objectStoreMetadata, (s) -> true, new CycleAvoidingMappingContext());
 
     // then
     assertEquals(objectStoreMetadataDto.getAcDigitizationDate(), objectStoreMetadata.getAcDigitizationDate());
