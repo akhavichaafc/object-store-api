@@ -120,7 +120,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
       .removeIf(include -> include.getPath().toString().equals("managedAttributeMap"));
 
     Consumer<JpaQueryExecutor<?>> rsqlApplier = rsqlFilterHandler.getRestrictionApplier(querySpec);
-    JpaQueryExecutor<ObjectStoreMetadata> executor = jq.buildExecutor(querySpec);
+    JpaQueryExecutor<ObjectStoreMetadata> executor = jq.buildExecutor(jpaFriendlyQuerySpec);
     rsqlApplier.accept(executor);
   
     List<ObjectStoreMetadataDto> l = executor.getResultList().stream()
