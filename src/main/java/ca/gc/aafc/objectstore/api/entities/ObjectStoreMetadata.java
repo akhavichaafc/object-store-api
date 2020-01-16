@@ -216,6 +216,7 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   }
   
   @Column(name = "dc_format")
+  @Size(max = 150)
   public String getDcFormat() {
     return dcFormat;
   }

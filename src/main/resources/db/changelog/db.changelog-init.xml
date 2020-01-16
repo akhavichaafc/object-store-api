@@ -42,7 +42,7 @@
 			<column name="bucket" type="VARCHAR(50)">
 			    <constraints nullable="false" />
 			</column>
-			<column name="dc_format" type="VARCHAR(50)" />
+			<column name="dc_format" type="VARCHAR(150)" />
 			<column name="dc_type" type="dctype">
 				<constraints nullable="false" />
 			</column>
