@@ -70,5 +70,12 @@ To run the integration tests:
 ```
  mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/object_store_test -Dspring.datasource.username=test -Dspring.datasource.password=test
 ```
+
+## IDE
+
+`object-store-api` requires [Project Lombok](https://projectlombok.org/) to be setup in your IDE.
+
+Setup documentation for Eclipse: <https://projectlombok.org/setup/eclipse>
+
 ## Additional License
 `CycleAvoidingMappingContext` class is licensed under the Apache License, Version 2.0. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
