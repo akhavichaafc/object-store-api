@@ -85,6 +85,10 @@
               "type": "string",
               "description": "Information about rights held in and over the resource. https://tdwg.github.io/ac/termlist/#dc_rights"
             },
+            "createdDate": {
+              "type": "string",
+              "description": "Point in time (ISO 8601 Date/Time) recording when the metadata entry was created."
+            },
             "uploadedBy": {
               "type": "string",
               "description": "Reference to the person who uploaded the object."
