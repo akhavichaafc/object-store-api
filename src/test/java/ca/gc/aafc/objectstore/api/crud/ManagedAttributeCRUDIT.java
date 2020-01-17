@@ -28,6 +28,8 @@ public class ManagedAttributeCRUDIT extends BaseEntityCRUDIT {
     assertEquals(managedAttributeUnderTest.getId(), fetchedObjectStoreMeta.getId());
     
     assertArrayEquals(new String[] {"a", "b"}, managedAttributeUnderTest.getAcceptedValues());
+    
+    assertNotNull(fetchedObjectStoreMeta.getCreatedDate());
   }
 
   @Override
