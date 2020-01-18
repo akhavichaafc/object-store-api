@@ -12,6 +12,7 @@ import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
+import io.crnk.core.resource.annotations.LookupIncludeBehavior;
 import lombok.Data;
 
 @Data
@@ -31,6 +32,10 @@ public class ObjectStoreMetadataDto {
   private OffsetDateTime acDigitizationDate;
   private OffsetDateTime xmpMetadataDate;
   
+  private String xmpRightsWebStatement;
+  private String dcRights;
+  
+  @JsonInclude(Include.NON_EMPTY)
   private String originalFilename;
 
   private String acHashFunction;
@@ -41,6 +46,9 @@ public class ObjectStoreMetadataDto {
   
   @JsonApiRelation
   private List<MetadataManagedAttributeDto> managedAttribute;
+
+  @JsonApiRelation(lookUp = LookupIncludeBehavior.AUTOMATICALLY_ALWAYS)
+  private ManagedAttributeMapDto managedAttributeMap;
   
   @JsonApiRelation
   private AgentDto acMetadataCreator;

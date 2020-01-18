@@ -15,6 +15,7 @@ import ca.gc.aafc.objectstore.api.dto.MetadataManagedAttributeDto;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
+import ca.gc.aafc.objectstore.api.mapper.CycleAvoidingMappingContext;
 import ca.gc.aafc.objectstore.api.mapper.MetadataManagedAttributeMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
@@ -72,7 +73,7 @@ public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<M
           this.getClass().getSimpleName() + " with ID " + uuid + " Not Found."
       );
     }
-    return mapper.toDto(metadataManagedAttribute);
+    return mapper.toDto(metadataManagedAttribute, new CycleAvoidingMappingContext());
   }
 
   @Override
@@ -80,7 +81,7 @@ public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<M
     JpaCriteriaQuery<MetadataManagedAttribute> jq = queryFactory.query(MetadataManagedAttribute.class);
     
     List<MetadataManagedAttributeDto> l = jq.buildExecutor(querySpec).getResultList().stream()
-    .map( e -> mapper.toDto(e))
+    .map( e -> mapper.toDto(e, new CycleAvoidingMappingContext()))
     .collect(Collectors.toList());
     
     return new DefaultResourceList<MetadataManagedAttributeDto>(l, null, null);

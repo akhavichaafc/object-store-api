@@ -44,16 +44,5 @@ To run the integration tests:
 ```
  mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/object_store_test -Dspring.datasource.username=test -Dspring.datasource.password=test
 ```
-
-# docker experimental mode
-create /etc/docker/daemon.json
-add "debug:true"
-
-{
-  "debug": true,
-  "tls": true,
-  "tlscert": "/var/docker/server.pem",
-  "tlskey": "/var/docker/serverkey.pem",
-  "hosts": ["tcp://192.168.59.3:2376"],
-  "log-level": "debug"
-}
+# Additional License
+`CycleAvoidingMappingContext` class is licensed under the Apache License, Version 2.0. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
