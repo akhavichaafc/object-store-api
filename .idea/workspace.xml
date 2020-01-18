@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="890de00f-25fc-4d32-8c00-1022e66e60d9" name="Default Changelist" comment="" />
+    <list default="true" id="890de00f-25fc-4d32-8c00-1022e66e60d9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -29,6 +45,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="postgresql" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
@@ -42,7 +59,17 @@
       <list>
         <serviceView>
           <treeState>
-            <expand />
+            <expand>
+              <path>
+                <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+                <item name="root:postgres@localhost" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+              </path>
+              <path>
+                <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+                <item name="root:postgres@localhost" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+                <item name="com.intellij.database.console.session.MessageBusSession@73117e6e" type="9fbbdea:ServiceModel$ServiceNode" />
+              </path>
+            </expand>
             <select />
           </treeState>
         </serviceView>
@@ -66,6 +93,7 @@
       <workItem from="1577824986730" duration="599000" />
       <workItem from="1578490955420" duration="1101000" />
       <workItem from="1578763046855" duration="1214000" />
+      <workItem from="1579375902971" duration="1180000" />
     </task>
     <task id="LOCAL-00001" summary="Added Docker logic">
       <created>1577819343037</created>
@@ -74,7 +102,14 @@
       <option name="project" value="LOCAL" />
       <updated>1577819343037</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Added Docker logic">
+      <created>1579375941703</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1579375941703</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -87,19 +122,25 @@
     <option name="LAST_COMMIT_MESSAGE" value="Added Docker logic" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2240" y="0" width="648" height="540" key="CommitChangelistDialog2" timestamp="1577819342873">
-      <screen x="2240" y="0" width="960" height="540" />
+    <state x="2077" y="36" width="800" height="540" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1579377441547">
+      <screen x="1984" y="36" width="960" height="540" />
+    </state>
+    <state x="2077" y="36" width="800" height="540" key="#com.intellij.execution.impl.EditConfigurationsDialog/33.49.927.526/1984.36.960.540/960.0.1024.576@1984.36.960.540" timestamp="1579377441547" />
+    <state x="2017" y="36" width="648" height="540" key="CommitChangelistDialog2" timestamp="1579375941643">
+      <screen x="1984" y="36" width="960" height="540" />
     </state>
     <state x="2240" y="0" width="648" height="540" key="CommitChangelistDialog2/33.13.927.527/960.0.1280.720/2240.0.960.540@2240.0.960.540" timestamp="1577819342873" />
+    <state x="2017" y="36" key="CommitChangelistDialog2/33.49.927.526/1984.36.960.540/960.0.1024.576@1984.36.960.540" timestamp="1579375941643" />
     <state x="2516" y="49" width="424" height="469" key="FileChooserDialogImpl" timestamp="1578763072680">
       <screen x="1984" y="36" width="960" height="540" />
     </state>
     <state x="2452" y="13" width="424" height="469" key="FileChooserDialogImpl/33.13.1887.706/1920.0.960.540@1920.0.960.540" timestamp="1578491455757" />
     <state x="2516" y="49" key="FileChooserDialogImpl/960.0.1024.576/1984.36.960.540/33.13.927.527@1984.36.960.540" timestamp="1578763072680" />
-    <state x="1440" y="2" width="800" height="536" key="Vcs.Push.Dialog.v2" timestamp="1577819344416">
-      <screen x="960" y="0" width="1280" height="720" />
+    <state x="2344" y="38" width="800" height="536" key="Vcs.Push.Dialog.v2" timestamp="1579375943329">
+      <screen x="1984" y="36" width="960" height="540" />
     </state>
     <state x="1440" y="2" width="800" height="536" key="Vcs.Push.Dialog.v2/33.13.927.527/960.0.1280.720/2240.0.960.540@2240.0.960.540" timestamp="1577819344416" />
+    <state x="2344" y="38" key="Vcs.Push.Dialog.v2/33.49.927.526/1984.36.960.540/960.0.1024.576@1984.36.960.540" timestamp="1579375943329" />
     <state x="2286" y="192" width="479" height="255" key="git4idea.merge.GitPullDialog" timestamp="1578491308462">
       <screen x="1920" y="0" width="960" height="540" />
     </state>
