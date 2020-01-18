@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="890de00f-25fc-4d32-8c00-1022e66e60d9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/attach.sh" beforeDir="false" afterPath="$PROJECT_DIR$/attach.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +20,12 @@
     <option name="HIDDEN_KINDS">
       <set />
     </option>
-    <expand />
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="seqdb_obj@localhost" type="feb32156:DbDataSourceImpl" />
+      </path>
+    </expand>
     <select />
   </component>
   <component name="Git.Settings">
@@ -95,7 +98,7 @@
       <workItem from="1577824986730" duration="599000" />
       <workItem from="1578490955420" duration="1101000" />
       <workItem from="1578763046855" duration="1214000" />
-      <workItem from="1579375902971" duration="1755000" />
+      <workItem from="1579375902971" duration="2109000" />
     </task>
     <task id="LOCAL-00001" summary="Added Docker logic">
       <created>1577819343037</created>
@@ -132,7 +135,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579377526790</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="aa">
+      <created>1579378235084</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1579378235084</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -146,25 +156,25 @@
     <option name="LAST_COMMIT_MESSAGE" value="aa" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2077" y="36" width="800" height="540" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1579378016631">
+    <state x="2077" y="36" width="800" height="540" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1579378370734">
       <screen x="1984" y="36" width="960" height="540" />
     </state>
-    <state x="2077" y="36" width="800" height="540" key="#com.intellij.execution.impl.EditConfigurationsDialog/33.49.927.526/1984.36.960.540/960.0.1024.576@1984.36.960.540" timestamp="1579378016631" />
-    <state x="2017" y="36" width="648" height="540" key="CommitChangelistDialog2" timestamp="1579377526740">
+    <state x="2077" y="36" width="800" height="540" key="#com.intellij.execution.impl.EditConfigurationsDialog/33.49.927.526/1984.36.960.540/960.0.1024.576@1984.36.960.540" timestamp="1579378370734" />
+    <state x="2017" y="36" width="648" height="540" key="CommitChangelistDialog2" timestamp="1579378235004">
       <screen x="1984" y="36" width="960" height="540" />
     </state>
     <state x="2240" y="0" width="648" height="540" key="CommitChangelistDialog2/33.13.927.527/960.0.1280.720/2240.0.960.540@2240.0.960.540" timestamp="1577819342873" />
-    <state x="2017" y="36" width="648" height="540" key="CommitChangelistDialog2/33.49.927.526/1984.36.960.540/960.0.1024.576@1984.36.960.540" timestamp="1579377526740" />
+    <state x="2017" y="36" width="648" height="540" key="CommitChangelistDialog2/33.49.927.526/1984.36.960.540/960.0.1024.576@1984.36.960.540" timestamp="1579378235004" />
     <state x="2516" y="49" width="424" height="469" key="FileChooserDialogImpl" timestamp="1578763072680">
       <screen x="1984" y="36" width="960" height="540" />
     </state>
     <state x="2452" y="13" width="424" height="469" key="FileChooserDialogImpl/33.13.1887.706/1920.0.960.540@1920.0.960.540" timestamp="1578491455757" />
     <state x="2516" y="49" key="FileChooserDialogImpl/960.0.1024.576/1984.36.960.540/33.13.927.527@1984.36.960.540" timestamp="1578763072680" />
-    <state x="2140" y="38" width="800" height="536" key="Vcs.Push.Dialog.v2" timestamp="1579377528699">
+    <state x="2140" y="38" width="800" height="536" key="Vcs.Push.Dialog.v2" timestamp="1579378237316">
       <screen x="1984" y="36" width="960" height="540" />
     </state>
     <state x="1440" y="2" width="800" height="536" key="Vcs.Push.Dialog.v2/33.13.927.527/960.0.1280.720/2240.0.960.540@2240.0.960.540" timestamp="1577819344416" />
-    <state x="2140" y="38" width="800" height="536" key="Vcs.Push.Dialog.v2/33.49.927.526/1984.36.960.540/960.0.1024.576@1984.36.960.540" timestamp="1579377528699" />
+    <state x="2140" y="38" width="800" height="536" key="Vcs.Push.Dialog.v2/33.49.927.526/1984.36.960.540/960.0.1024.576@1984.36.960.540" timestamp="1579378237316" />
     <state x="2286" y="192" width="479" height="255" key="git4idea.merge.GitPullDialog" timestamp="1578491308462">
       <screen x="1920" y="0" width="960" height="540" />
     </state>
