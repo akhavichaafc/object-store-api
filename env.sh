@@ -15,3 +15,5 @@ export BIC_CONT_PROJ="cont_"$BIC_PROJ
 export BIC_IMG_PROJ="img_"$BIC_PROJ
 #printenv BIC_IMG_PROJ
 
+export BIC_VOL_PROJ="vol_"$BIC_PROJ
+printenv BIC_VOL_PROJ
