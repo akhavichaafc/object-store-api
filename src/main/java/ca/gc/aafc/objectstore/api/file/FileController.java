@@ -15,7 +15,11 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -31,9 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.xmlpull.v1.XmlPullParserException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.minio.MinioFileService;
@@ -62,14 +63,17 @@ public class FileController {
   private final ObjectStoreMetadataReadService objectStoreMetadataReadService;
   private final MediaTypeDetectionStrategy mediaTypeDetectionStrategy;
   private final ObjectMapper objectMapper;
+  private final ThumbnailService thumbnailService;
 
   @Inject
   public FileController(MinioFileService minioService, ObjectStoreMetadataReadService objectStoreMetadataReadService, 
       MediaTypeDetectionStrategy mediaTypeDetectionStrategy,
-      Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
+      Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder,
+      ThumbnailService thumbnailService) {
     this.minioService = minioService;
     this.objectStoreMetadataReadService = objectStoreMetadataReadService;
     this.mediaTypeDetectionStrategy = mediaTypeDetectionStrategy;
+    this.thumbnailService = thumbnailService;
     this.objectMapper = jackson2ObjectMapperBuilder.build();
     objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
   }
@@ -105,13 +109,31 @@ public class FileController {
     MessageDigest md = MessageDigest.getInstance(DIGEST_ALGORITHM);
     DigestInputStream dis = new DigestInputStream(mtdr.getInputStream(), md);
     
-    minioService.storeFile(uuid.toString() + mtdr.getEvaluatedExtension(), dis,
-        mtdr.getEvaluatedMediatype(), bucket, null);
+    minioService.storeFile(
+      uuid.toString() + mtdr.getEvaluatedExtension(),
+      dis,
+      mtdr.getEvaluatedMediatype(),
+      bucket,
+      null
+    );
     
     String sha1Hex = DigestUtils.sha1Hex(md.digest());
     fileMetaEntry.setSha1Hex(sha1Hex);
     
     storeFileMetaEntry(fileMetaEntry, bucket);
+
+    // Generate thumbnail if the file format can be thumbnailed:
+    if (thumbnailService.isSupported(mtdr.getEvaluatedMediatype())) {
+      try (InputStream thumbnail = thumbnailService.generateThumbnail(file.getInputStream())) {
+        minioService.storeFile(
+          uuid.toString() + ".thumbnail.jpg",
+          thumbnail,
+          "image/jpeg",
+          bucket,
+          null
+        );
+      }
+    }
 
     return new FileUploadResponse(uuid.toString(), mtdr.getEvaluatedMediatype().toString(),
         mtdr.getEvaluatedExtension(), file.getSize());
@@ -163,18 +185,30 @@ public class FileController {
    */
   @GetMapping("/file/{bucket}/{fileId}")
   public ResponseEntity<InputStreamResource> downloadObject(@PathVariable String bucket,
-      @PathVariable UUID fileId) throws IOException {
+      @PathVariable String fileId) throws IOException {
+
+    boolean thumbnailRequested = fileId.endsWith(".thumbnail");
+    if (thumbnailRequested) {
+      fileId = fileId.replaceAll(".thumbnail$", "");
+    }
+    UUID fileUuid = UUID.fromString(fileId);
     
     try {
       Optional<ObjectStoreMetadata> loadedMetadata = objectStoreMetadataReadService
-          .loadObjectStoreMetadataByFileId(fileId);
+          .loadObjectStoreMetadataByFileId(fileUuid);
       ObjectStoreMetadata metadata = loadedMetadata
           .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-              "No metadata found for FileIdentifier " + fileId + " or bucket " + bucket, null));
+              "No metadata found for FileIdentifier " + fileUuid + " or bucket " + bucket, null));
 
-      FileObjectInfo foi = minioService.getFileInfo(metadata.getFilename(), bucket)
-          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-              fileId + " or bucket " + bucket + " Not Found", null));
+      String filename = thumbnailRequested ? metadata.getFileIdentifier() + ".thumbnail.jpg"
+        : metadata.getFilename();
+    
+      FileObjectInfo foi = minioService.getFileInfo(filename, bucket)
+        .orElseThrow(() -> new ResponseStatusException(
+          HttpStatus.NOT_FOUND,
+          fileUuid + " or bucket " + bucket + " Not Found",
+          null
+        ));
       
       HttpHeaders respHeaders = new HttpHeaders();
       respHeaders.setContentType(org.springframework.http.MediaType.parseMediaType(metadata.getDcFormat()));
@@ -182,7 +216,7 @@ public class FileController {
       respHeaders.setContentDispositionFormData("attachment", metadata.getFilename());
 
       InputStream is = minioService.getFile(metadata.getFilename(), bucket).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-          "FileIdentifier " + fileId + " or bucket " + bucket + " Not Found", null));
+          "FileIdentifier " + fileUuid + " or bucket " + bucket + " Not Found", null));
 
       InputStreamResource isr = new InputStreamResource(is);
       return new ResponseEntity<InputStreamResource>(isr, respHeaders, HttpStatus.OK);
