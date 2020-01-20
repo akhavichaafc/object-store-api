@@ -74,6 +74,8 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   private String acHashValue;
   private String[] acTags;
   
+  private OffsetDateTime createdDate;
+  
   private List<MetadataManagedAttribute> managedAttribute;
   private Agent acMetadataCreator;
 
@@ -216,6 +218,7 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   }
   
   @Column(name = "dc_format")
+  @Size(max = 150)
   public String getDcFormat() {
     return dcFormat;
   }
@@ -291,6 +294,15 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
 
   public void setAcTags(String[] acTags) {
     this.acTags = acTags;
+  }
+  
+  @Column(name = "created_date", insertable = false, updatable = false)
+  public OffsetDateTime getCreatedDate() {
+    return createdDate;
+  }
+  
+  public void setCreatedDate(OffsetDateTime createdDate) {
+    this.createdDate = createdDate;
   }
 
   @OneToMany

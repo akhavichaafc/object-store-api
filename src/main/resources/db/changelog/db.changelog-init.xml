@@ -42,7 +42,7 @@
 			<column name="bucket" type="VARCHAR(50)">
 			    <constraints nullable="false" />
 			</column>
-			<column name="dc_format" type="VARCHAR(50)" />
+			<column name="dc_format" type="VARCHAR(150)" />
 			<column name="dc_type" type="dctype">
 				<constraints nullable="false" />
 			</column>
@@ -59,6 +59,7 @@
 			<column name="ac_hash_value" type="VARCHAR(128)" />
 			<column name="ac_tags" type="text[]" />
 			<column name="ac_metadata_creator_id" type="INTEGER" />
+			<column name="created_date" type="timestamptz" defaultValueComputed="current_timestamp" />
 		</createTable>
 	</changeSet>
 		<changeSet context="schema-change" id="init-4" author="gendreauc">
@@ -76,6 +77,7 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="accepted_values" type="text[]" />
+			<column name="created_date" type="timestamptz" defaultValueComputed="current_timestamp" />
 		</createTable>
 	</changeSet>
 	<changeSet context="schema-change" id="init-5" author="shemyg">
