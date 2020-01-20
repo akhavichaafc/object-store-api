@@ -185,7 +185,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
       return objectMetadata;
 
     } catch (IOException e) {
-      log.error(() -> e);
+      log.error(e.getMessage());
       throw new BadRequestException("Can't process " + objectMetadata.getFileIdentifier());
     }
 
