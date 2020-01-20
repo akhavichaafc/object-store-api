@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
