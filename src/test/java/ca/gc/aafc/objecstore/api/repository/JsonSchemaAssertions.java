@@ -34,14 +34,14 @@ import org.leadpony.justify.api.JsonValidationService;
 import org.leadpony.justify.api.ProblemHandler;
 import org.leadpony.justify.api.SpecVersion;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Utility class to assert an api response against a json schema.
  * 
  */
 
-@Slf4j
+@Log4j2
 public final class JsonSchemaAssertions {
   
   private static final JsonValidationService JSON_VALIDATION_SERVICE = JsonValidationService.newInstance();
@@ -153,13 +153,13 @@ public final class JsonSchemaAssertions {
       if(portUsed>0)
         uriBuilder.setPort(portUsed);
       String responseBody;
-      log.info("uriBuilder "+ uriBuilder.getPort());
+      log.info("uriBuilder {}", () -> uriBuilder.getPort());
       try {
         testResolvableUri = uriBuilder.build();
         HttpGet httpget = new HttpGet(testResolvableUri);
         responseBody = httpClient.execute(httpget, builResponseHandler());
       } catch (URISyntaxException | IOException e) {
-        log.info("resolveSchema exception "+ e.getMessage());
+        log.info("resolveSchema exception {}", () -> e.getMessage());
        // fail(e.getMessage());
         return null;
       }

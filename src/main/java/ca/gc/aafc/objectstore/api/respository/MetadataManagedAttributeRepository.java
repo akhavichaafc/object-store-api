@@ -24,11 +24,9 @@ import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQuery;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
-import lombok.extern.slf4j.Slf4j;
 
 @Repository
 @Transactional
-@Slf4j
 public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<MetadataManagedAttributeDto, UUID> {
 
   private final BaseDAO dao;

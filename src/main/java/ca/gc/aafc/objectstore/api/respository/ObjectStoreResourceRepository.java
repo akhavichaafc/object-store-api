@@ -36,9 +36,9 @@ import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQuery;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
-@Slf4j
+@Log4j2
 @Repository
 @Transactional
 public class ObjectStoreResourceRepository extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID> implements ObjectStoreMetadataReadService {
@@ -185,7 +185,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
       return objectMetadata;
 
     } catch (IOException e) {
-      log.error(e.getMessage());
+      log.error(() -> e);
       throw new BadRequestException("Can't process " + objectMetadata.getFileIdentifier());
     }
 
