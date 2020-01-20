@@ -11,3 +11,5 @@ include::managed_attributes.adoc[]
 include::media_type_detection.adoc[]
 
 include::design.adoc[]
+
+include::lazy_logging.adoc[]
