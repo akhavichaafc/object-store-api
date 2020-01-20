@@ -188,10 +188,8 @@ public class FileController {
       @PathVariable String fileId) throws IOException {
 
     boolean thumbnailRequested = fileId.endsWith(".thumbnail");
-    if (thumbnailRequested) {
-      fileId = fileId.replaceAll(".thumbnail$", "");
-    }
-    UUID fileUuid = UUID.fromString(fileId);
+    String fileUuidString = thumbnailRequested ? fileId.replaceAll(".thumbnail$", "") : fileId;
+    UUID fileUuid = UUID.fromString(fileUuidString);
     
     try {
       Optional<ObjectStoreMetadata> loadedMetadata = objectStoreMetadataReadService
@@ -211,11 +209,15 @@ public class FileController {
         ));
       
       HttpHeaders respHeaders = new HttpHeaders();
-      respHeaders.setContentType(org.springframework.http.MediaType.parseMediaType(metadata.getDcFormat()));
+      respHeaders.setContentType(
+        org.springframework.http.MediaType.parseMediaType(
+          thumbnailRequested ? "image/jpeg" : metadata.getDcFormat()
+        )
+      );
       respHeaders.setContentLength(foi.getLength());
-      respHeaders.setContentDispositionFormData("attachment", metadata.getFilename());
+      respHeaders.setContentDispositionFormData("attachment", filename);
 
-      InputStream is = minioService.getFile(metadata.getFilename(), bucket).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+      InputStream is = minioService.getFile(filename, bucket).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
           "FileIdentifier " + fileUuid + " or bucket " + bucket + " Not Found", null));
 
       InputStreamResource isr = new InputStreamResource(is);

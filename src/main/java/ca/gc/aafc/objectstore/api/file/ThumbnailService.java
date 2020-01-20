@@ -1,6 +1,5 @@
 package ca.gc.aafc.objectstore.api.file;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -18,37 +17,26 @@ import net.coobird.thumbnailator.Thumbnails;
 @Service
 public class ThumbnailService {
 
-  public InputStream generateThumbnail(InputStream sourceImage) throws IOException {
+  public static final int THUMBNAIL_WIDTH = 200;
+  public static final int THUMBNAIL_HEIGHT = 200;
+
+  public InputStream generateThumbnail(InputStream sourceImageStream) throws IOException {
     // Copy to a temp file; The source image must be a file for thumbnailator to
     // generate the thumbnail.
-    File tempFile = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
-    FileUtils.copyToFile(sourceImage, tempFile);
+    File tempSourceFile = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
+    FileUtils.copyToFile(sourceImageStream, tempSourceFile);
 
-    BufferedImage thumbnailImg = Thumbnails.of(tempFile)
-      .size(200, 200)
-      .outputFormat("jpg")
-      .asBufferedImage();
+    try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+      // Create the thumbnail:
+      Thumbnails.of(tempSourceFile)
+        .size(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+        .outputFormat("jpg")
+        .toOutputStream(os);
+      tempSourceFile.delete();
 
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    ImageIO.write(thumbnailImg, "jpg", os);
-    InputStream thumbnailInputStream = new ByteArrayInputStream(os.toByteArray());
-
-    return thumbnailInputStream;
-
-    // PipedInputStream thumbnail = new PipedInputStream();
-    // new Thread(() -> {
-    //   try (PipedOutputStream pipe = new PipedOutputStream(thumbnail)) {
-    //     Thumbnails.of(tempFile)
-    //       .size(200, 200)
-    //       .outputFormat("jpg")
-    //       .toOutputStream(pipe);
-    //   } catch(IOException e) {
-        
-    //   } finally {
-    //     // tempFile.delete();
-    //   }
-    // }).start();
-    // return thumbnail;
+      ByteArrayInputStream thumbnail = new ByteArrayInputStream(os.toByteArray());
+      return thumbnail;
+    }
   }
 
   public boolean isSupported(String extension) {
