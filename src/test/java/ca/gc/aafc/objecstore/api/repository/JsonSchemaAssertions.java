@@ -159,7 +159,7 @@ public final class JsonSchemaAssertions {
         HttpGet httpget = new HttpGet(testResolvableUri);
         responseBody = httpClient.execute(httpget, builResponseHandler());
       } catch (URISyntaxException | IOException e) {
-        log.info("resolveSchema exception {}", () -> e.getMessage());
+        log.info("resolveSchema exception", e);
        // fail(e.getMessage());
         return null;
       }

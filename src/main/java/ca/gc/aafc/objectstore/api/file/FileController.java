@@ -187,7 +187,7 @@ public class FileController {
       InputStreamResource isr = new InputStreamResource(is);
       return new ResponseEntity<InputStreamResource>(isr, respHeaders, HttpStatus.OK);
     } catch (IOException e) {
-      log.warn("Can't download object", () -> e);
+      log.warn("Can't download object", e);
     }
    
     throw new ResponseStatusException(

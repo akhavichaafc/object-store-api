@@ -128,7 +128,7 @@ public class MinioFileService implements FileInformationService {
     } catch (InvalidKeyException | InvalidBucketNameException | NoSuchAlgorithmException
         | InsufficientDataException | NoResponseException | ErrorResponseException
         | InternalException | InvalidResponseException | IOException | XmlPullParserException e) {
-      log.info("bucketExists exception: {}", () -> e);
+      log.info("bucketExists exception", e);
     }
     return false;
   }
