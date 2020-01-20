@@ -51,6 +51,7 @@ public class ObjectStoreMetadataEntityCRUDIT extends BaseEntityCRUDIT {
     
     //should be auto-generated
     assertNotNull(fetchedObjectStoreMeta.getCreatedDate());
+    assertNotNull(fetchedObjectStoreMeta.getXmpMetadataDate());
   }
 
   @Override

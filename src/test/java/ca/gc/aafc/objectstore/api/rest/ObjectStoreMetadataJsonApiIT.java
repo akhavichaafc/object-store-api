@@ -66,7 +66,6 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
        .xmpRightsWebStatement(null) // default value from configuration should be used
        .dcRights(null) // default value from configuration should be used
        .acDigitizationDate(dateTime4Test)
-       .xmpMetadataDate(dateTime4Test)
        .fileIdentifier(TestConfiguration.TEST_FILE_IDENTIFIER)
        .fileExtension(TestConfiguration.TEST_FILE_EXT)
        .bucket(TestConfiguration.TEST_BUCKET)
@@ -82,7 +81,6 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
 
     OffsetDateTime dateTime4TestUpdate = OffsetDateTime.now();
     objectStoreMetadata.setAcDigitizationDate(dateTime4TestUpdate);
-    objectStoreMetadata.setXmpMetadataDate(dateTime4TestUpdate);
     ObjectStoreMetadataDto objectStoreMetadatadto = mapper.toDto(objectStoreMetadata, null, new CycleAvoidingMappingContext());
     return toAttributeMap(objectStoreMetadatadto);
   }

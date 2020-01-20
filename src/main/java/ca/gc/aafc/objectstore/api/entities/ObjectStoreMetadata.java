@@ -25,6 +25,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
@@ -248,6 +249,7 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
     this.acDigitizationDate = acDigitizationDate;
   }
 
+  @UpdateTimestamp
   @Column(name = "xmp_metadata_date")
   public OffsetDateTime getXmpMetadataDate() {
     return xmpMetadataDate;
