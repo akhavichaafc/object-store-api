@@ -38,10 +38,10 @@ import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
 import io.minio.messages.Item;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 @Service
-@Slf4j
+@Log4j2
 public class MinioFileService implements FileInformationService {
 
   private final MinioClient minioClient;
@@ -128,7 +128,7 @@ public class MinioFileService implements FileInformationService {
     } catch (InvalidKeyException | InvalidBucketNameException | NoSuchAlgorithmException
         | InsufficientDataException | NoResponseException | ErrorResponseException
         | InternalException | InvalidResponseException | IOException | XmlPullParserException e) {
-      log.info("bucketExists exception:", e);
+      log.info("bucketExists exception", e);
     }
     return false;
   }
@@ -173,7 +173,7 @@ public class MinioFileService implements FileInformationService {
     } catch (ErrorResponseException erEx) {
       if (ErrorCode.NO_SUCH_KEY == erEx.errorResponse().errorCode()
           || ErrorCode.NO_SUCH_BUCKET == erEx.errorResponse().errorCode()) {
-        log.debug("file: {}, bucket: {} : not found", fileName, bucketName);
+        log.debug("file: {}, bucket: {} : not found", () -> fileName, () -> bucketName);
         return Optional.empty();
       }
       throw new IOException(erEx);

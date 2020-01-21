@@ -30,7 +30,7 @@ import ca.gc.aafc.objectstore.api.respository.DcTypeJsonSerDe;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * 
@@ -48,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
  * - Helper methods to build JSON API compliant Map ({@link BaseJsonApiIntegrationTest#toJsonAPIMap(String, Map)}
  *
  */
-@Slf4j
+@Log4j2
 public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest {
   
   public static final String JSON_API_CONTENT_TYPE = "application/vnd.api+json";
@@ -142,8 +142,7 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
     URIBuilder uriBuilder = new URIBuilder(SCHEMA_BASE_URI);
     uriBuilder.setPath(SCHEMA_BASE_PATH + "/" + schemaFileName);
     uriBuilder.setPort(testPort);
-    log.info("Validating {} schema against the following response: {}", schemaFileName, responseJson);
-
+    log.info("Validating {} schema against the following response: {}", () -> schemaFileName, () -> responseJson);
     JsonSchemaAssertions.assertJsonSchema(uriBuilder.build(), new StringReader(responseJson));
   }
   
@@ -397,7 +396,7 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
    * @return id of the newly created resource
    */
   protected String sendPost(String resourceName, Map<String, Object> dataMap) {
-    log.info("Posting to resourceName:" + dataMap);
+    log.info("Posting to resourceName: {}", () -> dataMap);
     Response response = given().header("crnk-compact", "true").contentType(JSON_API_CONTENT_TYPE).body(dataMap).when()
         .post(resourceName);
     response.then().statusCode(HttpStatus.CREATED.value());
