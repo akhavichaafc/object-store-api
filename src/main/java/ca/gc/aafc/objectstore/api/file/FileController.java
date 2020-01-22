@@ -48,11 +48,11 @@ import io.minio.errors.InvalidPortException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 @RestController
 @RequestMapping("/api/v1")
-@Slf4j
+@Log4j2
 public class FileController {
 
   public static final String DIGEST_ALGORITHM = "SHA-1";
