@@ -20,8 +20,8 @@ services:
       spring.datasource.url: jdbc:postgresql://database/object_store_test?currentSchema=seqdb
       spring.datasource.username: test
       spring.datasource.password: test
-      spring.liquibase.user: test
-      spring.liquibase.password: test
+      spring.liquibase.user: migrate
+      spring.liquibase.password: migrate
       spring.liquibase.contexts: schema-change
       minio.host: minio
 
