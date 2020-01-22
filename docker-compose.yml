@@ -12,7 +12,7 @@ services:
       - ./src/test/resources/create-test-users.sql:/docker-entrypoint-initdb.d/1-init-schema.sql
 
   object-store-api:
-    build: .
+    image: img_object_store_api:latest
     restart: always
     ports:
       - "8080:8080"
