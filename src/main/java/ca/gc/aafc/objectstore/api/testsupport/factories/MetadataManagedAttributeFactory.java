@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
+import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 
 public class MetadataManagedAttributeFactory implements TestableEntityFactory<MetadataManagedAttribute> {
   

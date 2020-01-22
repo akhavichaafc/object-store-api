@@ -1,5 +1,6 @@
 package ca.gc.aafc.objectstore.api.entities;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -46,6 +47,8 @@ public class ManagedAttribute implements java.io.Serializable, UniqueObj {
   private ManagedAttributeType managedAttributeType;
 
   private String[] acceptedValues;
+  
+  private OffsetDateTime createdDate;
 
   public enum ManagedAttributeType {
     INTEGER, STRING
@@ -101,6 +104,15 @@ public class ManagedAttribute implements java.io.Serializable, UniqueObj {
 
   public void setAcceptedValues(String[] acceptedValues) {
     this.acceptedValues = acceptedValues;
+  }
+  
+  @Column(name = "created_date", insertable = false, updatable = false)
+  public OffsetDateTime getCreatedDate() {
+    return createdDate;
+  }
+  
+  public void setCreatedDate(OffsetDateTime createdDate) {
+    this.createdDate = createdDate;
   }
 
 }
