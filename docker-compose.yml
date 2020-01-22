@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: brf
       POSTGRES_PASSWORD: brf
     volumes:
-      - ./src/test/resources/create-test-users.sql:/docker-entrypoint-initdb.d/1-init-schema.sql
+      - ./src/test/resources:/docker-entrypoint-initdb.d
 
   object-store-api:
     image: img_object_store_api:latest

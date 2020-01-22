@@ -1,0 +1,22 @@
+CREATE DATABASE object_store_test;
+
+REVOKE CONNECT ON DATABASE object_store_test FROM PUBLIC;
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+
+CREATE SCHEMA seqdb;
+
+-- depends on the "seqdb" schema
+CREATE ROLE seqdb_migration NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN PASSWORD 'changeme2';
+GRANT CONNECT ON DATABASE object_store_test TO seqdb_migration;
+GRANT USAGE, CREATE ON SCHEMA seqdb TO seqdb_migration;
+ALTER DEFAULT PRIVILEGES IN SCHEMA seqdb GRANT ALL PRIVILEGES ON TABLES TO seqdb_migration;
+
+CREATE ROLE test NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN PASSWORD 'test';;
+GRANT CONNECT ON DATABASE object_store_test TO seqdb_webapp;
+GRANT USAGE ON SCHEMA seqdb TO test;
+GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES ON ALL TABLES IN SCHEMA seqdb TO test;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA seqdb TO test;
+
+ALTER DEFAULT PRIVILEGES FOR USER seqdb_migration IN SCHEMA seqdb GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES ON TABLES TO test;
+ALTER DEFAULT PRIVILEGES FOR USER seqdb_migration IN SCHEMA seqdb GRANT SELECT, USAGE ON SEQUENCES TO test;
+--FOR USER seqdb_migration is not a typo here, it means something like "when user seqdb_migration do something (create), grant the following permissions.

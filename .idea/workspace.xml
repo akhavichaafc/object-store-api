@@ -2,15 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aa122107-baa4-4858-8513-720e90028c50" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/test/resources/schema.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/index.adoc" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.adoc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ca/gc/aafc/objectstore/api/file/FileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ca/gc/aafc/objectstore/api/file/FileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ca/gc/aafc/objectstore/api/minio/MinioFileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ca/gc/aafc/objectstore/api/minio/MinioFileService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ca/gc/aafc/objectstore/api/respository/MetadataManagedAttributeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ca/gc/aafc/objectstore/api/respository/MetadataManagedAttributeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ca/gc/aafc/objectstore/api/respository/ObjectStoreResourceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ca/gc/aafc/objectstore/api/respository/ObjectStoreResourceRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ca/gc/aafc/objecstore/api/repository/JsonSchemaAssertions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ca/gc/aafc/objecstore/api/repository/JsonSchemaAssertions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ca/gc/aafc/objectstore/api/rest/BaseJsonApiIntegrationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ca/gc/aafc/objectstore/api/rest/BaseJsonApiIntegrationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +66,15 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../object-store-api_dev" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/db" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\dooleyp\share\object-store-api\src\test\resources" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\dooleyp\share\object-store-api\src\main\resources\db" />
+    </key>
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
@@ -97,7 +99,7 @@
       <option name="presentableId" value="Default" />
       <updated>1579546123235</updated>
       <workItem from="1579546124628" duration="3871000" />
-      <workItem from="1579725728168" duration="2652000" />
+      <workItem from="1579725728168" duration="4023000" />
     </task>
     <task id="LOCAL-00001" summary="aa">
       <created>1579546177741</created>
@@ -127,7 +129,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579729500473</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="aa">
+      <created>1579730407240</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1579730407240</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -144,14 +153,14 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6503" y="170" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579546765803" />
-    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579729499524">
+    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579730405683">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579729499524" />
-    <state x="6766" y="370" key="FileChooserDialogImpl" timestamp="1579730175813">
+    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579730405683" />
+    <state x="6766" y="370" key="FileChooserDialogImpl" timestamp="1579730615694">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6766" y="370" key="FileChooserDialogImpl/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579730175813" />
+    <state x="6766" y="370" key="FileChooserDialogImpl/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579730615694" />
     <state x="6128" y="183" key="MergeDialog" timestamp="1579729489461">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
@@ -164,10 +173,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6651" y="314" key="NewModule_or_Project.wizard/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579730139362" />
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579729503419">
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579730408871">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579729503419" />
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579730408871" />
     <state x="6113" y="311" key="git4idea.merge.GitPullDialog" timestamp="1579546155412">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
