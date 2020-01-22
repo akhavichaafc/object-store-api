@@ -1,20 +1,33 @@
+version: "3"
+
 services:
-  db:
-    image: "postgres:9.6"
-    container_name: "objectstore_test_postgres"
+  database:
+    image: postgres:9.6.15-alpine
+    restart: always
     environment:
       POSTGRES_DB: object_store_test
-      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER: brf
+      POSTGRES_PASSWORD: brf
     volumes:
       - ./src/test/resources/create-test-users.sql:/docker-entrypoint-initdb.d/1-init-schema.sql
+
+  object-store-api:
+    build: .
+    restart: always
     ports:
-      - "5432:5432"
-      
+      - "8080:8080"
+    environment:
+      spring.datasource.url: jdbc:postgresql://database/object_store_test?currentSchema=objectstore
+      spring.datasource.username: brf
+      spring.datasource.password: brf
+      spring.liquibase.user: brf
+      spring.liquibase.password: brf
+      spring.liquibase.contexts: schema-change
+      minio.host: minio
+
   minio:
     image: minio/minio
     container_name: minio
-    volumes:
-       - ./minio-data:/data
     environment:
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: minio123
