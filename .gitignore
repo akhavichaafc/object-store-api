@@ -2,6 +2,4 @@
 .project
 /.settings
 /target/
-/.idea/
 /nohup.out
-/workspace.xml

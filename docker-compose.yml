@@ -21,15 +21,14 @@ services:
     env_file:
       - ./object_store_api.env
 
-#  minio:
-#    image: minio/minio
-#    container_name: minio
-#    environment:
-#      MINIO_ACCESS_KEY: minio
-#      MINIO_SECRET_KEY: minio123
-#    ports:
-#      - "9000:9000"
-#    command: server /data
+  minio:
+    image: minio/minio
+    container_name: minio
+    env_file:
+      - ./minio.env
+    ports:
+      - "9000:9000"
+    command: server /data
 
 volumes:
   database-data:
