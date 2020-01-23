@@ -1,0 +1,8 @@
+PGDATA=/var/lib/postgresql/data/pgdata
+
+POSTGRES_DB=object_store_test
+
+POSTGRES_USER=brf
+
+POSTGRES_PASSWORD=brf
+
