@@ -6,7 +6,7 @@ services:
     restart: always
     env_file:
      - ./postgres.env
-    env:
+    environment:
       - POSTGRES_DB=object_store_test
       - POSTGRES_USER=brf
       - POSTGRES_PASSWORD=brf
