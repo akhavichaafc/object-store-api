@@ -10,6 +10,8 @@ services:
       POSTGRES_PASSWORD: test
     volumes:
       - ./src/test/resources:/docker-entrypoint-initdb.d
+    ports:
+      - 127.0.0.1:8126:8126/tcp:
 
   object-store-api:
     image: img_object_store_api:latest
