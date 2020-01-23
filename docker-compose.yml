@@ -1,18 +1,14 @@
-# docker-compose.yml
 version: "3"
-services:
+
+ices:
   database:
     image: postgres:9.6.15-alpine
     restart: always
-  environment:
-    POSTGRES_DB=object_store_test
-    POSTGRES_USER=brf
-    POSTGRES_PASSWORD=brf
- # env_file:
- #    - postgres.env
+    env_file:
+     - ./postgres.env
     volumes:
       - ./src/test/resources:/docker-entrypoint-initdb.d
-#      - database-data:/var/lib/postgresql/data
+      - database-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
