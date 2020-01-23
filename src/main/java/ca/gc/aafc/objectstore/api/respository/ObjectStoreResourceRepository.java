@@ -98,6 +98,9 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     ObjectStoreMetadata objectStoreMetadata = loadObjectStoreMetadata(uuid).orElseThrow( () -> new ResourceNotFoundException(
           this.getClass().getSimpleName() + " with ID " + uuid + " Not Found."));
     
+    if( objectStoreMetadata.getDeletedDate() != null ) {
+      throw new GoneException("ID " + uuid + " deleted");
+    }
     
     return mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName), new CycleAvoidingMappingContext());
   }

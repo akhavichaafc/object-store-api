@@ -125,6 +125,9 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
     // the metadata with a deletedDate should not be in that list
     responseUpdate.body("data.id", Matchers.not(Matchers.hasItem(Matchers.containsString(id))));
     
+    //returns 410 as expected
+    //responseUpdate = sendGet(id);
+    
     // cleanup
     sendDelete(id);
   }
