@@ -5,7 +5,6 @@ WORKDIR /workspace/app
 
 COPY pom.xml .
 COPY src src
-COPY src/test/resources /docker-entrypoint-initdb.d/
 
 RUN --mount=type=cache,target=/root/.m2 mvn install -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
