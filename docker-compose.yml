@@ -5,8 +5,8 @@ services:
     image: postgres:9.6.15-alpine
     restart: always
     environment:
-      POSTGRES_DB: "$POSTGRES_DB"
-      PGDATA: "$PGDATA"
+      - POSTGRES_DB
+      - PGDATA
     volumes:
       - ./src/test/resources:/docker-entrypoint-initdb.d
 
