@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="seqdb_obj@localhost" uuid="db8b2394-38b3-4e93-b3c3-958bf5d71a55">
+    <data-source source="LOCAL" name="object_store_test@localhost" uuid="db8b2394-38b3-4e93-b3c3-958bf5d71a55">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5532/seqdb_obj</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5532/object_store_test</jdbc-url>
     </data-source>
   </component>
 </project>
