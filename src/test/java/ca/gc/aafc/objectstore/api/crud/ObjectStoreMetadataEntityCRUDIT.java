@@ -26,7 +26,9 @@ public class ObjectStoreMetadataEntityCRUDIT extends BaseEntityCRUDIT {
   private final OffsetDateTime TEST_OFFSET_DT = TEST_ZONED_DT.toOffsetDateTime();
 
   private ObjectStoreMetadata objectStoreMetaUnderTest = ObjectStoreMetadataFactory
-      .newObjectStoreMetadata().acDigitizationDate(TEST_OFFSET_DT).build();
+      .newObjectStoreMetadata()
+      .acDigitizationDate(TEST_OFFSET_DT)
+      .build();
 
   @Override
   public void testSave() {
@@ -46,6 +48,10 @@ public class ObjectStoreMetadataEntityCRUDIT extends BaseEntityCRUDIT {
         fetchedObjectStoreMeta.getAcDigitizationDate()
         .atZoneSameInstant(MTL_TZ)
         .toOffsetDateTime());
+    
+    //should be auto-generated
+    assertNotNull(fetchedObjectStoreMeta.getCreatedDate());
+    assertNotNull(fetchedObjectStoreMeta.getXmpMetadataDate());
   }
 
   @Override

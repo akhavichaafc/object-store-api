@@ -25,6 +25,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
@@ -73,6 +74,8 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   private String acHashFunction;
   private String acHashValue;
   private String[] acTags;
+  
+  private OffsetDateTime createdDate;
   
   private List<MetadataManagedAttribute> managedAttribute;
   private Agent acMetadataCreator;
@@ -216,6 +219,7 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   }
   
   @Column(name = "dc_format")
+  @Size(max = 150)
   public String getDcFormat() {
     return dcFormat;
   }
@@ -245,6 +249,7 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
     this.acDigitizationDate = acDigitizationDate;
   }
 
+  @UpdateTimestamp
   @Column(name = "xmp_metadata_date")
   public OffsetDateTime getXmpMetadataDate() {
     return xmpMetadataDate;
@@ -291,6 +296,15 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
 
   public void setAcTags(String[] acTags) {
     this.acTags = acTags;
+  }
+  
+  @Column(name = "created_date", insertable = false, updatable = false)
+  public OffsetDateTime getCreatedDate() {
+    return createdDate;
+  }
+  
+  public void setCreatedDate(OffsetDateTime createdDate) {
+    this.createdDate = createdDate;
   }
 
   @OneToMany
