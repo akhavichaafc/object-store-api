@@ -18,8 +18,8 @@ services:
       spring.datasource.url: jdbc:postgresql://database/object_store_test
       spring.datasource.username: test
       spring.datasource.password: test
-      spring.liquibase.user: test2
-      spring.liquibase.password: test2
+      spring.liquibase.user: test
+      spring.liquibase.password: test
       spring.liquibase.contexts: schema-change
       minio.host: minio
 
