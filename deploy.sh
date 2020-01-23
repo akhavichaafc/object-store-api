@@ -1,3 +1,3 @@
 #source ./env.sh
 #./build.sh
-docker-compose up
+docker-compose up  --remove-orphans
