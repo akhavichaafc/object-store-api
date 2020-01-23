@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2f40d33f-fcc8-43e8-a005-9054304ebb60" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/object-store-api.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/object_store_api.env" beforeDir="false" afterPath="$PROJECT_DIR$/object_store_api.env" afterDir="false" />
+    <list default="true" id="4cb8ae24-a003-4db2-b9e9-b2fe1979098d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/debug.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/env_proj.sh" beforeDir="false" afterPath="$PROJECT_DIR$/env_proj.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,22 +15,27 @@
     <option name="done" value="true" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
   </component>
-  <component name="ProjectId" id="1WoURL0JyLZvCqwa8Hh9GdiAE05" />
+  <component name="ProjectId" id="1WoVn3GCmhOfQ3jljLJPHpFmAmA" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
@@ -56,13 +54,12 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="2f40d33f-fcc8-43e8-a005-9054304ebb60" name="Default Changelist" comment="" />
-      <created>1579815431414</created>
+      <changelist id="4cb8ae24-a003-4db2-b9e9-b2fe1979098d" name="Default Changelist" comment="" />
+      <created>1579816097971</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1579815431414</updated>
-      <workItem from="1579815434587" duration="23000" />
-      <workItem from="1579815504142" duration="36000" />
+      <updated>1579816097971</updated>
+      <workItem from="1579816101376" duration="277000" />
     </task>
     <servers />
   </component>
@@ -70,17 +67,9 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="6057" y="219" key="CommitChangelistDialog2" timestamp="1579815844252">
+    <state x="6143" y="316" key="git4idea.merge.GitPullDialog" timestamp="1579816156105">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6057" y="219" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579815844252" />
-    <state x="5760" y="96" key="DiffContextDialog" timestamp="1579815751701">
-      <screen x="5760" y="0" width="1920" height="1040" />
-    </state>
-    <state x="5760" y="96" key="DiffContextDialog/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579815751701" />
-    <state x="6035" y="246" key="Vcs.Push.Dialog.v2" timestamp="1579815863709">
-      <screen x="5760" y="0" width="1920" height="1040" />
-    </state>
-    <state x="6035" y="246" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579815863709" />
+    <state x="6143" y="316" key="git4idea.merge.GitPullDialog/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579816156105" />
   </component>
 </project>

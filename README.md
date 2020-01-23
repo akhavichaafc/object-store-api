@@ -4,6 +4,10 @@ AAFC DINA object-store implementation.
 
 See DINA object-store [specification](https://github.com/DINA-Web/object-store-specs).
 
+## Start
+Run the shell script 'deploy.sh'. This will build object-store-api and initiate required
+services.
+
 ## Database
 This project requires a PostgreSQL database to run and to run integration tests.
 
