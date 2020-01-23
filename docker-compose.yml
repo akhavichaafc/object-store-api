@@ -5,9 +5,9 @@ services:
     image: postgres:9.6.15-alpine
     restart: always
   environment:
-    POSTGRES_DB: object_store_test
-    POSTGRES_USER: brf
-    POSTGRES_PASSWORD: brf
+    POSTGRES_DB=object_store_test
+    POSTGRES_USER=brf
+    POSTGRES_PASSWORD=brf
  # env_file:
  #    - postgres.env
     volumes:
