@@ -12,8 +12,6 @@ services:
     ports:
       - "5432:5432"
 
-volumes:
-  database-data:
 
   object-store-api:
     image: img_object_store_api
@@ -38,3 +36,6 @@ volumes:
 #    ports:
 #      - "9000:9000"
 #    command: server /data
+
+volumes:
+  database-data:

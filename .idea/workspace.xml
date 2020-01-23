@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="aa122107-baa4-4858-8513-720e90028c50" name="Default Changelist" comment="">
+    <list default="true" id="aa122107-baa4-4858-8513-720e90028c50" name="Default Changelist" comment="Added build of Object_store_api app to deploy command">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,14 +110,7 @@
       <workItem from="1579794318559" duration="1866000" />
       <workItem from="1579803482906" duration="742000" />
       <workItem from="1579804276817" duration="599000" />
-      <workItem from="1579805117588" duration="6739000" />
-    </task>
-    <task id="LOCAL-00033" summary="aa">
-      <created>1579793233160</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1579793233160</updated>
+      <workItem from="1579805117588" duration="7829000" />
     </task>
     <task id="LOCAL-00034" summary="aa">
       <created>1579793694154</created>
@@ -455,7 +448,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579811883532</updated>
     </task>
-    <option name="localTasksCounter" value="82" />
+    <task id="LOCAL-00082" summary="Added build of Object_store_api app to deploy command">
+      <created>1579811938168</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1579811938168</updated>
+    </task>
+    <option name="localTasksCounter" value="83" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -477,7 +477,8 @@
     <MESSAGE value="aa" />
     <MESSAGE value="database persistence for Object_store" />
     <MESSAGE value="Added Object_store_api app to compose file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Object_store_api app to compose file" />
+    <MESSAGE value="Added build of Object_store_api app to deploy command" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added build of Object_store_api app to deploy command" />
   </component>
   <component name="WindowStateProjectService">
     <state x="6604" y="273" key="#SQL_Dialects" timestamp="1579803569857">
@@ -492,10 +493,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6767" y="418" key="#com.intellij.fileTypes.FileTypeChooser/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579802623154" />
-    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579811882579">
+    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579812083104">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579811882579" />
+    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579812083104" />
     <state x="6158" y="330" width="1414" height="569" key="DiffContextDialog" timestamp="1579743273296">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
@@ -516,10 +517,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6651" y="314" key="NewModule_or_Project.wizard/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579811167795" />
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579811884892">
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579811939380">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579811884892" />
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579811939380" />
     <state x="6562" y="346" width="606" height="536" key="find.popup" timestamp="1579733190151">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
