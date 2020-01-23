@@ -8,12 +8,12 @@ services:
      - ./postgres.env
     volumes:
       - ./src/test/resources:/docker-entrypoint-initdb.d
- #     - database-data:/var/lib/postgresql/data
+      - database-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
-#volumes:
-#  database-data:
+volumes:
+  database-data:
 
 #  object-store-api:
 #    image: img_object_store_api
