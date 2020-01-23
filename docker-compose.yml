@@ -15,19 +15,19 @@ services:
 volumes:
   database-data:
 
-#  object-store-api:
-#    image: img_object_store_api
-#    restart: always
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      spring.datasource.url: jdbc:postgresql://database/object_store_test
-#      spring.datasource.username: test
-#      spring.datasource.password: test
-#      spring.liquibase.user: test
-#     spring.liquibase.password: test
-#     spring.liquibase.contexts: schema-change
-#      minio.host: minio
+  object-store-api:
+    image: img_object_store_api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      spring.datasource.url: jdbc:postgresql://database/object_store_test
+      spring.datasource.username: test
+      spring.datasource.password: test
+      spring.liquibase.user: test
+      spring.liquibase.password: test
+      spring.liquibase.contexts: schema-change
+      minio.host: minio
 
 #  minio:
 #    image: minio/minio
