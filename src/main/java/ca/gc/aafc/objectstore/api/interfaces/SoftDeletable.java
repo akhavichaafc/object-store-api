@@ -4,7 +4,7 @@ import java.time.OffsetDateTime;
 
 public interface SoftDeletable {
   
-  static final String DELETED_DATE_FIELD_NAME = "deletedDate";
+  String DELETED_DATE_FIELD_NAME = "deletedDate";
 
   OffsetDateTime getDeletedDate();
 
