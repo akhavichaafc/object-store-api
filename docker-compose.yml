@@ -2,7 +2,7 @@ version: "3"
 
 services:
   database:
-    image: postgres:9.6.15-alpine
+    image: img_postgres_obj:latest
     restart: always
     environment:
       POSTGRES_DB: object_store_test

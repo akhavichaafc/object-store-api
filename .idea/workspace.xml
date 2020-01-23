@@ -33,27 +33,6 @@
         <item name="object_store_test@localhost" type="feb32156:DbDataSourceImpl" />
         <item name="databases" type="d4e8921:DatabaseStructure$FamilyGroup" />
       </path>
-      <path>
-        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="object_store_test@localhost" type="feb32156:DbDataSourceImpl" />
-        <item name="databases" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="object_store_test: database" type="162271b6:PgImplModel$Database" />
-      </path>
-      <path>
-        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="object_store_test@localhost" type="feb32156:DbDataSourceImpl" />
-        <item name="databases" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="object_store_test: database" type="162271b6:PgImplModel$Database" />
-        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
-      </path>
-      <path>
-        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="object_store_test@localhost" type="feb32156:DbDataSourceImpl" />
-        <item name="databases" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="object_store_test: database" type="162271b6:PgImplModel$Database" />
-        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="public: schema" type="983ebcf7:PgImplModel$Schema" />
-      </path>
     </expand>
     <select />
   </component>
@@ -91,6 +70,7 @@
       <recent name="C:\Users\dooleyp\share\object-store-api\src\test\resources" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\dooleyp\share\object-store-api\src\test\resources" />
       <recent name="C:\Users\dooleyp\share\object-store-api\src\main\resources\db" />
     </key>
   </component>
@@ -117,7 +97,7 @@
       <option name="presentableId" value="Default" />
       <updated>1579546123235</updated>
       <workItem from="1579546124628" duration="3871000" />
-      <workItem from="1579725728168" duration="8052000" />
+      <workItem from="1579725728168" duration="8299000" />
     </task>
     <task id="LOCAL-00001" summary="aa">
       <created>1579546177741</created>
@@ -224,7 +204,21 @@
       <option name="project" value="LOCAL" />
       <updated>1579739431455</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="aa">
+      <created>1579739641607</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1579739641608</updated>
+    </task>
+    <task id="LOCAL-00017" summary="aa">
+      <created>1579739703135</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1579739703135</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -241,10 +235,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6503" y="170" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579739579999" />
-    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579739640487">
+    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579739702197">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579739640487" />
+    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579739702197" />
     <state x="6766" y="370" key="FileChooserDialogImpl" timestamp="1579730615694">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
@@ -261,10 +255,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6651" y="314" key="NewModule_or_Project.wizard/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579730139362" />
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579739642821">
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579739705512">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579739642821" />
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579739705512" />
     <state x="6562" y="346" width="606" height="536" key="find.popup" timestamp="1579733190151">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
