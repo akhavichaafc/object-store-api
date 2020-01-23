@@ -10,7 +10,7 @@ services:
       - ./src/test/resources:/docker-entrypoint-initdb.d
 
   object-store-api:
-    image: img_object_store_api:latest
+    image: img_object_store_api
     restart: always
     ports:
       - "8080:8080"

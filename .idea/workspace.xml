@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="aa122107-baa4-4858-8513-720e90028c50" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +99,7 @@
       <option name="presentableId" value="Default" />
       <updated>1579546123235</updated>
       <workItem from="1579546124628" duration="3871000" />
-      <workItem from="1579725728168" duration="9848000" />
+      <workItem from="1579725728168" duration="10890000" />
     </task>
     <task id="LOCAL-00001" summary="aa">
       <created>1579546177741</created>
@@ -267,7 +269,28 @@
       <option name="project" value="LOCAL" />
       <updated>1579741300864</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="aa">
+      <created>1579741418306</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1579741418306</updated>
+    </task>
+    <task id="LOCAL-00026" summary="aa">
+      <created>1579741596225</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1579741596225</updated>
+    </task>
+    <task id="LOCAL-00027" summary="aa">
+      <created>1579742167044</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1579742167044</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -284,10 +307,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6503" y="170" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579739579999" />
-    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579741417366">
+    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579742166120">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579741417366" />
+    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579742166120" />
     <state x="6766" y="370" key="FileChooserDialogImpl" timestamp="1579730615694">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
@@ -304,10 +327,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6651" y="314" key="NewModule_or_Project.wizard/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579730139362" />
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579741301959">
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579742168202">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579741301959" />
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579742168202" />
     <state x="6562" y="346" width="606" height="536" key="find.popup" timestamp="1579733190151">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
