@@ -6,8 +6,6 @@ services:
     restart: always
     environment:
       POSTGRES_DB: object_store_test
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
     volumes:
       - ./src/test/resources:/docker-entrypoint-initdb.d
 
@@ -16,6 +14,14 @@ services:
     restart: always
     ports:
       - "8080:8080"
+    environment:
+      spring.datasource.url: jdbc:postgresql://database/object_store_test
+      spring.datasource.username: test
+      spring.datasource.password: test
+      spring.liquibase.user: test2
+      spring.liquibase.password: test2
+      spring.liquibase.contexts: schema-change
+      minio.host: minio
 
   minio:
     image: minio/minio
