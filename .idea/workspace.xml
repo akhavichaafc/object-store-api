@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="aa122107-baa4-4858-8513-720e90028c50" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,28 +110,7 @@
       <workItem from="1579794318559" duration="1866000" />
       <workItem from="1579803482906" duration="742000" />
       <workItem from="1579804276817" duration="599000" />
-      <workItem from="1579805117588" duration="6482000" />
-    </task>
-    <task id="LOCAL-00030" summary="aa">
-      <created>1579743005523</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1579743005523</updated>
-    </task>
-    <task id="LOCAL-00031" summary="aa">
-      <created>1579743277892</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1579743277892</updated>
-    </task>
-    <task id="LOCAL-00032" summary="aa">
-      <created>1579792937375</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1579792937375</updated>
+      <workItem from="1579805117588" duration="6739000" />
     </task>
     <task id="LOCAL-00033" summary="aa">
       <created>1579793233160</created>
@@ -454,7 +434,28 @@
       <option name="project" value="LOCAL" />
       <updated>1579810821251</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="aa">
+      <created>1579811701608</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1579811701608</updated>
+    </task>
+    <task id="LOCAL-00080" summary="database persistence for Object_store">
+      <created>1579811773085</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1579811773086</updated>
+    </task>
+    <task id="LOCAL-00081" summary="Added Object_store_api app to compose file">
+      <created>1579811883532</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1579811883532</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -474,7 +475,9 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="aa" />
-    <option name="LAST_COMMIT_MESSAGE" value="aa" />
+    <MESSAGE value="database persistence for Object_store" />
+    <MESSAGE value="Added Object_store_api app to compose file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Object_store_api app to compose file" />
   </component>
   <component name="WindowStateProjectService">
     <state x="6604" y="273" key="#SQL_Dialects" timestamp="1579803569857">
@@ -489,10 +492,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6767" y="418" key="#com.intellij.fileTypes.FileTypeChooser/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579802623154" />
-    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579811772166">
+    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579811882579">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579811772166" />
+    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579811882579" />
     <state x="6158" y="330" width="1414" height="569" key="DiffContextDialog" timestamp="1579743273296">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
@@ -513,10 +516,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6651" y="314" key="NewModule_or_Project.wizard/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579811167795" />
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579811774494">
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579811884892">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579811774494" />
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579811884892" />
     <state x="6562" y="346" width="606" height="536" key="find.popup" timestamp="1579733190151">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
