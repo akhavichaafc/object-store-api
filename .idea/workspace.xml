@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="aa122107-baa4-4858-8513-720e90028c50" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env_proj.sh" beforeDir="false" afterPath="$PROJECT_DIR$/env_proj.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,10 +69,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\dooleyp\share\object-store-api" />
       <recent name="C:\Users\dooleyp\share\object-store-api\src\test\resources" />
+      <recent name="C:\Users\dooleyp\share\object-store-api" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\dooleyp\share\object-store-api\src\test\resources\ca" />
       <recent name="C:\Users\dooleyp\share\object-store-api\src\test\resources" />
       <recent name="C:\Users\dooleyp\share\object-store-api\src\main\resources\db" />
     </key>
@@ -97,7 +101,7 @@
       <option name="presentableId" value="Default" />
       <updated>1579546123235</updated>
       <workItem from="1579546124628" duration="3871000" />
-      <workItem from="1579725728168" duration="12626000" />
+      <workItem from="1579725728168" duration="13269000" />
     </task>
     <task id="LOCAL-00001" summary="aa">
       <created>1579546177741</created>
@@ -323,7 +327,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579792937375</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="aa">
+      <created>1579793233160</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1579793233160</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -350,10 +361,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6503" y="170" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579739579999" />
-    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579792936150">
+    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579793231897">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579792936150" />
+    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579793231897" />
     <state x="6158" y="330" width="1414" height="569" key="DiffContextDialog" timestamp="1579743273296">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
@@ -374,10 +385,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6651" y="314" key="NewModule_or_Project.wizard/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579730139362" />
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579792939332">
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579793234806">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579792939332" />
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579793234806" />
     <state x="6562" y="346" width="606" height="536" key="find.popup" timestamp="1579733190151">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>

@@ -28,3 +28,8 @@ printenv SPRING_LIQUIBASE_PASSWORD
 export IMPORT_SAMPLE_ACCOUNTS=true
 printenv IMPORT_SAMPLE_ACCOUNTS
 
+export PGDATA="/var/lib/postgresql/data/pgdata"
+printenv PGDATA
+
+export BIC_MOUNT_PATH="/var/lib/postgresql/data"
+printenv BIC_MOUNT_PATH
