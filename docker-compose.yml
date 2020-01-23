@@ -4,7 +4,7 @@ services:
   database:
     image: postgres:9.6.15-alpine
     restart: always
-    env_file: env_spring
+    env_file: env_postgres
     volumes:
       - ./src/test/resources:/docker-entrypoint-initdb.d
     ports:
