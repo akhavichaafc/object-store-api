@@ -193,7 +193,7 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
     return ImmutableMap.of("data", bldr.build());
   }
   
-  private static Map<String, Object> toRelationshipMap(List<Relationship> relationship) {
+  protected static Map<String, Object> toRelationshipMap(List<Relationship> relationship) {
     if( relationship == null) {
       return null;
     }

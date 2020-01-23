@@ -42,6 +42,8 @@ public class ObjectStoreMetadataDto {
   private String acHashValue;
   
   private OffsetDateTime createdDate;
+  @JsonInclude(Include.NON_EMPTY)
+  private OffsetDateTime deletedDate;
   
   @JsonInclude(Include.NON_EMPTY)
   private Set<String> acTags;
