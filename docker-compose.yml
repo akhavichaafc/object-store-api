@@ -11,7 +11,7 @@ services:
  #     - "POSTGRES_PASSWORD: brf"
     volumes:
       - ./src/test/resources:/docker-entrypoint-initdb.d
-      - database-data:/var/lib/postgresql/data
+#      - database-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
