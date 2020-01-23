@@ -7,7 +7,7 @@ services:
     env_file:
      - ./postgres.env
     environment:
-      - POSTGRES_DB: object_store_test
+      - POSTGRES_DB: "object_store_test"
       - POSTGRES_USER: brf
       - POSTGRES_PASSWORD: brf
     volumes:
