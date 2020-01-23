@@ -44,7 +44,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="Feature_18288_keycloak_auth_docker" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -489,10 +489,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6767" y="418" key="#com.intellij.fileTypes.FileTypeChooser/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579802623154" />
-    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579810565872">
+    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579810753100">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579810565872" />
+    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579810753100" />
     <state x="6158" y="330" width="1414" height="569" key="DiffContextDialog" timestamp="1579743273296">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
