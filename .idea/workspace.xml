@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="aa122107-baa4-4858-8513-720e90028c50" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/1-schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/1-schema.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,7 +100,7 @@
       <updated>1579546123235</updated>
       <workItem from="1579546124628" duration="3871000" />
       <workItem from="1579725728168" duration="13884000" />
-      <workItem from="1579794318559" duration="378000" />
+      <workItem from="1579794318559" duration="612000" />
     </task>
     <task id="LOCAL-00001" summary="aa">
       <created>1579546177741</created>
@@ -368,7 +368,21 @@
       <option name="project" value="LOCAL" />
       <updated>1579794489261</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="aa">
+      <created>1579794701388</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1579794701388</updated>
+    </task>
+    <task id="LOCAL-00040" summary="aa">
+      <created>1579794862600</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1579794862600</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -391,14 +405,14 @@
     <option name="LAST_COMMIT_MESSAGE" value="aa" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="6503" y="170" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1579794722117">
+    <state x="6503" y="170" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1579794911711">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6503" y="170" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579794722117" />
-    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579794700405">
+    <state x="6503" y="170" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579794911711" />
+    <state x="6038" y="214" key="CommitChangelistDialog2" timestamp="1579794861586">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579794700405" />
+    <state x="6038" y="214" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579794861586" />
     <state x="6158" y="330" width="1414" height="569" key="DiffContextDialog" timestamp="1579743273296">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
@@ -419,10 +433,10 @@
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6651" y="314" key="NewModule_or_Project.wizard/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579730139362" />
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579794703044">
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2" timestamp="1579794864063">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579794703044" />
+    <state x="6005" y="241" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579794864063" />
     <state x="6562" y="346" width="606" height="536" key="find.popup" timestamp="1579733190151">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
