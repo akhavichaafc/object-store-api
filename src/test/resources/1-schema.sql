@@ -1,1 +1,1 @@
-CREATE SCHEMA seqdb;
+CREATE SCHEMA objectstore;
