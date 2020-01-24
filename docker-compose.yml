@@ -33,7 +33,6 @@ services:
 
   object-store-api:
     image: img_object_store_api
-    restart: always
     ports:
       - "8081:8080"
     env_file:
