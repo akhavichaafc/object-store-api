@@ -2,50 +2,47 @@ version: "3"
 
 services:
   database:
-    image: postgres:9.6.15-alpine
-    restart: always
+    image: postgres
     env_file:
      - ./env/db.env
     volumes:
       - ./schema:/docker-entrypoint-initdb.d
       - database-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
   database_kc:
-    image: postgres:9.6.15-alpine
-    restart: always
+    image: postgres
     env_file:
       - env/db_kc.env
     volumes:
-      - ./schema/keycloak:/docker-entrypoint-initdb.d
       - database-data-kc:/var/lib/postgresql/data
-    ports:
-      - "5532:5432"
 
   keycloak:
     image: jboss/keycloak
     ports:
-      - "9990:9990"
+      - "8080:8080"
     env_file:
       - ./env/auth.env
+    depends_on:
+      - database_kc
 
   minio:
     image: minio/minio
     container_name: minio
     env_file:
       - ./env/minio.env
-    ports:
-      - "9000:9000"
     command: server /data
 
   object-store-api:
     image: img_object_store_api
     restart: always
     ports:
-      - "8080:8080"
+      - "8081:8080"
     env_file:
       - ./env/app.env
+    depends_on:
+      - minio
+      - database
+      - keycloak
 
 
 volumes:
