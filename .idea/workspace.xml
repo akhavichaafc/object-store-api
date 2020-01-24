@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4cb8ae24-a003-4db2-b9e9-b2fe1979098d" name="Default Changelist" comment="merge dev">
+    <list default="true" id="4cb8ae24-a003-4db2-b9e9-b2fe1979098d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/app.env" beforeDir="false" afterPath="$PROJECT_DIR$/env/app.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/auth.env" beforeDir="false" afterPath="$PROJECT_DIR$/env/auth.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/db.env" beforeDir="false" afterPath="$PROJECT_DIR$/env/db.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/env.sh" beforeDir="false" afterPath="$PROJECT_DIR$/env/env.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/env_proj.sh" beforeDir="false" afterPath="$PROJECT_DIR$/env/env_proj.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schema/keycloak/1-schema.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/schema/keycloak/2-users.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/schema/keycloak/3-revoke.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +61,7 @@
       <updated>1579816097971</updated>
       <workItem from="1579816101376" duration="1254000" />
       <workItem from="1579817551573" duration="1272000" />
-      <workItem from="1579833079485" duration="1930000" />
+      <workItem from="1579833079485" duration="2309000" />
     </task>
     <task id="LOCAL-00001" summary="Cleaned up stuff. Modified Readme file">
       <created>1579816419696</created>
@@ -91,7 +84,21 @@
       <option name="project" value="LOCAL" />
       <updated>1579833281845</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="merge dev">
+      <created>1579900948423</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1579900948424</updated>
+    </task>
+    <task id="LOCAL-00005" summary="merge dev">
+      <created>1579901168730</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1579901168730</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -100,21 +107,22 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Cleaned up stuff. Modified Readme file" />
     <MESSAGE value="First attempt integrating keycloak (with persistence)" />
-    <option name="LAST_COMMIT_MESSAGE" value="First attempt integrating keycloak (with persistence)" />
+    <MESSAGE value="merge dev" />
+    <option name="LAST_COMMIT_MESSAGE" value="merge dev" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="6057" y="219" key="CommitChangelistDialog2" timestamp="1579900946986">
+    <state x="6057" y="219" key="CommitChangelistDialog2" timestamp="1579901167751">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6057" y="219" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579900946986" />
+    <state x="6057" y="219" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579901167751" />
     <state x="6223" y="280" key="FileChooserDialogImpl" timestamp="1579816754432">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6223" y="280" key="FileChooserDialogImpl/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579816754432" />
-    <state x="6035" y="246" key="Vcs.Push.Dialog.v2" timestamp="1579900953201">
+    <state x="6035" y="246" key="Vcs.Push.Dialog.v2" timestamp="1579901170126">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6035" y="246" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579900953201" />
+    <state x="6035" y="246" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579901170126" />
     <state x="6143" y="316" key="git4idea.merge.GitPullDialog" timestamp="1579816156105">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>

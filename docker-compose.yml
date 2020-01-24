@@ -27,7 +27,6 @@ services:
 
   minio:
     image: minio/minio
-    container_name: minio
     env_file:
       - ./env/minio.env
     command: server /data
