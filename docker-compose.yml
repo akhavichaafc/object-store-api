@@ -5,13 +5,39 @@ services:
     image: postgres:9.6.15-alpine
     restart: always
     env_file:
-     - ./postgres.env
+     - ./env/db.env
     volumes:
-      - ./src/test/resources:/docker-entrypoint-initdb.d
+      - ./schema:/docker-entrypoint-initdb.d
       - database-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
+  database_kc:
+    image: postgres:9.6.15-alpine
+    restart: always
+    env_file:
+      - env/db_kc.env
+    volumes:
+      - ./schema/keycloak:/docker-entrypoint-initdb.d
+      - database-data-kc:/var/lib/postgresql/data
+    ports:
+      - "5532:5432"
+
+  keycloak:
+    image: jboss/keycloak
+    ports:
+      - "9990:9990"
+    env_file:
+      - ./env/auth.env
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    env_file:
+      - ./env/minio.env
+    ports:
+      - "9000:9000"
+    command: server /data
 
   object-store-api:
     image: img_object_store_api
@@ -19,16 +45,9 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - ./object_store_api.env
+      - ./env/app.env
 
-  minio:
-    image: minio/minio
-    container_name: minio
-    env_file:
-      - ./minio.env
-    ports:
-      - "9000:9000"
-    command: server /data
 
 volumes:
   database-data:
+  database-data-kc:
