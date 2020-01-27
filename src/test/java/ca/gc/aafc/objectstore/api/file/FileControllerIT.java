@@ -1,6 +1,7 @@
 package ca.gc.aafc.objectstore.api.file;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 
@@ -42,7 +43,7 @@ public class FileControllerIT {
     Resource imageFile = resourceLoader.getResource("classpath:drawing.png");
     byte[] bytes = IOUtils.toByteArray(imageFile.getInputStream());
 
-    MockMultipartFile mockFile = new MockMultipartFile("file", "testfile", MediaType.TEXT_PLAIN_VALUE, bytes);
+    MockMultipartFile mockFile = new MockMultipartFile("file", "testfile", MediaType.IMAGE_PNG_VALUE, bytes);
 
     FileUploadResponse uploadResponse = fileController.handleFileUpload(mockFile, "mybucket");
 
