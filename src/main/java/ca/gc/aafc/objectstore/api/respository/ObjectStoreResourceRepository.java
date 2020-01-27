@@ -106,7 +106,6 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
 
   @Override
   public ResourceList<ObjectStoreMetadataDto> findAll(QuerySpec querySpec) {
-    querySpec.getFilters().removeIf(f -> f.getPath().getElements().get(0).equals("rsql"));
     JpaCriteriaQuery<ObjectStoreMetadata> jq = queryFactory.query(ObjectStoreMetadata.class);
 
     // Omit "managedAttributeMap" from the JPA include spec, because it is a generated object, not on the JPA model.
