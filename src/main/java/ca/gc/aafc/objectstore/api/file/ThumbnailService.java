@@ -32,7 +32,8 @@ public class ThumbnailService {
         .size(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
         .outputFormat("jpg")
         .toOutputStream(os);
-      tempSourceFile.delete();
+
+      FileUtils.deleteQuietly(tempSourceFile);
 
       ByteArrayInputStream thumbnail = new ByteArrayInputStream(os.toByteArray());
       return thumbnail;
