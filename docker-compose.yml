@@ -1,37 +1,8 @@
 version: "3"
 
 services:
-  database:
-    image: postgres
-    env_file:
-     - ./env/db.env
-    volumes:
-      - ./schema:/docker-entrypoint-initdb.d
-      - database-data:/var/lib/postgresql/data
 
-  database_kc:
-    image: postgres
-    env_file:
-      - env/db_kc.env
-    volumes:
-      - database-data-kc:/var/lib/postgresql/data
-
-  keycloak:
-    image: jboss/keycloak
-    ports:
-      - "8080:8080"
-    env_file:
-      - ./env/auth.env
-    depends_on:
-      - database_kc
-
-  minio:
-    image: minio/minio
-    env_file:
-      - ./env/minio.env
-    command: server /data
-
-  object-store-api:
+  app:
     image: img_object_store_api
     ports:
       - "8081:8080"
@@ -40,9 +11,38 @@ services:
     depends_on:
       - minio
       - database
-      - keycloak
+  #      - keycloak
 
+  database:
+    image: postgres
+    env_file:
+     - ./env/db.env
+    volumes:
+      - ./schema:/docker-entrypoint-initdb.d
+ #     - database-data:/var/lib/postgresql/data
 
-volumes:
-  database-data:
-  database-data-kc:
+ # database_kc:
+ #   image: postgres
+ #   env_file:
+ #     - env/db_kc.env
+ #   volumes:
+ #     - database-data-kc:/var/lib/postgresql/data
+
+#  keycloak:
+#    image: jboss/keycloak
+#    ports:
+ #     - "8080:8080"
+ #   env_file:
+ #     - ./env/auth.env
+ #   depends_on:
+ #     - database_kc
+
+  minio:
+    image: minio/minio
+    env_file:
+      - ./env/minio.env
+    command: server /data
+
+#volumes:
+#  database-data:
+#  database-data-kc:
