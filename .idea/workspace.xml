@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4cb8ae24-a003-4db2-b9e9-b2fe1979098d" name="Default Changelist" comment="">
+    <list default="true" id="4cb8ae24-a003-4db2-b9e9-b2fe1979098d" name="Default Changelist" comment="Repaired">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/app.env" beforeDir="false" afterPath="$PROJECT_DIR$/env/app.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/auth.env" beforeDir="false" afterPath="$PROJECT_DIR$/env/auth.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/env_proj.sh" beforeDir="false" afterPath="$PROJECT_DIR$/env/env_proj.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,7 +148,21 @@
       <option name="project" value="LOCAL" />
       <updated>1580321313224</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="aa">
+      <created>1580337627395</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1580337627395</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Repaired">
+      <created>1580337781082</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1580337781082</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -174,21 +185,22 @@
     <MESSAGE value="First attempt integrating keycloak (with persistence)" />
     <MESSAGE value="merge dev" />
     <MESSAGE value="aa" />
-    <option name="LAST_COMMIT_MESSAGE" value="aa" />
+    <MESSAGE value="Repaired" />
+    <option name="LAST_COMMIT_MESSAGE" value="Repaired" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="6057" y="219" key="CommitChangelistDialog2" timestamp="1580337626454">
+    <state x="6057" y="219" key="CommitChangelistDialog2" timestamp="1580337856422">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6057" y="219" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1580337626454" />
+    <state x="6057" y="219" key="CommitChangelistDialog2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1580337856422" />
     <state x="6223" y="280" key="FileChooserDialogImpl" timestamp="1579816754432">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
     <state x="6223" y="280" key="FileChooserDialogImpl/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1579816754432" />
-    <state x="6035" y="246" key="Vcs.Push.Dialog.v2" timestamp="1580337629228">
+    <state x="6035" y="246" key="Vcs.Push.Dialog.v2" timestamp="1580337790487">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
-    <state x="6035" y="246" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1580337629228" />
+    <state x="6035" y="246" key="Vcs.Push.Dialog.v2/1920.0.1536.848/5760.0.1920.1040/0.0.1920.1040@5760.0.1920.1040" timestamp="1580337790487" />
     <state x="6143" y="316" key="git4idea.merge.GitPullDialog" timestamp="1580321022072">
       <screen x="5760" y="0" width="1920" height="1040" />
     </state>
