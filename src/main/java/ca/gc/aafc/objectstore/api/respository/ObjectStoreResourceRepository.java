@@ -209,6 +209,11 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     if (objectMetadata.getDcRights() == null) {
       objectMetadata.setDcRights(config.getDefaultCopyright());
     }
+    
+    if( objectMetadata.getXmpRightsOwner() == null) {
+      objectMetadata.setXmpRightsOwner(config.getDefaultCopyrightOwner());
+    }
+    
     return objectMetadata;
   }
 

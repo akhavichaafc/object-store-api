@@ -28,12 +28,16 @@ public class ObjectStoreMetadataDto {
 
   private String dcFormat;
   private DcType dcType;
+  
+  @JsonInclude(Include.NON_EMPTY)
+  private String acCaption;
 
   private OffsetDateTime acDigitizationDate;
   private OffsetDateTime xmpMetadataDate;
   
   private String xmpRightsWebStatement;
   private String dcRights;
+  private String xmpRightsOwner;
   
   @JsonInclude(Include.NON_EMPTY)
   private String originalFilename;

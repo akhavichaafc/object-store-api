@@ -28,4 +28,5 @@ crnk:
   jpa.enabled: false
 objectstore:
   defaultLicenceURL: https://open.canada.ca/en/open-government-licence-canada
-  defaultCopyright: Government of Canada
+  defaultCopyright: Copyright Government of Canada
+  defaultCopyrightOwner: Government of Canada
