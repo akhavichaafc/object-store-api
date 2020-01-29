@@ -9,8 +9,7 @@ To upload a file:
 Example request:
 
 ```sh
-curl -i http://localhost:8080/api/v1/file/mybucket \
-  -F file=@./my-image.png
+curl -i http://localhost:8080/api/v1/file/mybucket -F file=@./my-image.png;type=image/png
 ```
 
 Example response:
