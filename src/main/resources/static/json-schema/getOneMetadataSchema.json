@@ -73,6 +73,10 @@
               "type": "string",
               "description": "Name of the bucket"
             },
+            "acCaption": {
+              "type": "string",
+              "description": "Text to be displayed together with (rather than instead of) a resource that is suitable for captions. https://terms.tdwg.org/wiki/Audubon_Core_Term_List#ac:caption"
+            },
             "fileExtension": {
               "type": "string",
               "description": "fileExtension"
@@ -84,6 +88,10 @@
             "dcRights": {
               "type": "string",
               "description": "Information about rights held in and over the resource. https://tdwg.github.io/ac/termlist/#dc_rights"
+            },
+            "xmpRightsOwner": {
+              "type": "string",
+              "description": "Owner(s) of the copyright. https://terms.tdwg.org/wiki/Audubon_Core_Term_List#xmpRights:Owner"
             },
             "createdDate": {
               "type": "string",
