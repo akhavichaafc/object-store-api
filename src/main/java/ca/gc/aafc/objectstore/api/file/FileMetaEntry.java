@@ -47,7 +47,10 @@ public class FileMetaEntry {
   
   @Setter
   private String evaluatedFileExtension;
-  
+
+  @Setter
+  private long sizeInBytes;
+
   public String getFileMetaEntryFilename() {
     return fileIdentifier + SUFFIX;
   }
