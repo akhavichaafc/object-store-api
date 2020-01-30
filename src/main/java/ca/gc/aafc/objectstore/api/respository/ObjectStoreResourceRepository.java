@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
 import ca.gc.aafc.objectstore.api.file.FileController;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileMetaEntry;
+import ca.gc.aafc.objectstore.api.filter.RsqlFilterHandler;
 import ca.gc.aafc.objectstore.api.mapper.CycleAvoidingMappingContext;
 import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
 import ca.gc.aafc.objectstore.api.service.ObjectStoreMetadataReadService;
@@ -34,6 +36,7 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
+import io.crnk.data.jpa.query.JpaQueryExecutor;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQuery;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
 import lombok.extern.log4j.Log4j2;
@@ -41,64 +44,68 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @Repository
 @Transactional
-public class ObjectStoreResourceRepository extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID> implements ObjectStoreMetadataReadService {
+public class ObjectStoreResourceRepository extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID>
+    implements ObjectStoreMetadataReadService {
 
   private final ObjectStoreConfiguration config;
   private final BaseDAO dao;
   private final ObjectStoreMetadataMapper mapper;
   private final FileInformationService fileInformationService;
-  
+  private final RsqlFilterHandler rsqlFilterHandler;
+
   private JpaCriteriaQueryFactory queryFactory;
 
   @Inject
-  public ObjectStoreResourceRepository(ObjectStoreConfiguration config, BaseDAO dao, ObjectStoreMetadataMapper mapper, FileInformationService fileInformationService) {
+  public ObjectStoreResourceRepository(ObjectStoreConfiguration config, BaseDAO dao, ObjectStoreMetadataMapper mapper,
+      FileInformationService fileInformationService, RsqlFilterHandler rsqlFilterHandler) {
     super(ObjectStoreMetadataDto.class);
     this.config = config;
     this.dao = dao;
     this.mapper = mapper;
     this.fileInformationService = fileInformationService;
+    this.rsqlFilterHandler = rsqlFilterHandler;
   }
-  
+
   @PostConstruct
   void setup() {
     queryFactory = dao.createWithEntityManager(JpaCriteriaQueryFactory::newInstance);
   }
 
   /**
-   * @param resource
-   *          to save
+   * @param resource to save
    * @return saved resource
    */
   @Override
   public <S extends ObjectStoreMetadataDto> S save(S resource) {
-    ObjectStoreMetadataDto dto =  (ObjectStoreMetadataDto) resource ;
+    ObjectStoreMetadataDto dto = (ObjectStoreMetadataDto) resource;
     ObjectStoreMetadata objectMetadata = dao.findOneByNaturalId(dto.getUuid(), ObjectStoreMetadata.class);
     mapper.updateObjectStoreMetadataFromDto(dto, objectMetadata);
 
     objectMetadata = handleFileRelatedData(objectMetadata);
-    
+
     // relationships
     if (resource.getAcMetadataCreator() != null) {
-      objectMetadata.setAcMetadataCreator(
-          dao.getReferenceByNaturalId(Agent.class, resource.getAcMetadataCreator().getUuid()));
+      objectMetadata
+          .setAcMetadataCreator(dao.getReferenceByNaturalId(Agent.class, resource.getAcMetadataCreator().getUuid()));
     }
-    
+
     dao.save(objectMetadata);
     return resource;
   }
 
   @Override
   public ObjectStoreMetadataDto findOne(UUID uuid, QuerySpec querySpec) {
-    ObjectStoreMetadata objectStoreMetadata = loadObjectStoreMetadata(uuid).orElseThrow( () -> new ResourceNotFoundException(
-          this.getClass().getSimpleName() + " with ID " + uuid + " Not Found."));
-    return mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName), new CycleAvoidingMappingContext());
+    ObjectStoreMetadata objectStoreMetadata = loadObjectStoreMetadata(uuid).orElseThrow(
+        () -> new ResourceNotFoundException(this.getClass().getSimpleName() + " with ID " + uuid + " Not Found."));
+    return mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName),
+        new CycleAvoidingMappingContext());
   }
-  
+
   @Override
   public Optional<ObjectStoreMetadata> loadObjectStoreMetadata(UUID id) {
     return Optional.ofNullable(dao.findOneByNaturalId(id, ObjectStoreMetadata.class));
   }
-  
+
   @Override
   public Optional<ObjectStoreMetadata> loadObjectStoreMetadataByFileId(UUID fileId) {
     return Optional.ofNullable(dao.findOneByProperty(ObjectStoreMetadata.class, "fileIdentifier", fileId));
@@ -107,15 +114,18 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   @Override
   public ResourceList<ObjectStoreMetadataDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<ObjectStoreMetadata> jq = queryFactory.query(ObjectStoreMetadata.class);
-
     // Omit "managedAttributeMap" from the JPA include spec, because it is a generated object, not on the JPA model.
     QuerySpec jpaFriendlyQuerySpec = querySpec.clone();
     jpaFriendlyQuerySpec.getIncludedRelations()
       .removeIf(include -> include.getPath().toString().equals("managedAttributeMap"));
 
-    List<ObjectStoreMetadataDto> l = jq.buildExecutor(jpaFriendlyQuerySpec).getResultList().stream()
-    .map( objectStoreMetadata -> mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName), new CycleAvoidingMappingContext()))
-    .collect(Collectors.toList());
+    Consumer<JpaQueryExecutor<?>> rsqlApplier = rsqlFilterHandler.getRestrictionApplier(jpaFriendlyQuerySpec);
+    JpaQueryExecutor<ObjectStoreMetadata> executor = jq.buildExecutor(jpaFriendlyQuerySpec);
+    rsqlApplier.accept(executor);
+  
+    List<ObjectStoreMetadataDto> l = executor.getResultList().stream()
+      .map( objectStoreMetadata -> mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName), new CycleAvoidingMappingContext()))
+      .collect(Collectors.toList());
     
     return new DefaultResourceList<ObjectStoreMetadataDto>(l, null, null);
   }

@@ -29,3 +29,7 @@ crnk:
 objectstore:
   defaultLicenceURL: https://open.canada.ca/en/open-government-licence-canada
   defaultCopyright: Government of Canada
+logging:
+  level:
+    # Reduce the logging from the rsql-jpa library, which is otherwise too excessive:
+    com.github.tennaito.rsql: ERROR
