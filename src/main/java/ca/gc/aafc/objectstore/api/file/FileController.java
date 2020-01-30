@@ -78,7 +78,7 @@ public class FileController {
   }
 
   @PostMapping("/file/{bucket}")
-  public FileUploadResponse handleFileUpload(@RequestParam("file") MultipartFile file,
+  public FileMetaEntry handleFileUpload(@RequestParam("file") MultipartFile file,
       @PathVariable String bucket) throws InvalidKeyException, NoSuchAlgorithmException,
       InvalidBucketNameException, NoResponseException, ErrorResponseException, InternalException,
       InvalidArgumentException, InsufficientDataException, InvalidResponseException,
@@ -103,7 +103,9 @@ public class FileController {
     
     fileMetaEntry.setEvaluatedMediaType(mtdr.getEvaluatedMediatype());
     fileMetaEntry.setEvaluatedFileExtension(mtdr.getEvaluatedExtension());
-    
+
+    fileMetaEntry.setSizeInBytes(file.getSize());
+
     // Decorate the InputStream in order to compute the hash
     MessageDigest md = MessageDigest.getInstance(DIGEST_ALGORITHM);
     DigestInputStream dis = new DigestInputStream(mtdr.getInputStream(), md);
@@ -134,8 +136,7 @@ public class FileController {
       }
     }
 
-    return new FileUploadResponse(uuid.toString(), mtdr.getEvaluatedMediatype().toString(),
-        mtdr.getEvaluatedExtension(), file.getSize());
+    return fileMetaEntry;
   }
   
   /**

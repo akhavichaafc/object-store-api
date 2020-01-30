@@ -45,9 +45,9 @@ public class FileControllerIT {
 
     MockMultipartFile mockFile = new MockMultipartFile("file", "testfile", MediaType.IMAGE_PNG_VALUE, bytes);
 
-    FileUploadResponse uploadResponse = fileController.handleFileUpload(mockFile, "mybucket");
+    FileMetaEntry uploadResponse = fileController.handleFileUpload(mockFile, "mybucket");
 
-    UUID fileId = UUID.fromString(uploadResponse.getFileName());
+    UUID fileId = uploadResponse.getFileIdentifier();
 
     // Persist the associated metadata separately:
     ObjectStoreMetadata newMetadata = ObjectStoreMetadataFactory.newObjectStoreMetadata()
