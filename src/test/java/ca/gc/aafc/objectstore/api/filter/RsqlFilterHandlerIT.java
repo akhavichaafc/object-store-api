@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Collections;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,9 @@ import io.crnk.core.resource.list.ResourceList;
 
 public class RsqlFilterHandlerIT extends BaseRepositoryTest {
   
+  @Inject
+  private EntityManager entityManager;
+
   @Inject
   private ObjectStoreResourceRepository objectStoreResourceRepository;
 
@@ -58,6 +64,7 @@ public class RsqlFilterHandlerIT extends BaseRepositoryTest {
   @Test
   public void findAllMetadatas_whenRsqlFilterIsBlank_resultListIsNotFiltered() {
     QuerySpec querySpec = new QuerySpec(ObjectStoreMetadataDto.class);
+    querySpec.setLimit(1000L);
     querySpec.addFilter(
       new FilterSpec(
         Collections.singletonList("rsql"),
@@ -65,8 +72,15 @@ public class RsqlFilterHandlerIT extends BaseRepositoryTest {
         ""
       )
     );
+
+    // Get the total count of metadatas in the database:
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteriaQuery = cb.createQuery(Long.class);
+    criteriaQuery.select(cb.count(criteriaQuery.from(ObjectStoreMetadata.class)));
+    Long totalCount = entityManager.createQuery(criteriaQuery).getSingleResult();
+
     // The results should not have been filtered:
     ResourceList<ObjectStoreMetadataDto> results = objectStoreResourceRepository.findAll(querySpec);
-    assertEquals(2, results.size());
+    assertEquals(totalCount, results.size());
   }
 }
