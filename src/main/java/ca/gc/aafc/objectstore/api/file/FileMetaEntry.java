@@ -3,6 +3,7 @@ package ca.gc.aafc.objectstore.api.file;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ public class FileMetaEntry {
   public static final String VERSION_1_0 = "1.0";
   public static final String SUFFIX = "_meta.json";
   
-  private String version = VERSION_1_0;
+  private String metaFileEntryVersion = VERSION_1_0;
   
   private final UUID fileIdentifier;
   
@@ -51,6 +52,7 @@ public class FileMetaEntry {
   @Setter
   private long sizeInBytes;
 
+  @JsonIgnore
   public String getFileMetaEntryFilename() {
     return fileIdentifier + SUFFIX;
   }
