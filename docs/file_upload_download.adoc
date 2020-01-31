@@ -16,8 +16,8 @@ Example response:
 
 ```sh
 {
-  "fileIdentifier": "98c2cf50-807e-4247-9105-8b4854aec20f",
-  "version": "1.0",
+  "fileIdentifier": "0887c8c2-500e-4eb4-8c0e-58eef9b66a18",
+  "metaFileEntryVersion": "1.0",
   "originalFilename": "drawing.png",
   "sha1Hex": "3a37e3546074b6a67afef2fc1b402bf9233a1eb7",
   "receivedMediaType": "image/png",
@@ -25,8 +25,7 @@ Example response:
   "detectedFileExtension": ".png",
   "evaluatedMediaType": "image/png",
   "evaluatedFileExtension": ".png",
-  "sizeInBytes": 6091,
-  "fileMetaEntryFilename": "98c2cf50-807e-4247-9105-8b4854aec20f_meta.json"
+  "sizeInBytes": 6091
 }
 ```
 
