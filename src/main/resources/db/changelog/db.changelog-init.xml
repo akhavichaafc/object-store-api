@@ -42,6 +42,7 @@
 			<column name="bucket" type="VARCHAR(50)">
 			    <constraints nullable="false" />
 			</column>
+			<column name="ac_caption" type="VARCHAR(250)" />
 			<column name="dc_format" type="VARCHAR(150)" />
 			<column name="dc_type" type="dctype">
 				<constraints nullable="false" />
@@ -50,6 +51,9 @@
 			    <constraints nullable="false" />
 			</column>
 			<column name="ac_rights" type="VARCHAR(250)">
+			    <constraints nullable="false" />
+			</column>
+			<column name="xmp_rights_owner" type="VARCHAR(250)">
 			    <constraints nullable="false" />
 			</column>
 			<column name="ac_digitization_date" type="timestamptz" />

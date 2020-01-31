@@ -45,6 +45,7 @@
 		<junit-platform-launcher.version>1.4.0</junit-platform-launcher.version>
 		<hibernate-types-52.version>2.4.4</hibernate-types-52.version>
 		<mapstruct-processor.version>1.3.0.Final</mapstruct-processor.version>
+		<rsql-jpa.version>2.0.2</rsql-jpa.version>
 		<crnk.version>3.2.20200109053427</crnk.version>
 		<dina-base-api.version>0.20</dina-base-api.version>
 	</properties>
@@ -124,6 +125,11 @@
 			<artifactId>mapstruct</artifactId>
 			<version>${mapstruct-processor.version}</version>
 		</dependency>		
+		<dependency>
+			<groupId>com.github.tennaito</groupId>
+			<artifactId>rsql-jpa</artifactId>
+			<version>${rsql-jpa.version}</version>
+		</dependency>
 
 		<!-- Used by Spotbug annotation -->
 		<dependency>
@@ -171,7 +177,23 @@
 		    <artifactId>minio</artifactId>
 		    <version>${minio.version}</version>
 		</dependency>
-	
+
+		<dependency>
+				<groupId>net.coobird</groupId>
+				<artifactId>thumbnailator</artifactId>
+				<version>0.4.8</version>
+		</dependency>
+		<dependency>
+				<groupId>com.twelvemonkeys.imageio</groupId>
+				<artifactId>imageio-jpeg</artifactId>
+				<version>3.4.3</version>
+		</dependency>
+		<dependency>
+				<groupId>com.twelvemonkeys.imageio</groupId>
+				<artifactId>imageio-tiff</artifactId>
+				<version>3.4.3</version>
+		</dependency>
+
 		<!-- crnk -->
 		<dependency>
 		    <groupId>io.crnk</groupId>

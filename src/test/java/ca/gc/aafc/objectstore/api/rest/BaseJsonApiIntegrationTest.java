@@ -360,8 +360,12 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
    * @return
    */
   protected ValidatableResponse sendGet(String id) {
+    return sendGet(id, HttpStatus.OK.value());
+  }
+  
+  protected ValidatableResponse sendGet(String id, int expectedReturnCode) {
     return given().header("crnk-compact", "true").when().get(getResourceUnderTest() + "/" + id).then()
-        .statusCode(HttpStatus.OK.value());
+        .statusCode(expectedReturnCode);
   }
 
   /**

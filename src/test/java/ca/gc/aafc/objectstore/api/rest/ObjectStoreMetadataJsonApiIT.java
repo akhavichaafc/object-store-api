@@ -78,6 +78,7 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
        .dcType(null) //on creation null should be accepted
        .xmpRightsWebStatement(null) // default value from configuration should be used
        .dcRights(null) // default value from configuration should be used
+       .xmpRightsOwner(null) // default value from configuration should be used
        .acDigitizationDate(dateTime4Test)
        .fileIdentifier(fileIdentifier)
        .fileExtension(fileExt)
@@ -125,8 +126,11 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
     // the metadata with a deletedDate should not be in that list
     responseUpdate.body("data.id", Matchers.not(Matchers.hasItem(Matchers.containsString(id))));
     
-    //returns 410 as expected
-    //responseUpdate = sendGet(id);
+    // returns 410 as expected
+    sendGet(id, 410);
+    
+    // the resource is available with the deleted filter
+    responseUpdate = sendGet(id+"?filter[deleted]");
     
     // cleanup
     sendDelete(id);

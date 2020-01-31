@@ -9,10 +9,12 @@ public class ObjectStoreConfiguration {
   
   private String defaultLicenceURL;
   private String defaultCopyright;
+  private String defaultCopyrightOwner;
   
-  public ObjectStoreConfiguration(String defaultLicenceURL, String defaultCopyright) {
+  public ObjectStoreConfiguration(String defaultLicenceURL, String defaultCopyright, String defaultCopyrightOwner) {
     this.defaultLicenceURL = defaultLicenceURL;
     this.defaultCopyright = defaultCopyright;
+    this.defaultCopyrightOwner = defaultCopyrightOwner;
   }
 
   public String getDefaultLicenceURL() {
@@ -21,6 +23,10 @@ public class ObjectStoreConfiguration {
 
   public String getDefaultCopyright() {
     return defaultCopyright;
+  }
+  
+  public String getDefaultCopyrightOwner() {
+    return defaultCopyrightOwner;
   }
 
 }

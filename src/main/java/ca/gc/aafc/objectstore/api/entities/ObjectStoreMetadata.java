@@ -63,12 +63,14 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj, Sof
 
   private String dcFormat;
   private DcType dcType;
+  private String acCaption;
 
   private OffsetDateTime acDigitizationDate;
   private OffsetDateTime xmpMetadataDate;
   
   private String xmpRightsWebStatement;
   private String dcRights;
+  private String xmpRightsOwner;
 
   private String originalFilename;
   
@@ -220,6 +222,17 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj, Sof
     this.bucket = bucket;
   }
   
+  
+  @Column(name = "ac_caption")
+  @Size(max = 250)
+  public String getAcCaption() {
+    return acCaption;
+  }
+
+  public void setAcCaption(String acCaption) {
+    this.acCaption = acCaption;
+  }
+  
   @Column(name = "dc_format")
   @Size(max = 150)
   public String getDcFormat() {
@@ -360,5 +373,17 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj, Sof
   public void setDeletedDate(OffsetDateTime deletedDate) {
     this.deletedDate = deletedDate;
   }
+  
+  @NotNull
+  @Column(name = "xmp_rights_owner")
+  @Size(max = 250)
+  public String getXmpRightsOwner() {
+    return xmpRightsOwner;
+  }
+
+  public void setXmpRightsOwner(String xmpRightsOwner) {
+    this.xmpRightsOwner = xmpRightsOwner;
+  }
+  
   
 }
