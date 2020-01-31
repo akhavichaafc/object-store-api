@@ -79,9 +79,10 @@ public class FileControllerIT {
 
     FileMetaEntry uploadResponse = fileController.handleFileUpload(mockFile, "mybucket");
 
-    UUID fileId = uploadResponse.getFileIdentifier();
-
-    Optional<InputStream> response = minioFileService.getFile(fileId + "_meta.json", "mybucket");
+    Optional<InputStream> response = minioFileService.getFile(
+      uploadResponse.getFileMetaEntryFilename(),
+      "mybucket"
+    );
 
     assertTrue(response.isPresent());
   }
