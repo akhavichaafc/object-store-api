@@ -2,6 +2,7 @@ package ca.gc.aafc.objectstore.api.respository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -12,12 +13,14 @@ import org.springframework.stereotype.Repository;
 import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.AgentDto;
 import ca.gc.aafc.objectstore.api.entities.Agent;
+import ca.gc.aafc.objectstore.api.filter.RsqlFilterHandler;
 import ca.gc.aafc.objectstore.api.mapper.AgentMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
+import io.crnk.data.jpa.query.JpaQueryExecutor;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQuery;
 import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
 
@@ -27,6 +30,7 @@ public class AgentResourceRepository extends ResourceRepositoryBase<AgentDto, UU
 
   private final BaseDAO dao;
   private final AgentMapper mapper;
+  private final RsqlFilterHandler rsqlFilterHandler;
 
   private JpaCriteriaQueryFactory queryFactory;  
 
@@ -35,10 +39,15 @@ public class AgentResourceRepository extends ResourceRepositoryBase<AgentDto, UU
     queryFactory = dao.createWithEntityManager(JpaCriteriaQueryFactory::newInstance);
   }
   
-  public AgentResourceRepository(BaseDAO dao, AgentMapper mapper) {
+  public AgentResourceRepository(
+    BaseDAO dao,
+    AgentMapper mapper,
+    RsqlFilterHandler rsqlFilterHandler
+  ) {
     super(AgentDto.class);
     this.dao = dao;
     this.mapper = mapper;
+    this.rsqlFilterHandler = rsqlFilterHandler;
   }
 
   @Override
@@ -66,7 +75,11 @@ public class AgentResourceRepository extends ResourceRepositoryBase<AgentDto, UU
   public ResourceList<AgentDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<Agent> jq = queryFactory.query(Agent.class);
     
-    List<AgentDto> l = jq.buildExecutor(querySpec).getResultList().stream()
+    Consumer<JpaQueryExecutor<?>> rsqlApplier = rsqlFilterHandler.getRestrictionApplier(querySpec);
+    JpaQueryExecutor<Agent> executor = jq.buildExecutor(querySpec);
+    rsqlApplier.accept(executor);
+
+    List<AgentDto> l = executor.getResultList().stream()
     .map( e -> mapper.toDto(e))
     .collect(Collectors.toList());
     

@@ -65,6 +65,7 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
        .dcType(null) //on creation null should be accepted
        .xmpRightsWebStatement(null) // default value from configuration should be used
        .dcRights(null) // default value from configuration should be used
+       .xmpRightsOwner(null) // default value from configuration should be used
        .acDigitizationDate(dateTime4Test)
        .fileIdentifier(TestConfiguration.TEST_FILE_IDENTIFIER)
        .fileExtension(TestConfiguration.TEST_FILE_EXT)
