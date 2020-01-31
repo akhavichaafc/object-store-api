@@ -1,6 +1,7 @@
 package ca.gc.aafc.objectstore.api.respository;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -51,6 +52,7 @@ import lombok.extern.log4j.Log4j2;
 public class ObjectStoreResourceRepository extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID>
     implements ObjectStoreMetadataReadService {
 
+  private static final PathSpec DELETED_PATH_SPEC = PathSpec.of("deleted");
   private static final FilterSpec DELETED_DATE_IS_NULL = new FilterSpec(PathSpec.of(SoftDeletable.DELETED_DATE_FIELD_NAME), FilterOperator.EQ , null);
   
   private final ObjectStoreConfiguration config;
@@ -107,7 +109,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     
     
     
-    if( objectStoreMetadata.getDeletedDate() != null && !querySpec.findFilter(PathSpec.of("deleted")).isPresent() ) {
+    if( objectStoreMetadata.getDeletedDate() != null && !querySpec.findFilter(DELETED_PATH_SPEC).isPresent() ) {
       throw new GoneException("ID " + uuid + " deleted");
     }
     
@@ -176,7 +178,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   public void delete(UUID id) {
     ObjectStoreMetadata objectStoreMetadata = dao.findOneByNaturalId(id, ObjectStoreMetadata.class);
     if(objectStoreMetadata != null) {
-      dao.delete(objectStoreMetadata);
+      objectStoreMetadata.setDeletedDate(OffsetDateTime.now());
     }
   }
   
