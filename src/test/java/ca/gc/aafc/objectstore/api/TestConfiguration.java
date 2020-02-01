@@ -54,7 +54,6 @@ public class TestConfiguration {
   public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   public static final String TEST_BUCKET = "test";
   public static final UUID TEST_FILE_IDENTIFIER = UUID.randomUUID();
-  public static final UUID TEST_FILE_IDENTIFIER2 = UUID.randomUUID();
   public static final String TEST_FILE_EXT = ".txt";
   public static final String TEST_ORIGINAL_FILENAME = "myfile" + TEST_FILE_EXT;
   public static final String ILLEGAL_BUCKET_CHAR = "~";
@@ -84,9 +83,7 @@ public class TestConfiguration {
     InputStream is = new ByteArrayInputStream(
         testFile.getBytes(StandardCharsets.UTF_8));
     
-    storeTestObject(minioClient, TEST_FILE_IDENTIFIER, TEST_FILE_EXT, is, MediaType.TEXT_PLAIN_VALUE);
-    storeTestObject(minioClient, TEST_FILE_IDENTIFIER2, TEST_FILE_EXT, is, MediaType.TEXT_PLAIN_VALUE);
-    
+    storeTestObject(minioClient, TEST_FILE_IDENTIFIER, TEST_FILE_EXT, is, MediaType.TEXT_PLAIN_VALUE);    
   }
   
   /**

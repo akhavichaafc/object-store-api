@@ -59,17 +59,7 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
 
   @Override
   protected Map<String, Object> buildCreateAttributeMap() {
-    return buildCreateAttributeMap(TestConfiguration.TEST_FILE_IDENTIFIER, TestConfiguration.TEST_FILE_EXT);
-  }
-  
-  /**
-   * Build an attribute map for testing purpose.
-   * @param fileIdentifier
-   * @param fileExt
-   * @return
-   */
-  private Map<String, Object> buildCreateAttributeMap(UUID fileIdentifier, String fileExt) {
-    
+
     OffsetDateTime dateTime4Test = OffsetDateTime.now();
     // file related data has to match what is set by TestConfiguration
     objectStoreMetadata = ObjectStoreMetadataFactory.newObjectStoreMetadata()
@@ -80,8 +70,8 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
        .dcRights(null) // default value from configuration should be used
        .xmpRightsOwner(null) // default value from configuration should be used
        .acDigitizationDate(dateTime4Test)
-       .fileIdentifier(fileIdentifier)
-       .fileExtension(fileExt)
+       .fileIdentifier(TestConfiguration.TEST_FILE_IDENTIFIER)
+       .fileExtension(TestConfiguration.TEST_FILE_EXT)
        .bucket(TestConfiguration.TEST_BUCKET)
        .acHashValue("123")
       .build();
@@ -106,8 +96,7 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
   
   @Test
   public void metadata_whenUpdatingDeletedDate_returnOkAndResourceIsNotAvailableInList() {
-    String id = sendPost(toJsonAPIMap(buildCreateAttributeMap(
-        TestConfiguration.TEST_FILE_IDENTIFIER2, TestConfiguration.TEST_FILE_EXT), null));
+    String id = sendPost(toJsonAPIMap(buildCreateAttributeMap(), null));
     
     ValidatableResponse responseUpdate = sendGet("");
     // make sure the id is present in the list of metadata
