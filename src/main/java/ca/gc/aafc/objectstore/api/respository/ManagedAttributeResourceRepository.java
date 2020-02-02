@@ -1,6 +1,7 @@
 package ca.gc.aafc.objectstore.api.respository;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,7 @@ import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ManagedAttributeDto;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.filter.RsqlFilterHandler;
+import ca.gc.aafc.objectstore.api.interfaces.SoftDeletableRepository;
 import ca.gc.aafc.objectstore.api.mapper.ManagedAttributeMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
@@ -75,13 +77,24 @@ public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<M
       throw new ResourceNotFoundException(
           this.getClass().getSimpleName() + " with ID " + uuid + " Not Found.");
     }
+
+    if (managedAttribute.getDeletedDate() != null
+        && !querySpec.findFilter(SoftDeletableRepository.DELETED_PATH_SPEC).isPresent()) {
+      // Throw the 410 exception if the resource is not found.
+      throw new GoneException("ID " + uuid + " deleted");
+    }
+
     return mapper.toDto(managedAttribute);
   }
 
   @Override
   public ResourceList<ManagedAttributeDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<ManagedAttribute> jq = queryFactory.query(ManagedAttribute.class);
-    
+
+    if (!querySpec.findFilter(SoftDeletableRepository.DELETED_PATH_SPEC).isPresent()) {
+      querySpec.addFilter(SoftDeletableRepository.DELETED_DATE_IS_NULL);
+    }
+
     Consumer<JpaQueryExecutor<?>> rsqlApplier = rsqlFilterHandler.getRestrictionApplier(querySpec);
     JpaQueryExecutor<ManagedAttribute> executor = jq.buildExecutor(querySpec);
     rsqlApplier.accept(executor);
@@ -118,7 +131,7 @@ public class ManagedAttributeResourceRepository extends ResourceRepositoryBase<M
   public void delete(UUID id) {
     ManagedAttribute managedAttribute = dao.findOneByNaturalId(id, ManagedAttribute.class);
     if (managedAttribute != null) {
-      dao.delete(managedAttribute);
+      managedAttribute.setDeletedDate(OffsetDateTime.now());
     }
   }
 }

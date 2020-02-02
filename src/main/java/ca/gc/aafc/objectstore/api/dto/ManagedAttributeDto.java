@@ -4,6 +4,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute.ManagedAttributeType;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiId;
@@ -23,4 +26,6 @@ public class ManagedAttributeDto {
   private List<String> acceptedValues;
   private OffsetDateTime createdDate;
   
+  @JsonInclude(Include.NON_EMPTY)
+  private OffsetDateTime deletedDate;
 }

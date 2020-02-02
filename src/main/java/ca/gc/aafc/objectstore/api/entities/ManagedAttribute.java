@@ -21,6 +21,7 @@ import org.hibernate.annotations.TypeDefs;
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 
+import ca.gc.aafc.objectstore.api.interfaces.SoftDeletable;
 import ca.gc.aafc.objectstore.api.interfaces.UniqueObj;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
@@ -37,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @SuppressFBWarnings(justification = "ok for Hibernate Entity", value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @NaturalIdCache
-public class ManagedAttribute implements java.io.Serializable, UniqueObj {
+public class ManagedAttribute implements java.io.Serializable, UniqueObj, SoftDeletable {
 
   private static final long serialVersionUID = 1L;
   private Integer id;
@@ -49,6 +50,7 @@ public class ManagedAttribute implements java.io.Serializable, UniqueObj {
   private String[] acceptedValues;
   
   private OffsetDateTime createdDate;
+  private OffsetDateTime deletedDate;
 
   public enum ManagedAttributeType {
     INTEGER, STRING
@@ -113,6 +115,16 @@ public class ManagedAttribute implements java.io.Serializable, UniqueObj {
   
   public void setCreatedDate(OffsetDateTime createdDate) {
     this.createdDate = createdDate;
+  }
+
+  @Override
+  public OffsetDateTime getDeletedDate() {
+    return deletedDate;
+  }
+
+  @Override
+  public void setDeletedDate(OffsetDateTime deletedDate) {
+    this.deletedDate = deletedDate;
   }
 
 }
