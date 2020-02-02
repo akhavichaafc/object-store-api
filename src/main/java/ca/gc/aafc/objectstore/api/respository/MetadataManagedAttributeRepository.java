@@ -1,5 +1,6 @@
 package ca.gc.aafc.objectstore.api.respository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -17,6 +18,7 @@ import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.filter.RsqlFilterHandler;
+import ca.gc.aafc.objectstore.api.interfaces.SoftDeletableRepository;
 import ca.gc.aafc.objectstore.api.mapper.CycleAvoidingMappingContext;
 import ca.gc.aafc.objectstore.api.mapper.MetadataManagedAttributeMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
@@ -79,13 +81,24 @@ public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<M
           this.getClass().getSimpleName() + " with ID " + uuid + " Not Found."
       );
     }
+
+    if (metadataManagedAttribute.getDeletedDate() != null
+        && !querySpec.findFilter(SoftDeletableRepository.DELETED_PATH_SPEC).isPresent()) {
+      // Throw the 410 exception if the resource is not found.
+      throw new GoneException("ID " + uuid + " deleted");
+    }
+
     return mapper.toDto(metadataManagedAttribute, new CycleAvoidingMappingContext());
   }
 
   @Override
   public ResourceList<MetadataManagedAttributeDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<MetadataManagedAttribute> jq = queryFactory.query(MetadataManagedAttribute.class);
-    
+
+    if (!querySpec.findFilter(SoftDeletableRepository.DELETED_PATH_SPEC).isPresent()) {
+      querySpec.addFilter(SoftDeletableRepository.DELETED_DATE_IS_NULL);
+    }
+
     Consumer<JpaQueryExecutor<?>> rsqlApplier = rsqlFilterHandler.getRestrictionApplier(querySpec);
     JpaQueryExecutor<MetadataManagedAttribute> executor = jq.buildExecutor(querySpec);
     rsqlApplier.accept(executor);
@@ -125,7 +138,7 @@ public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<M
   public void delete(UUID id) {
     MetadataManagedAttribute objectStoreMetadata = dao.findOneByNaturalId(id, MetadataManagedAttribute.class);
     if(objectStoreMetadata != null) {
-      dao.delete(objectStoreMetadata);
+      objectStoreMetadata.setDeletedDate(OffsetDateTime.now());
     }
   }
 }

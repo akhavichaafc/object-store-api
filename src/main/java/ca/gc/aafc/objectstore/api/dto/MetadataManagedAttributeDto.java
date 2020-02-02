@@ -1,6 +1,10 @@
 package ca.gc.aafc.objectstore.api.dto;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiId;
@@ -22,4 +26,7 @@ public class MetadataManagedAttributeDto {
   
   @JsonApiRelation
   private ManagedAttributeDto managedAttribute;
+
+  @JsonInclude(Include.NON_EMPTY)
+  private OffsetDateTime deletedDate;
 }
