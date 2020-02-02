@@ -52,7 +52,7 @@ import lombok.extern.log4j.Log4j2;
 public class ObjectStoreResourceRepository extends ResourceRepositoryBase<ObjectStoreMetadataDto, UUID>
     implements ObjectStoreMetadataReadService {
 
-  private static final PathSpec DELETED_PATH_SPEC = PathSpec.of("deleted");
+  private static final PathSpec DELETED_PATH_SPEC = PathSpec.of(SoftDeletable.DELETED_DATE_FIELD_NAME);
   private static final FilterSpec DELETED_DATE_IS_NULL = new FilterSpec(PathSpec.of(SoftDeletable.DELETED_DATE_FIELD_NAME), FilterOperator.EQ , null);
   
   private final ObjectStoreConfiguration config;
@@ -106,13 +106,11 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
 
     ObjectStoreMetadata objectStoreMetadata = loadObjectStoreMetadata(uuid).orElseThrow(
         () -> new ResourceNotFoundException(this.getClass().getSimpleName() + " with ID " + uuid + " Not Found."));
-    
-    
-    
+
     if( objectStoreMetadata.getDeletedDate() != null && !querySpec.findFilter(DELETED_PATH_SPEC).isPresent() ) {
       throw new GoneException("ID " + uuid + " deleted");
     }
-    
+
     return mapper.toDto(objectStoreMetadata, fieldName -> dao.isLoaded(objectStoreMetadata, fieldName),
         new CycleAvoidingMappingContext());
 
@@ -135,7 +133,10 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     QuerySpec jpaFriendlyQuerySpec = querySpec.clone();
     jpaFriendlyQuerySpec.getIncludedRelations()
       .removeIf(include -> include.getPath().toString().equals("managedAttributeMap"));
-    jpaFriendlyQuerySpec.addFilter(DELETED_DATE_IS_NULL);
+
+    if (!querySpec.findFilter(DELETED_PATH_SPEC).isPresent()) {
+      jpaFriendlyQuerySpec.addFilter(DELETED_DATE_IS_NULL);
+    }
 
     Consumer<JpaQueryExecutor<?>> rsqlApplier = rsqlFilterHandler.getRestrictionApplier(jpaFriendlyQuerySpec);
     JpaQueryExecutor<ObjectStoreMetadata> executor = jq.buildExecutor(jpaFriendlyQuerySpec);
