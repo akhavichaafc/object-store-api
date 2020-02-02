@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import ca.gc.aafc.objectstore.api.TestConfiguration;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
@@ -18,7 +16,6 @@ import ca.gc.aafc.objectstore.api.mapper.CycleAvoidingMappingContext;
 import ca.gc.aafc.objectstore.api.mapper.ObjectStoreMetadataMapper;
 import ca.gc.aafc.objectstore.api.testsupport.factories.AgentFactory;
 import ca.gc.aafc.objectstore.api.testsupport.factories.ObjectStoreMetadataFactory;
-import io.restassured.response.ValidatableResponse;
 
 public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
 
@@ -59,7 +56,7 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
 
   @Override
   protected Map<String, Object> buildCreateAttributeMap() {
-
+    
     OffsetDateTime dateTime4Test = OffsetDateTime.now();
     // file related data has to match what is set by TestConfiguration
     objectStoreMetadata = ObjectStoreMetadataFactory.newObjectStoreMetadata()
@@ -92,37 +89,6 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
   @Override
   protected List<Relationship> buildRelationshipList() {
     return Arrays.asList(Relationship.of(METADATA_CREATOR_PROPERTY_NAME, "agent", agentId.toString()));
-  }
-  
-  @Test
-  public void metadata_whenUpdatingDeletedDate_returnOkAndResourceIsNotAvailableInList() {
-    String id = sendPost(toJsonAPIMap(buildCreateAttributeMap(), null));
-    
-    ValidatableResponse responseUpdate = sendGet("");
-    // make sure the id is present in the list of metadata
-    responseUpdate.body("data.id", Matchers.hasItem(Matchers.containsString(id)));
-    
-    ObjectStoreMetadataDto objectStoreMetadatadto = new ObjectStoreMetadataDto();
-    objectStoreMetadatadto.setDeletedDate(OffsetDateTime.now());
-    Map<String, Object> updatedAttributeMap = toAttributeMap(objectStoreMetadatadto);
-    
-    // update the resource
-    sendPatch(id, toJsonAPIMap(getResourceUnderTest(), updatedAttributeMap, null, id));
-
-    // get the list of all ObjectStoreMetadata
-    responseUpdate = sendGet("");
-
-    // the metadata with a deletedDate should not be in that list
-    responseUpdate.body("data.id", Matchers.not(Matchers.hasItem(Matchers.containsString(id))));
-    
-    // returns 410 as expected
-    sendGet(id, 410);
-    
-    // the resource is available with the deleted filter
-    responseUpdate = sendGet(id+"?filter[deleted]");
-    
-    // cleanup
-    sendDelete(id);
   }
   
 }
