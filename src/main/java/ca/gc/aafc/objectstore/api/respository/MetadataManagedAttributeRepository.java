@@ -18,10 +18,13 @@ import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.filter.RsqlFilterHandler;
-import ca.gc.aafc.objectstore.api.interfaces.SoftDeletableRepository;
+import ca.gc.aafc.objectstore.api.interfaces.SoftDeletable;
 import ca.gc.aafc.objectstore.api.mapper.CycleAvoidingMappingContext;
 import ca.gc.aafc.objectstore.api.mapper.MetadataManagedAttributeMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
+import io.crnk.core.queryspec.FilterOperator;
+import io.crnk.core.queryspec.FilterSpec;
+import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
@@ -39,6 +42,9 @@ public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<M
   private final RsqlFilterHandler rsqlFilterHandler;
   
   private JpaCriteriaQueryFactory queryFactory;
+
+  private static PathSpec DELETED_PATH_SPEC = PathSpec.of(SoftDeletable.DELETED_DATE_FIELD_NAME);
+  private static FilterSpec DELETED_DATE_IS_NULL = new FilterSpec(DELETED_PATH_SPEC, FilterOperator.EQ, null);
 
   @Inject
   public MetadataManagedAttributeRepository(
@@ -83,7 +89,7 @@ public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<M
     }
 
     if (metadataManagedAttribute.getDeletedDate() != null
-        && !querySpec.findFilter(SoftDeletableRepository.DELETED_PATH_SPEC).isPresent()) {
+        && !querySpec.findFilter(DELETED_PATH_SPEC).isPresent()) {
       // Throw the 410 exception if the resource is not found.
       throw new GoneException("ID " + uuid + " deleted");
     }
@@ -95,8 +101,8 @@ public class MetadataManagedAttributeRepository extends ResourceRepositoryBase<M
   public ResourceList<MetadataManagedAttributeDto> findAll(QuerySpec querySpec) {
     JpaCriteriaQuery<MetadataManagedAttribute> jq = queryFactory.query(MetadataManagedAttribute.class);
 
-    if (!querySpec.findFilter(SoftDeletableRepository.DELETED_PATH_SPEC).isPresent()) {
-      querySpec.addFilter(SoftDeletableRepository.DELETED_DATE_IS_NULL);
+    if (!querySpec.findFilter(DELETED_PATH_SPEC).isPresent()) {
+      querySpec.addFilter(DELETED_DATE_IS_NULL);
     }
 
     Consumer<JpaQueryExecutor<?>> rsqlApplier = rsqlFilterHandler.getRestrictionApplier(querySpec);
