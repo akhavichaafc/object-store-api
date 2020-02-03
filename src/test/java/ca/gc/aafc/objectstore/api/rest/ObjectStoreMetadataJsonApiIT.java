@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.Root;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import ca.gc.aafc.objectstore.api.TestConfiguration;
@@ -38,7 +43,21 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
       em.persist(agent);
     });
   }
-  
+
+  /**
+   * Clean up database after each test.
+   */
+  @AfterEach
+  public void tearDown() {
+    runInNewTransaction(em -> {
+      CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+      CriteriaDelete<ObjectStoreMetadata> query = criteriaBuilder.createCriteriaDelete(ObjectStoreMetadata.class);
+      Root<ObjectStoreMetadata> root = query.from(ObjectStoreMetadata.class);
+      query.where(criteriaBuilder.equal(root.get("fileIdentifier"), TestConfiguration.TEST_FILE_IDENTIFIER));
+      em.createQuery(query).executeUpdate();
+    });
+  }
+
   @Override
   protected String getResourceUnderTest() {
     return "metadata";
