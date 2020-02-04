@@ -324,24 +324,9 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
   }
 
   @Test
-  public void resourceUnderTest_whenDeleteExisting_softDeletes() {
+  public void resourceUnderTest_whenDeleteExisting_returnNoContent() {
     String id = sendPost(toJsonAPIMap(buildCreateAttributeMap(), toRelationshipMap(buildRelationshipList())));
-
     sendDelete(id);
-
-    // get list should not return deleted resource
-    ValidatableResponse responseUpdate = sendGet("");
-    responseUpdate.body("data.id", Matchers.not(Matchers.hasItem(Matchers.containsString(id))));
-
-    // get list should return deleted resource with deleted filter
-    responseUpdate = sendGet("?filter[deletedDate][NEQ]=null");
-    responseUpdate.body("data.id", Matchers.hasItem(Matchers.containsString(id)));
-
-    // get one throws gone 410 as expected
-    sendGet(id, 410);
-
-    // get one resource is available with the deleted filter
-    sendGet(id + "?filter[deletedDate][NEQ]=null");
   }
   
   @Test
