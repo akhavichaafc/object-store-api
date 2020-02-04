@@ -103,7 +103,6 @@
 			<column name="assigned_value" type="varchar(250)">
 				<constraints nullable="false"/>
 			</column>
-			<column name="deleted_date" type="timestamptz" />
 		</createTable>
 	</changeSet>
 	<changeSet context="schema-change" id="init-6" author="gendreauc">
