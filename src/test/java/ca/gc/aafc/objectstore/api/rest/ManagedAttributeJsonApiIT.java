@@ -2,14 +2,10 @@ package ca.gc.aafc.objectstore.api.rest;
 
 import java.util.Map;
 
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 import ca.gc.aafc.objectstore.api.dto.ManagedAttributeDto;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.mapper.ManagedAttributeMapper;
 import ca.gc.aafc.objectstore.api.testsupport.factories.ManagedAttributeFactory;
-import io.restassured.response.ValidatableResponse;
 
 public class ManagedAttributeJsonApiIT extends BaseJsonApiIntegrationTest {
 
@@ -56,26 +52,5 @@ public class ManagedAttributeJsonApiIT extends BaseJsonApiIntegrationTest {
     ManagedAttributeDto managedAttributeDto = mapper.toDto(managedAttribute);
     return toAttributeMap(managedAttributeDto);
     
-  }
-
-  @Test
-  public void resourceUnderTest_whenDeleteExisting_softDeletes() {
-    String id = sendPost(toJsonAPIMap(buildCreateAttributeMap(), toRelationshipMap(buildRelationshipList())));
-
-    sendDelete(id);
-
-    // get list should not return deleted resource
-    ValidatableResponse responseUpdate = sendGet("");
-    responseUpdate.body("data.id", Matchers.not(Matchers.hasItem(Matchers.containsString(id))));
-
-    // get list should return deleted resource with deleted filter
-    responseUpdate = sendGet("?filter[deletedDate][NEQ]=null");
-    responseUpdate.body("data.id", Matchers.hasItem(Matchers.containsString(id)));
-
-    // get one throws gone 410 as expected
-    sendGet(id, 410);
-
-    // get one resource is available with the deleted filter
-    sendGet(id + "?filter[deletedDate][NEQ]=null");
   }
 }

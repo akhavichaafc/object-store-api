@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
