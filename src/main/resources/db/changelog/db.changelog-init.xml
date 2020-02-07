@@ -64,6 +64,8 @@
 			<column name="ac_tags" type="text[]" />
 			<column name="ac_metadata_creator_id" type="INTEGER" />
 			<column name="created_date" type="timestamptz" defaultValueComputed="current_timestamp" />
+			<column name="publicly_releasable" type="boolean" />
+			<column name="not_publicly_releasable_reason" type="text" />
 		</createTable>
 	</changeSet>
 		<changeSet context="schema-change" id="init-4" author="gendreauc">
