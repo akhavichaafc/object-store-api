@@ -64,6 +64,7 @@
 			<column name="ac_tags" type="text[]" />
 			<column name="ac_metadata_creator_id" type="INTEGER" />
 			<column name="created_date" type="timestamptz" defaultValueComputed="current_timestamp" />
+			<column name="ac_derived_from_id" type="INTEGER" />
 		</createTable>
 	</changeSet>
 		<changeSet context="schema-change" id="init-4" author="gendreauc">
@@ -123,5 +124,11 @@
             constraintName="fk_metadata_creator_agent"
             referencedColumnNames="id"
             referencedTableName="agent"/>
+		<addForeignKeyConstraint
+			baseColumnNames="ac_derived_from_id"
+			baseTableName="metadata"
+			constraintName="fk_metadata_ac_derived_from_id"
+			referencedColumnNames="id"
+			referencedTableName="metadata"/>
 	</changeSet>
 </databaseChangeLog>
