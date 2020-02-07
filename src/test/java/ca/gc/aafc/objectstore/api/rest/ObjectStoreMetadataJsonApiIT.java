@@ -21,10 +21,12 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
 
   private final ObjectStoreMetadataMapper mapper = ObjectStoreMetadataMapper.INSTANCE;
   private static final String METADATA_CREATOR_PROPERTY_NAME = "acMetadataCreator";
+  private static final String METADATA_DERIVED_PROPERTY_NAME = "acDerivedFrom";
   
   private ObjectStoreMetadata objectStoreMetadata;
   
   private final UUID agentId = UUID.randomUUID();
+  private final UUID metadataId = UUID.randomUUID();
 
   @BeforeEach
   public void setup() {
@@ -32,10 +34,17 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
         .uuid(agentId)
         .build();
 
+    ObjectStoreMetadata metadata = ObjectStoreMetadataFactory
+      .newObjectStoreMetadata()
+      .uuid(metadataId)
+      .fileIdentifier(UUID.randomUUID())
+      .build();
+
     // we need to run the setup in another transaction and commit it otherwise it can't be visible
     // to the test web server.
     runInNewTransaction(em -> {
       em.persist(agent);
+      em.persist(metadata);
     });
   }
   
@@ -88,7 +97,9 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
   
   @Override
   protected List<Relationship> buildRelationshipList() {
-    return Arrays.asList(Relationship.of(METADATA_CREATOR_PROPERTY_NAME, "agent", agentId.toString()));
+    return Arrays.asList(
+      Relationship.of(METADATA_CREATOR_PROPERTY_NAME, "agent", agentId.toString()),
+      Relationship.of(METADATA_DERIVED_PROPERTY_NAME, "metadata", metadataId.toString()));
   }
   
 }
