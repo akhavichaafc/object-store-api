@@ -61,4 +61,10 @@ public class ObjectStoreMetadataDto {
   
   @JsonApiRelation
   private ObjectStoreMetadataDto acDerivedFrom;
+
+  private boolean publiclyReleasable;
+
+  @JsonInclude(Include.NON_EMPTY)
+  private String notPubliclyReleasableReason;
+
 }

@@ -84,6 +84,9 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
 
   private ObjectStoreMetadata acDerivedFrom;
 
+  private boolean publiclyReleasable;
+  private String notPubliclyReleasableReason;
+
   public enum DcType {
     IMAGE("Image"), 
     MOVING_IMAGE("Moving Image", "video"), 
@@ -383,6 +386,24 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
 
   public void setAcDerivedFrom(ObjectStoreMetadata acDerivedFrom) {
     this.acDerivedFrom = acDerivedFrom;
+  }
+
+  @Column(name = "publicly_releasable")
+  public boolean getPubliclyReleasable() {
+    return publiclyReleasable;
+  }
+
+  public void setPubliclyReleasable(boolean publiclyReleasable) {
+    this.publiclyReleasable = publiclyReleasable;
+  }
+
+  @Column(name = "not_publicly_releasable_reason")
+  public String getNotPubliclyReleasableReason() {
+    return notPubliclyReleasableReason;
+  }
+
+  public void setNotPubliclyReleasableReason(String notPubliclyReleasableReason) {
+    this.notPubliclyReleasableReason = notPubliclyReleasableReason;
   }
 
 }
