@@ -82,6 +82,8 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   private List<MetadataManagedAttribute> managedAttribute;
   private Agent acMetadataCreator;
 
+  private ObjectStoreMetadata acDerivedFrom;
+
   public enum DcType {
     IMAGE("Image"), 
     MOVING_IMAGE("Moving Image", "video"), 
@@ -372,6 +374,15 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj {
   public void setXmpRightsOwner(String xmpRightsOwner) {
     this.xmpRightsOwner = xmpRightsOwner;
   }
-  
-  
+
+  @OneToOne
+  @JoinColumn(name = "ac_derived_from_id", referencedColumnName = "id")
+  public ObjectStoreMetadata getAcDerivedFrom() {
+    return acDerivedFrom;
+  }
+
+  public void setAcDerivedFrom(ObjectStoreMetadata acDerivedFrom) {
+    this.acDerivedFrom = acDerivedFrom;
+  }
+
 }
