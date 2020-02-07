@@ -88,7 +88,10 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
       objectMetadata
           .setAcMetadataCreator(dao.getReferenceByNaturalId(Agent.class, resource.getAcMetadataCreator().getUuid()));
     }
-
+    if (resource.getAcDerivedFrom() != null) {
+      objectMetadata.setAcDerivedFrom(
+          dao.getReferenceByNaturalId(ObjectStoreMetadata.class, resource.getAcDerivedFrom().getUuid()));
+    }
     dao.save(objectMetadata);
     return resource;
   }
@@ -150,6 +153,10 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     if (resource.getAcMetadataCreator() != null) {
       objectMetadata.setAcMetadataCreator(
           dao.getReferenceByNaturalId(Agent.class, resource.getAcMetadataCreator().getUuid()));
+    }
+    if (resource.getAcDerivedFrom() != null) {
+      objectMetadata.setAcDerivedFrom(
+          dao.getReferenceByNaturalId(ObjectStoreMetadata.class, resource.getAcDerivedFrom().getUuid()));
     }
     
     dao.save(objectMetadata);
