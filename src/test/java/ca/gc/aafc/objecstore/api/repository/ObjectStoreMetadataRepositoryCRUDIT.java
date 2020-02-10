@@ -78,6 +78,8 @@ public class ObjectStoreMetadataRepositoryCRUDIT extends BaseRepositoryTest {
 
     ObjectStoreMetadata result = findUnique(ObjectStoreMetadata.class, "uuid", dtoUuid);
     assertEquals(dtoUuid, result.getUuid());
+    assertEquals(TestConfiguration.TEST_BUCKET, result.getBucket());
+    assertEquals(TestConfiguration.TEST_FILE_IDENTIFIER, result.getFileIdentifier());
     assertEquals(derived.getUuid(), result.getAcDerivedFrom().getUuid());
   }
 
