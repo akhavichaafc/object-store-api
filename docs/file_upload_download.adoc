@@ -15,7 +15,18 @@ curl -i http://localhost:8080/api/v1/file/mybucket -F file=@./my-image.png;type=
 Example response:
 
 ```sh
-{"fileName":"d512084a-ab2f-44c0-b981-25c3d579a43c","mediaType":"image/png","fileExtension":".png","size":5969}
+{
+  "fileIdentifier": "0887c8c2-500e-4eb4-8c0e-58eef9b66a18",
+  "metaFileEntryVersion": "1.0",
+  "originalFilename": "drawing.png",
+  "sha1Hex": "3a37e3546074b6a67afef2fc1b402bf9233a1eb7",
+  "receivedMediaType": "image/png",
+  "detectedMediaType": "image/png",
+  "detectedFileExtension": ".png",
+  "evaluatedMediaType": "image/png",
+  "evaluatedFileExtension": ".png",
+  "sizeInBytes": 6091
+}
 ```
 
 2. Send a POST request to the `/api/metadata` endpoint to create a Metadata record for the stored

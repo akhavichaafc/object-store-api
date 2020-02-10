@@ -3,6 +3,8 @@ package ca.gc.aafc.objectstore.api.file;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.InputStream;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -22,6 +24,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
+import ca.gc.aafc.objectstore.api.minio.MinioFileService;
 import ca.gc.aafc.objectstore.api.testsupport.factories.ObjectStoreMetadataFactory;
 
 @SpringBootTest
@@ -37,6 +40,9 @@ public class FileControllerIT {
   @Inject
   private EntityManager entityManager;
 
+  @Inject
+  private MinioFileService minioFileService;
+
   @Transactional
   @Test
   public void fileUpload_whenImageIsUploaded_generateThumbnail() throws Exception {
@@ -45,9 +51,9 @@ public class FileControllerIT {
 
     MockMultipartFile mockFile = new MockMultipartFile("file", "testfile", MediaType.IMAGE_PNG_VALUE, bytes);
 
-    FileUploadResponse uploadResponse = fileController.handleFileUpload(mockFile, "mybucket");
+    FileMetaEntry uploadResponse = fileController.handleFileUpload(mockFile, "mybucket");
 
-    UUID fileId = UUID.fromString(uploadResponse.getFileName());
+    UUID fileId = uploadResponse.getFileIdentifier();
 
     // Persist the associated metadata separately:
     ObjectStoreMetadata newMetadata = ObjectStoreMetadataFactory.newObjectStoreMetadata()
@@ -61,6 +67,24 @@ public class FileControllerIT {
     );
 
     assertEquals(HttpStatus.OK, thumbnailDownloadResponse.getStatusCode());
+  }
+
+  @Transactional
+  @Test
+  public void fileUpload_OnValidUpload_FileMetaEntryGenerated() throws Exception {
+    Resource imageFile = resourceLoader.getResource("classpath:drawing.png");
+    byte[] bytes = IOUtils.toByteArray(imageFile.getInputStream());
+
+    MockMultipartFile mockFile = new MockMultipartFile("file", "testfile", MediaType.IMAGE_PNG_VALUE, bytes);
+
+    FileMetaEntry uploadResponse = fileController.handleFileUpload(mockFile, "mybucket");
+
+    Optional<InputStream> response = minioFileService.getFile(
+      uploadResponse.getFileMetaEntryFilename(),
+      "mybucket"
+    );
+
+    assertTrue(response.isPresent());
   }
 
 }
