@@ -83,4 +83,26 @@ public class ObjectStoreMetadataRepositoryCRUDIT extends BaseRepositoryTest {
     assertEquals(derived.getUuid(), result.getAcDerivedFrom().getUuid());
   }
 
+  @Test
+  public void save_ValidResource_ResourceUpdated() {
+    ObjectStoreMetadata derived = ObjectStoreMetadataFactory.newObjectStoreMetadata().build();
+    persist(derived);
+    ObjectStoreMetadataDto derivedDto = new ObjectStoreMetadataDto();
+    derivedDto.setUuid(derived.getUuid());
+
+    ObjectStoreMetadataDto updateMetadataDto = objectStoreResourceRepository.findOne(
+      testObjectStoreMetadata.getUuid(),
+      new QuerySpec(ObjectStoreMetadataDto.class));
+    updateMetadataDto.setBucket(TestConfiguration.TEST_BUCKET);
+    updateMetadataDto.setFileIdentifier(TestConfiguration.TEST_FILE_IDENTIFIER);
+    updateMetadataDto.setAcDerivedFrom(derivedDto);
+
+    objectStoreResourceRepository.save(updateMetadataDto);
+
+    ObjectStoreMetadata result = findUnique(ObjectStoreMetadata.class, "uuid", updateMetadataDto.getUuid());
+    assertEquals(TestConfiguration.TEST_BUCKET, result.getBucket());
+    assertEquals(TestConfiguration.TEST_FILE_IDENTIFIER, result.getFileIdentifier());
+    assertEquals(derived.getUuid(), result.getAcDerivedFrom().getUuid());
+  }
+
 }
