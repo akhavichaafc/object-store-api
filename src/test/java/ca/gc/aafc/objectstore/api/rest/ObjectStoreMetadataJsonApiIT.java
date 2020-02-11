@@ -93,8 +93,10 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
        .fileExtension(TestConfiguration.TEST_FILE_EXT)
        .bucket(TestConfiguration.TEST_BUCKET)
        .acHashValue("123")
-      .build();
-    
+       .publiclyReleasable(true)
+       .notPubliclyReleasableReason("Classified")
+       .build();
+
     ObjectStoreMetadataDto objectStoreMetadatadto = mapper.toDto(objectStoreMetadata, null, new CycleAvoidingMappingContext());
     return toAttributeMap(objectStoreMetadatadto);
   }

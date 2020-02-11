@@ -60,5 +60,10 @@ public class ObjectStoreMetadataDto {
   
   @JsonApiRelation
   private AgentDto acMetadataCreator;
-  
+
+  private boolean publiclyReleasable;
+
+  @JsonInclude(Include.NON_EMPTY)
+  private String notPubliclyReleasableReason;
+
 }
