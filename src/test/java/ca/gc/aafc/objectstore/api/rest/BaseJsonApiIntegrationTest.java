@@ -193,7 +193,7 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
     return ImmutableMap.of("data", bldr.build());
   }
   
-  private static Map<String, Object> toRelationshipMap(List<Relationship> relationship) {
+  protected static Map<String, Object> toRelationshipMap(List<Relationship> relationship) {
     if( relationship == null) {
       return null;
     }
@@ -360,8 +360,12 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
    * @return
    */
   protected ValidatableResponse sendGet(String id) {
+    return sendGet(id, HttpStatus.OK.value());
+  }
+  
+  protected ValidatableResponse sendGet(String id, int expectedReturnCode) {
     return given().header("crnk-compact", "true").when().get(getResourceUnderTest() + "/" + id).then()
-        .statusCode(HttpStatus.OK.value());
+        .statusCode(expectedReturnCode);
   }
 
   /**
