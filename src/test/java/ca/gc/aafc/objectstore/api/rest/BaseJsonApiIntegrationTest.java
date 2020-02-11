@@ -78,7 +78,7 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
     IT_OBJECT_MAPPER.setSerializationInclusion(Include.NON_NULL);
   }
 
-  public static final String API_BASE_PATH = "/api";
+  public static final String API_BASE_PATH = "/api/v1";
   public static final String SCHEMA_BASE_PATH = "/json-schema";
    
   @BeforeEach
