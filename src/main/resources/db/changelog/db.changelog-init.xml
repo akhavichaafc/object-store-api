@@ -1,0 +1,132 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
+	context="schema-change">
+
+	<changeSet context="schema-change" id="init-1" author="gendreauc">
+		<sql>
+			CREATE TYPE dctype AS ENUM (
+			'IMAGE',
+			'MOVING_IMAGE',
+			'SOUND',
+			'TEXT',
+			'DATASET',
+			'UNDETERMINED'
+			);
+		</sql>
+	</changeSet>
+	<changeSet context="schema-change" id="init-2" author="gendreauc">
+		<sql>
+			CREATE TYPE managed_attribute_type AS ENUM (
+			'INTEGER',
+			'STRING'
+			);
+		</sql>
+	</changeSet>
+
+	<changeSet context="schema-change" id="init-3" author="gendreauc">
+		<createTable tableName="metadata">
+			<column autoIncrement="true" name="id" type="SERIAL">
+				<constraints primaryKey="true" primaryKeyName="pk_metadata_id" />
+			</column>
+			<column name="uuid" type="uuid">
+			    <constraints nullable="false" unique="true" />
+			</column>
+			<column name="file_identifier" type="uuid">
+			    <constraints nullable="false" unique="true" />
+			</column>
+			<column name="file_extension" type="VARCHAR(10)">
+			    <constraints nullable="false" />
+			</column>
+			<column name="bucket" type="VARCHAR(50)">
+			    <constraints nullable="false" />
+			</column>
+			<column name="ac_caption" type="VARCHAR(250)" />
+			<column name="dc_format" type="VARCHAR(150)" />
+			<column name="dc_type" type="dctype">
+				<constraints nullable="false" />
+			</column>
+			<column name="xmp_rights_web_statement" type="VARCHAR(250)">
+			    <constraints nullable="false" />
+			</column>
+			<column name="ac_rights" type="VARCHAR(250)">
+			    <constraints nullable="false" />
+			</column>
+			<column name="xmp_rights_owner" type="VARCHAR(250)">
+			    <constraints nullable="false" />
+			</column>
+			<column name="ac_digitization_date" type="timestamptz" />
+			<column name="xmp_metadata_date" type="timestamptz" />
+			<column name="original_filename" type="VARCHAR(250)" />
+			<column name="ac_hash_function" type="VARCHAR(50)" />
+			<column name="ac_hash_value" type="VARCHAR(128)" />
+			<column name="ac_tags" type="text[]" />
+			<column name="ac_metadata_creator_id" type="INTEGER" />
+			<column name="created_date" type="timestamptz" defaultValueComputed="current_timestamp" />
+			<column name="deleted_date" type="timestamptz" />
+			<column name="publicly_releasable" type="boolean" defaultValueBoolean="false"/>
+			<column name="not_publicly_releasable_reason" type="text" />
+		</createTable>
+	</changeSet>
+		<changeSet context="schema-change" id="init-4" author="gendreauc">
+		<createTable tableName="managed_attribute">
+			<column autoIncrement="true" name="id" type="SERIAL">
+				<constraints primaryKey="true" primaryKeyName="pk_managed_attribute_id" />
+			</column>
+			<column name="uuid" type="uuid">
+			    <constraints nullable="false" unique="true" />
+			</column>
+			<column name="type" type="managed_attribute_type">
+				<constraints nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(50)" >
+				<constraints nullable="false" />
+			</column>
+			<column name="accepted_values" type="text[]" />
+			<column name="created_date" type="timestamptz" defaultValueComputed="current_timestamp" />
+		</createTable>
+	</changeSet>
+	<changeSet context="schema-change" id="init-5" author="shemyg">
+		<createTable tableName="metadata_managed_attribute">
+			<column autoIncrement="true" name="id" type="SERIAL">
+				<constraints primaryKey="true" primaryKeyName="pk_metatdata_managed_attribute_id" />
+			</column>
+			<column name="uuid" type="uuid">
+			    <constraints nullable="false" unique="true" />
+			</column>
+			<column name="metadata_id" type="integer">
+				<constraints foreignKeyName="fk_metadata_managed_attribute_to_metadata_id" references="metadata(id)"/>
+			</column>
+			<column name="managed_attribute_id" type="integer">
+	    		<constraints foreignKeyName="fk_metadata_managed_attribute_to_managed_attribute_id" references="managed_attribute(id)"/>
+			</column>			
+			<column name="assigned_value" type="varchar(250)">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet context="schema-change" id="init-6" author="gendreauc">
+		<createTable tableName="agent">
+			<column autoIncrement="true" name="id" type="SERIAL">
+				<constraints primaryKey="true" primaryKeyName="pk_agent_id" />
+			</column>
+			<column name="uuid" type="uuid">
+			    <constraints nullable="false" unique="true" />
+			</column>
+			<column name="display_name" type="VARCHAR(250)" >
+				<constraints nullable="false" unique="true"/>
+			</column>
+			<column name="email" type="VARCHAR(250)">
+				<constraints nullable="false" unique="true" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint baseColumnNames="ac_metadata_creator_id"
+            baseTableName="metadata"
+            constraintName="fk_metadata_creator_agent"
+            referencedColumnNames="id"
+            referencedTableName="agent"/>
+	</changeSet>
+</databaseChangeLog>

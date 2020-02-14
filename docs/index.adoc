@@ -1,0 +1,21 @@
+:sectnums:
+
+= object-store-api Developer Documentation
+
+:leveloffset: 1
+
+include::object_storage.adoc[]
+
+include::file_upload_download.adoc[]
+
+include::managed_attributes.adoc[]
+
+include::media_type_detection.adoc[]
+
+include::design.adoc[]
+
+include::filtering.adoc[]
+
+include::lazy_logging.adoc[]
+
+include::soft_delete.adoc[]
