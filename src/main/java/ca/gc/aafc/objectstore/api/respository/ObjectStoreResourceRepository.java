@@ -99,7 +99,10 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     if (resource.getAcDerivedFrom() != null) {
       objectMetadata.setAcDerivedFrom(
           dao.getReferenceByNaturalId(ObjectStoreMetadata.class, resource.getAcDerivedFrom().getUuid()));
+    } else {
+      objectMetadata.setAcDerivedFrom(null);
     }
+
     dao.save(objectMetadata);
     return resource;
   }
