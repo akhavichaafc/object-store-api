@@ -5,7 +5,7 @@
 
 	<groupId>ca.gc.aafc</groupId>
 	<artifactId>object-store.api</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Object-Store API</name>
@@ -27,7 +27,7 @@
 		<javax.activation.version>1.1.1</javax.activation.version>
 		<javax.interceptor-api>1.2.2</javax.interceptor-api>
 		<minio.version>6.0.13</minio.version>
-		<tika.version>1.21</tika.version>
+		<tika.version>1.22</tika.version>
 		<thumbnailator.version>0.4.9</thumbnailator.version>
 		<imageio.version>3.5</imageio.version>
 		<spotbugs-maven-plugin.version>3.1.12.2</spotbugs-maven-plugin.version>
