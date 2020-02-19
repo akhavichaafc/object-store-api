@@ -1,6 +1,7 @@
 package ca.gc.aafc.objectstore.api.file;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
@@ -10,12 +11,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import org.apache.tika.exception.TikaException;
 import org.apache.tika.mime.MimeTypeException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.xml.sax.SAXException;
 
 import com.google.common.io.Resources;
 
@@ -135,6 +140,12 @@ public class MediaTypeDetectionStrategyTest {
     }
   }
   
+  @Test
+  public void getMetaData() throws IOException, SAXException, TikaException, URISyntaxException {
+    Map<String, String> metadata = MediaTypeDetectionStrategy
+        .getMetaData(Resources.getResource("drawing.png").toURI().getPath());
+    assertTrue(!metadata.isEmpty());
+  }
 
 
 }

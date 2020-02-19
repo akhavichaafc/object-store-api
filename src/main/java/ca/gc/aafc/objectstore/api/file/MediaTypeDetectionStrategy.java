@@ -1,9 +1,12 @@
 package ca.gc.aafc.objectstore.api.file;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -13,12 +16,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.detect.Detector;
+import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -114,6 +121,24 @@ public class MediaTypeDetectionStrategy {
             : getFileExtension(originalFilename));
     
     return mtdrBldr.build();
+  }
+
+  public static Map<String, String> getMetaData(String filePath) throws IOException, SAXException, TikaException {
+    HashMap<String, String> metadata = new HashMap<>();
+
+    AutoDetectParser parser = new AutoDetectParser();
+    BodyContentHandler bodyContentHandler = new BodyContentHandler();
+    Metadata meta = new Metadata();
+
+    try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
+      parser.parse(fileInputStream, bodyContentHandler, meta);
+
+      for (String name : meta.names()) {
+        metadata.put(name, meta.get(name));
+      }
+    }
+
+    return metadata;
   }
 
 }
