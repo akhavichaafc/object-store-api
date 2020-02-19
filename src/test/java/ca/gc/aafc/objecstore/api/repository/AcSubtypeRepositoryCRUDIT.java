@@ -26,7 +26,7 @@ public class AcSubtypeRepositoryCRUDIT extends BaseRepositoryTest {
   
   private AcSubtype createTestAcSubtype() {
     testAcSubtype = AcSubtypeFactory.newAcSubtype()
-        .subtype("drawing")
+        .acSubtype("drawing")
         .build();
 
     persist(testAcSubtype);
@@ -44,7 +44,7 @@ public class AcSubtypeRepositoryCRUDIT extends BaseRepositoryTest {
         .findOne(testAcSubtype.getUuid(), new QuerySpec(AcSubtypeDto.class));
     assertNotNull(acSubtypeDto);
     assertEquals(testAcSubtype.getUuid(), acSubtypeDto.getUuid());
-    assertEquals("drawing", acSubtypeDto.getSubtype());
+    assertEquals("drawing", acSubtypeDto.getAcSubtype());
     assertEquals(testAcSubtype.getDcType(), acSubtypeDto.getDcType());
   }
     

@@ -13,7 +13,7 @@ public class AcSubtypeCRUDIT extends BaseEntityCRUDIT {
   private static String RANDOM_NAME = TestableEntityFactory.generateRandomNameLettersOnly(10);
   
   private AcSubtype acSubtypeUnderTest = AcSubtypeFactory.newAcSubtype()
-      .subtype("drawing")
+      .acSubtype("drawing")
       .build();
 
   @Override
@@ -28,7 +28,7 @@ public class AcSubtypeCRUDIT extends BaseEntityCRUDIT {
     AcSubtype fetchedAcSubtype = find(AcSubtype.class,
         acSubtypeUnderTest.getId());
     assertEquals(acSubtypeUnderTest.getId(), fetchedAcSubtype.getId());
-    assertEquals("drawing", fetchedAcSubtype.getSubtype());
+    assertEquals("drawing", fetchedAcSubtype.getAcSubtype());
   }
 
   @Override

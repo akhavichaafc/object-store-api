@@ -18,6 +18,6 @@ public class AcSubtypeDto {
   private UUID uuid;
 
   private DcType dcType;
-  private String subtype;
+  private String acSubtype;
   
 }

@@ -25,7 +25,7 @@ public class AcSubtypeFactory implements TestableEntityFactory<AcSubtype> {
     return AcSubtype.builder()
         .uuid(UUID.randomUUID())
         .dcType(DcType.IMAGE)
-        .subtype("supporting specilzation");
+        .acSubtype("supporting specilzation");
    } 
   
   /**

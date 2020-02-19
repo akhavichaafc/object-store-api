@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
@@ -27,7 +28,7 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
 @Entity
-@Table(name = "ac_subtype")
+@Table(name = "object_subtype")
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
 @TypeDef(name = "string-array", typeClass = StringArrayType.class)
 @SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
@@ -40,7 +41,8 @@ public class AcSubtype implements java.io.Serializable, UniqueObj {
   private static final long serialVersionUID = 1L;
   private Integer id;
   private DcType dcType;
-  private String subtype;
+  private String acSubtype;
+  
   private UUID uuid;  
   
   @NaturalId
@@ -52,14 +54,16 @@ public class AcSubtype implements java.io.Serializable, UniqueObj {
 
   public void setUuid(UUID uuid) {
     this.uuid = uuid;
-  }  
-  @Column(name = "subtype")  
-  public String getSubtype() {
-    return subtype;
+  }
+  
+  @Column(name = "ac_subtype")  
+  @Size(max=50)
+  public String getAcSubtype() {
+    return acSubtype;
   }
 
-  public void setSubtype(String subtype) {
-    this.subtype = subtype;
+  public void setAcSubtype(String acSubtype) {
+    this.acSubtype = acSubtype;
   }
 
   @Id
@@ -71,7 +75,6 @@ public class AcSubtype implements java.io.Serializable, UniqueObj {
   public void setId(Integer id) {
     this.id = id;
   }
-
   
   @NotNull
   @Type(type = "pgsql_enum")
