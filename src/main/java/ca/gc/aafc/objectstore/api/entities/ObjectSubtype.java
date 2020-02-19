@@ -36,7 +36,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NaturalIdCache
-public class AcSubtype implements java.io.Serializable, UniqueObj {
+public class ObjectSubtype implements java.io.Serializable, UniqueObj {
 
   private static final long serialVersionUID = 1L;
   private Integer id;

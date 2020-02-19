@@ -11,10 +11,10 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import ca.gc.aafc.objectstore.api.dao.BaseDAO;
-import ca.gc.aafc.objectstore.api.dto.AcSubtypeDto;
-import ca.gc.aafc.objectstore.api.entities.AcSubtype;
+import ca.gc.aafc.objectstore.api.dto.ObjectSubtypeDto;
+import ca.gc.aafc.objectstore.api.entities.ObjectSubtype;
 import ca.gc.aafc.objectstore.api.filter.RsqlFilterHandler;
-import ca.gc.aafc.objectstore.api.mapper.AcSubtypeMapper;
+import ca.gc.aafc.objectstore.api.mapper.ObjectSubtypeMapper;
 import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
@@ -26,10 +26,10 @@ import io.crnk.data.jpa.query.criteria.JpaCriteriaQueryFactory;
 
 @Repository
 @Transactional
-public class AcSubtypeResourceRepository extends ResourceRepositoryBase<AcSubtypeDto, UUID> {
+public class ObjectSubtypeResourceRepository extends ResourceRepositoryBase<ObjectSubtypeDto, UUID> {
 
   private final BaseDAO dao;
-  private final AcSubtypeMapper mapper;
+  private final ObjectSubtypeMapper mapper;
   private final RsqlFilterHandler rsqlFilterHandler;
 
   private JpaCriteriaQueryFactory queryFactory;  
@@ -39,61 +39,61 @@ public class AcSubtypeResourceRepository extends ResourceRepositoryBase<AcSubtyp
     queryFactory = dao.createWithEntityManager(JpaCriteriaQueryFactory::newInstance);
   }
   
-  public AcSubtypeResourceRepository(
+  public ObjectSubtypeResourceRepository(
     BaseDAO dao,
-    AcSubtypeMapper mapper,
+    ObjectSubtypeMapper mapper,
     RsqlFilterHandler rsqlFilterHandler
   ) {
-    super(AcSubtypeDto.class);
+    super(ObjectSubtypeDto.class);
     this.dao = dao;
     this.mapper = mapper;
     this.rsqlFilterHandler = rsqlFilterHandler;
   }
 
   @Override
-  public <S extends AcSubtypeDto> S save(S resource) {
-    AcSubtypeDto dto =  (AcSubtypeDto) resource ;
-    AcSubtype entity = dao.findOneByNaturalId(dto.getUuid(), AcSubtype.class);
-    mapper.updateAcSubtypeFromDto(dto, entity);
+  public <S extends ObjectSubtypeDto> S save(S resource) {
+    ObjectSubtypeDto dto =  (ObjectSubtypeDto) resource ;
+    ObjectSubtype entity = dao.findOneByNaturalId(dto.getUuid(), ObjectSubtype.class);
+    mapper.updateObjectSubtypeFromDto(dto, entity);
     
     dao.save(entity);
     return resource;
   }
 
   @Override
-  public AcSubtypeDto findOne(UUID uuid, QuerySpec querySpec) {
-    AcSubtype acSubtype = dao.findOneByNaturalId(uuid, AcSubtype.class);
-    if (acSubtype == null) {
+  public ObjectSubtypeDto findOne(UUID uuid, QuerySpec querySpec) {
+    ObjectSubtype objectSubtype = dao.findOneByNaturalId(uuid, ObjectSubtype.class);
+    if (objectSubtype == null) {
       // Throw the 404 exception if the resource is not found.
       throw new ResourceNotFoundException(
           this.getClass().getSimpleName() + " with ID " + uuid + " Not Found.");
     }
-    return mapper.toDto(acSubtype);
+    return mapper.toDto(objectSubtype);
   }
 
   @Override
-  public ResourceList<AcSubtypeDto> findAll(QuerySpec querySpec) {
-    JpaCriteriaQuery<AcSubtype> jq = queryFactory.query(AcSubtype.class);
+  public ResourceList<ObjectSubtypeDto> findAll(QuerySpec querySpec) {
+    JpaCriteriaQuery<ObjectSubtype> jq = queryFactory.query(ObjectSubtype.class);
     
     Consumer<JpaQueryExecutor<?>> rsqlApplier = rsqlFilterHandler.getRestrictionApplier(querySpec);
-    JpaQueryExecutor<AcSubtype> executor = jq.buildExecutor(querySpec);
+    JpaQueryExecutor<ObjectSubtype> executor = jq.buildExecutor(querySpec);
     rsqlApplier.accept(executor);
 
-    List<AcSubtypeDto> l = executor.getResultList().stream()
+    List<ObjectSubtypeDto> l = executor.getResultList().stream()
     .map( e -> mapper.toDto(e))
     .collect(Collectors.toList());
     
-    return new DefaultResourceList<AcSubtypeDto>(l, null, null);
+    return new DefaultResourceList<ObjectSubtypeDto>(l, null, null);
   }
 
   @Override
-  public <S extends AcSubtypeDto> S create(S resource) {
-    AcSubtypeDto dto =  (AcSubtypeDto) resource ;
+  public <S extends ObjectSubtypeDto> S create(S resource) {
+    ObjectSubtypeDto dto =  (ObjectSubtypeDto) resource ;
     if(dto.getUuid()==null) {
       dto.setUuid(UUID.randomUUID());
     }
     
-    AcSubtype entity = mapper.toEntity(dto);
+    ObjectSubtype entity = mapper.toEntity(dto);
     dao.save(entity);
 
     return resource;
@@ -101,9 +101,9 @@ public class AcSubtypeResourceRepository extends ResourceRepositoryBase<AcSubtyp
 
   @Override
   public void delete(UUID id) {
-    AcSubtype acSubtype = dao.findOneByNaturalId(id, AcSubtype.class);
-    if(acSubtype != null) {
-      dao.delete(acSubtype);
+    ObjectSubtype objectSubtype = dao.findOneByNaturalId(id, ObjectSubtype.class);
+    if(objectSubtype != null) {
+      dao.delete(objectSubtype);
     }
   }
   
