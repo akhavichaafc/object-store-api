@@ -136,4 +136,9 @@
 			referencedColumnNames="id"
 			referencedTableName="metadata"/>
 	</changeSet>
+	<changeSet context="schema-change" id="init-7" author="keyuk">
+		<sql>
+				ALTER TABLE metadata ADD CONSTRAINT check_not_derived_from_self CHECK (ac_derived_from_id != id)
+		</sql>
+	</changeSet>
 </databaseChangeLog>
