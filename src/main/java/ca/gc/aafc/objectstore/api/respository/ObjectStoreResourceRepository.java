@@ -98,6 +98,8 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     }
     if (resource.getDcCreator() != null) {
       objectMetadata.setDcCreator(dao.getReferenceByNaturalId(Agent.class, resource.getDcCreator().getUuid()));
+    } else {
+      objectMetadata.setDcCreator(null);
     }
 
     dao.save(objectMetadata);
