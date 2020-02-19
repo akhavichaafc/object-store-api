@@ -80,7 +80,8 @@ public class ObjectStoreMetadataEntityCRUDIT extends BaseEntityCRUDIT {
         .newObjectStoreMetadata()
         .acMetadataCreator(metatdataCreator)
         .acDigitizationDate(TEST_OFFSET_DT)
-        .acDerivedFrom(derivedFrom).build();
+        .acDerivedFrom(derivedFrom)
+        .dcCreator(metatdataCreator).build();
     save(osm, false);
     assertNotNull(osm.getId());
     
@@ -99,7 +100,7 @@ public class ObjectStoreMetadataEntityCRUDIT extends BaseEntityCRUDIT {
     ObjectStoreMetadata restoredOsm = find(ObjectStoreMetadata.class, osm.getId());
     assertEquals(metatdataCreator.getId(), restoredOsm.getAcMetadataCreator().getId());
     assertEquals(derivedFrom.getId(), restoredOsm.getAcDerivedFrom().getId());
-    
+    assertEquals(metatdataCreator.getId(), restoredOsm.getDcCreator().getId());
   }
 
 }

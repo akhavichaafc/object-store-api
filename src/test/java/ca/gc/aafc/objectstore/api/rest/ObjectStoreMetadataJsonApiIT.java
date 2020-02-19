@@ -30,6 +30,7 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
   private final ObjectStoreMetadataMapper mapper = ObjectStoreMetadataMapper.INSTANCE;
   private static final String METADATA_CREATOR_PROPERTY_NAME = "acMetadataCreator";
   private static final String METADATA_DERIVED_PROPERTY_NAME = "acDerivedFrom";
+  private static final String DC_CREATOR_PROPERTY_NAME = "dcCreator";
   
   private ObjectStoreMetadata objectStoreMetadata;
   
@@ -122,8 +123,9 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
   @Override
   protected List<Relationship> buildRelationshipList() {
     return Arrays.asList(
-      Relationship.of(METADATA_CREATOR_PROPERTY_NAME, "agent", agentId.toString()),
-      Relationship.of(METADATA_DERIVED_PROPERTY_NAME, "metadata", metadataId.toString()));
+        Relationship.of(METADATA_CREATOR_PROPERTY_NAME, "agent", agentId.toString()),
+        Relationship.of(METADATA_DERIVED_PROPERTY_NAME, "metadata", metadataId.toString()),
+        Relationship.of(DC_CREATOR_PROPERTY_NAME, "agent", agentId.toString()));
   }
   
   @Test
