@@ -23,7 +23,7 @@ import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.Agent;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
-import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
+import ca.gc.aafc.objectstore.api.entities.DcType;
 import ca.gc.aafc.objectstore.api.file.FileController;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileMetaEntry;
@@ -227,7 +227,7 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
    */
   private ObjectStoreMetadata assignDefaultValues(ObjectStoreMetadata objectMetadata) {
     if (objectMetadata.getDcType() == null) {
-      objectMetadata.setDcType(DcType.fromDcFormat(objectMetadata.getDcFormat()).orElse(ObjectStoreMetadata.DcType.UNDETERMINED));
+      objectMetadata.setDcType(DcType.fromDcFormat(objectMetadata.getDcFormat()).orElse(DcType.UNDETERMINED));
     }
     
     if (objectMetadata.getXmpRightsWebStatement() == null) {

@@ -6,7 +6,7 @@ import java.util.function.BiFunction;
 
 import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.objectstore.api.entities.AcSubtype;
-import ca.gc.aafc.objectstore.api.entities.AcSubtype.DcType;
+import ca.gc.aafc.objectstore.api.entities.DcType;
 
 public class AcSubtypeFactory implements TestableEntityFactory<AcSubtype> {
 
