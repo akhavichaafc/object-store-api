@@ -1,9 +1,6 @@
 package ca.gc.aafc.objectstore.api.entities;
-
 import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
-
 
 public enum DcType {
   IMAGE("Image"),
