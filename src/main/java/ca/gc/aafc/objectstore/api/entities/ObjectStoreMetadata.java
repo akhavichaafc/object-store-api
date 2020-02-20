@@ -85,6 +85,8 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj, Sof
   private Agent acMetadataCreator;
   private Agent dcCreator;
 
+  private ObjectStoreMetadata acDerivedFrom;
+
   private boolean publiclyReleasable;
   private String notPubliclyReleasableReason;
 
@@ -399,6 +401,16 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj, Sof
 
   public void setXmpRightsOwner(String xmpRightsOwner) {
     this.xmpRightsOwner = xmpRightsOwner;
+  }
+
+  @OneToOne
+  @JoinColumn(name = "ac_derived_from_id", referencedColumnName = "id")
+  public ObjectStoreMetadata getAcDerivedFrom() {
+    return acDerivedFrom;
+  }
+
+  public void setAcDerivedFrom(ObjectStoreMetadata acDerivedFrom) {
+    this.acDerivedFrom = acDerivedFrom;
   }
 
   @Column(name = "publicly_releasable")
