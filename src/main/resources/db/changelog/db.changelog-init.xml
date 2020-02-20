@@ -66,7 +66,6 @@
 			<column name="ac_tags" type="text[]" />
 			<column name="ac_metadata_creator_id" type="INTEGER" />
 			<column name="created_date" type="timestamptz" defaultValueComputed="current_timestamp" />
-			<column name="ac_derived_from_id" type="INTEGER" />
 			<column name="deleted_date" type="timestamptz" />
 			<column name="publicly_releasable" type="boolean" defaultValueBoolean="false"/>
 			<column name="not_publicly_releasable_reason" type="text" />
@@ -129,16 +128,5 @@
             constraintName="fk_metadata_creator_agent"
             referencedColumnNames="id"
             referencedTableName="agent"/>
-		<addForeignKeyConstraint
-			baseColumnNames="ac_derived_from_id"
-			baseTableName="metadata"
-			constraintName="fk_metadata_ac_derived_from_id"
-			referencedColumnNames="id"
-			referencedTableName="metadata"/>
-	</changeSet>
-	<changeSet context="schema-change" id="init-7" author="keyuk">
-		<sql>
-				ALTER TABLE metadata ADD CONSTRAINT check_not_derived_from_self CHECK (ac_derived_from_id != id)
-		</sql>
 	</changeSet>
 </databaseChangeLog>
