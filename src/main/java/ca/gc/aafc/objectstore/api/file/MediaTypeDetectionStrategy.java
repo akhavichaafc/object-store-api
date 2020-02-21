@@ -11,6 +11,9 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.config.TikaConfig;
@@ -123,7 +126,7 @@ public class MediaTypeDetectionStrategy {
     return mtdrBldr.build();
   }
 
-  public static Map<String, String> getMetaData(String filePath) throws IOException, SAXException, TikaException {
+  public static Map<String, String> getMetaDataWithTika(String filePath) throws IOException, SAXException, TikaException {
     HashMap<String, String> metadata = new HashMap<>();
 
     AutoDetectParser parser = new AutoDetectParser();
@@ -136,6 +139,21 @@ public class MediaTypeDetectionStrategy {
       for (String name : meta.names()) {
         metadata.put(name, meta.get(name));
       }
+    }
+
+    return metadata;
+  }
+
+  public static Map<String, String> getMetaData(String filePath) throws ImageProcessingException, IOException {
+    HashMap<String, String> metadata = new HashMap<>();
+
+    try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
+      com.drew.metadata.Metadata metaExtraction = ImageMetadataReader.readMetadata(fileInputStream);
+      metaExtraction.getDirectories().forEach(directory -> {
+        directory.getTags().forEach(tag -> {
+          metadata.put(tag.getTagName(), tag.getDescription());
+        });
+      });
     }
 
     return metadata;

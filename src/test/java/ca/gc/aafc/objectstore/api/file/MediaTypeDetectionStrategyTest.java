@@ -11,18 +11,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nullable;
+
+import com.drew.imaging.ImageProcessingException;
+import com.google.common.io.Resources;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.mime.MimeTypeException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.xml.sax.SAXException;
-
-import com.google.common.io.Resources;
 
 public class MediaTypeDetectionStrategyTest {
 
@@ -141,10 +141,28 @@ public class MediaTypeDetectionStrategyTest {
   }
   
   @Test
-  public void getMetaData() throws IOException, SAXException, TikaException, URISyntaxException {
+  public void getMetaDataWithTika() throws IOException, SAXException, TikaException, URISyntaxException {
+    Map<String, String> metadata = MediaTypeDetectionStrategy
+        .getMetaDataWithTika(Resources.getResource("drawing.png").toURI().getPath());
+    assertTrue(!metadata.isEmpty());
+
+    logResult(metadata);
+  }
+
+  @Test
+  public void getMetaData() throws ImageProcessingException, IOException, URISyntaxException {
     Map<String, String> metadata = MediaTypeDetectionStrategy
         .getMetaData(Resources.getResource("drawing.png").toURI().getPath());
     assertTrue(!metadata.isEmpty());
+
+    logResult(metadata);
+  }
+
+  private void logResult(Map<String, String> metadata) {
+    metadata.forEach((k, v) -> {
+      System.out.println(k + " : " + v);
+    });
+    System.out.println();
   }
 
 
