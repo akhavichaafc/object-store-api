@@ -11,7 +11,7 @@ import lombok.Data;
 
 @SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @Data
-@JsonApiResource(type = "ac_subtype")
+@JsonApiResource(type = "object-subtype")
 public class ObjectSubtypeDto {
   
   @JsonApiId 

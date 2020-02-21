@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -18,7 +19,6 @@ import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 
 import ca.gc.aafc.objectstore.api.interfaces.UniqueObj;
@@ -30,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @Table(name = "object_subtype")
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
-@TypeDef(name = "string-array", typeClass = StringArrayType.class)
 @SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @Builder(toBuilder=true)
 @AllArgsConstructor
@@ -58,6 +57,7 @@ public class ObjectSubtype implements java.io.Serializable, UniqueObj {
   
   @Column(name = "ac_subtype")  
   @Size(max=50)
+  @NotBlank
   public String getAcSubtype() {
     return acSubtype;
   }

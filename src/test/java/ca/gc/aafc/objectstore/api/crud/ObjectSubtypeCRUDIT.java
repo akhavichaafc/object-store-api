@@ -10,8 +10,6 @@ import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 
 public class ObjectSubtypeCRUDIT extends BaseEntityCRUDIT {
 
-  private static String RANDOM_NAME = TestableEntityFactory.generateRandomNameLettersOnly(10);
-  
   private ObjectSubtype objectSubtypeUnderTest = ObjectSubtypeFactory.newObjectSubtype()
       .acSubtype("drawing")
       .build();

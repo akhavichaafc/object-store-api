@@ -11,7 +11,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.ValidationException;
 
@@ -22,8 +21,8 @@ import ca.gc.aafc.objectstore.api.ObjectStoreConfiguration;
 import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.Agent;
-import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.entities.DcType;
+import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.file.FileController;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileMetaEntry;
@@ -63,7 +62,6 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
   private static PathSpec DELETED_PATH_SPEC = PathSpec.of(SoftDeletable.DELETED_DATE_FIELD_NAME);
   private static FilterSpec DELETED_DATE_IS_NULL = new FilterSpec(DELETED_PATH_SPEC, FilterOperator.EQ, null);
 
-  @Inject
   public ObjectStoreResourceRepository(ObjectStoreConfiguration config, BaseDAO dao, ObjectStoreMetadataMapper mapper,
       FileInformationService fileInformationService, RsqlFilterHandler rsqlFilterHandler) {
     super(ObjectStoreMetadataDto.class);
