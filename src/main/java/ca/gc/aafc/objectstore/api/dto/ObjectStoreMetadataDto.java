@@ -60,6 +60,12 @@ public class ObjectStoreMetadataDto {
   
   @JsonApiRelation
   private AgentDto acMetadataCreator;
+  
+  @JsonApiRelation
+  private ObjectStoreMetadataDto acDerivedFrom;
+
+  @JsonApiRelation
+  private AgentDto dcCreator;
 
   private boolean publiclyReleasable;
 

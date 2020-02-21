@@ -81,6 +81,9 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj, Sof
   
   private List<MetadataManagedAttribute> managedAttribute;
   private Agent acMetadataCreator;
+  private Agent dcCreator;
+
+  private ObjectStoreMetadata acDerivedFrom;
 
   private boolean publiclyReleasable;
   private String notPubliclyReleasableReason;
@@ -267,6 +270,16 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj, Sof
     this.acMetadataCreator = acMetadataCreator;
   }
   
+  @OneToOne
+  @JoinColumn(name = "dc_creator_id", referencedColumnName= "id")
+  public Agent getDcCreator() {
+    return dcCreator;
+  }
+
+  public void setDcCreator(Agent dcCreator) {
+    this.dcCreator = dcCreator;
+  }
+  
   @NotNull
   @Column(name = "xmp_rights_web_statement")
   @Size(max = 250)
@@ -308,6 +321,16 @@ public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj, Sof
 
   public void setXmpRightsOwner(String xmpRightsOwner) {
     this.xmpRightsOwner = xmpRightsOwner;
+  }
+
+  @OneToOne
+  @JoinColumn(name = "ac_derived_from_id", referencedColumnName = "id")
+  public ObjectStoreMetadata getAcDerivedFrom() {
+    return acDerivedFrom;
+  }
+
+  public void setAcDerivedFrom(ObjectStoreMetadata acDerivedFrom) {
+    this.acDerivedFrom = acDerivedFrom;
   }
 
   @Column(name = "publicly_releasable")
