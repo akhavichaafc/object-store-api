@@ -72,4 +72,6 @@ public class ObjectStoreMetadataDto {
   @JsonInclude(Include.NON_EMPTY)
   private String notPubliclyReleasableReason;
 
+  @JsonApiRelation
+  private ObjectSubtypeDto acSubType;
 }

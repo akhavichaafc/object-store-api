@@ -23,6 +23,7 @@ import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.Agent;
 import ca.gc.aafc.objectstore.api.entities.DcType;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
+import ca.gc.aafc.objectstore.api.entities.ObjectSubtype;
 import ca.gc.aafc.objectstore.api.file.FileController;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileMetaEntry;
@@ -105,6 +106,12 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     } else {
       objectMetadata.setDcCreator(null);
     }
+    if (resource.getAcSubType() != null) {
+      objectMetadata.setAcSubType(
+        dao.getReferenceByNaturalId(ObjectSubtype.class, resource.getAcSubType().getUuid()));
+    } else {
+      objectMetadata.setAcSubType(null);
+    }
 
     dao.save(objectMetadata);
     return resource;
@@ -185,6 +192,10 @@ public class ObjectStoreResourceRepository extends ResourceRepositoryBase<Object
     if (resource.getDcCreator() != null) {
       objectMetadata.setDcCreator(
           dao.getReferenceByNaturalId(Agent.class, resource.getDcCreator().getUuid()));
+    }
+    if (resource.getAcSubType() != null) {
+      objectMetadata.setAcSubType(
+        dao.getReferenceByNaturalId(ObjectSubtype.class, resource.getAcSubType().getUuid()));
     }
     
     dao.save(objectMetadata);
