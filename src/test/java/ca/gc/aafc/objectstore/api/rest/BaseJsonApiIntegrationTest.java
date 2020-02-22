@@ -10,7 +10,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.Root;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -421,4 +426,13 @@ public abstract class BaseJsonApiIntegrationTest extends BaseHttpIntegrationTest
     return response.then().statusCode(HttpStatus.OK.value());
   }
 
+  protected <T> void deleteEntityByUUID(String uuidPropertyName, UUID uuid, Class<T> entityClass) {
+    runInNewTransaction(em -> {
+      CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+      CriteriaDelete<T> query = criteriaBuilder.createCriteriaDelete(entityClass);
+      Root<T> root = query.from(entityClass);
+      query.where(criteriaBuilder.equal(root.get(uuidPropertyName), uuid));
+      em.createQuery(query).executeUpdate();
+    });
+  }
 }
