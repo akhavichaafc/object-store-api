@@ -2,6 +2,7 @@ package ca.gc.aafc.objecstore.api.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -63,10 +64,7 @@ public class ObjectStoreMetadataRepositoryCRUDIT extends BaseRepositoryTest {
 
   @Test
   public void findMeta_whenNoFieldsAreSelected_MetadataReturnedWithAllFields() {
-    ObjectStoreMetadataDto objectStoreMetadataDto = objectStoreResourceRepository.findOne(
-        testObjectStoreMetadata.getUuid(),
-        new QuerySpec(ObjectStoreMetadataDto.class)
-    );  
+    ObjectStoreMetadataDto objectStoreMetadataDto = getDtoUnderTest();  
     assertNotNull(objectStoreMetadataDto);
     assertEquals(testObjectStoreMetadata.getUuid(), objectStoreMetadataDto.getUuid());
     assertEquals(testObjectStoreMetadata.getDcType(), objectStoreMetadataDto.getDcType());
@@ -110,9 +108,7 @@ public class ObjectStoreMetadataRepositoryCRUDIT extends BaseRepositoryTest {
   @Test
   public void save_ValidResource_ResourceUpdated() {
 
-    ObjectStoreMetadataDto updateMetadataDto = objectStoreResourceRepository.findOne(
-      testObjectStoreMetadata.getUuid(),
-      new QuerySpec(ObjectStoreMetadataDto.class));
+    ObjectStoreMetadataDto updateMetadataDto = getDtoUnderTest();
     updateMetadataDto.setBucket(TestConfiguration.TEST_BUCKET);
     updateMetadataDto.setFileIdentifier(TestConfiguration.TEST_FILE_IDENTIFIER);
     updateMetadataDto.setAcDerivedFrom(derived);
@@ -125,6 +121,31 @@ public class ObjectStoreMetadataRepositoryCRUDIT extends BaseRepositoryTest {
     assertEquals(TestConfiguration.TEST_FILE_IDENTIFIER, result.getFileIdentifier());
     assertEquals(derived.getUuid(), result.getAcDerivedFrom().getUuid());
     assertEquals(acSubType.getUuid(), result.getAcSubType().getUuid());
+
+    //Can break Relationships
+    assertRelationshipsRemoved();
+  }
+
+  private void assertRelationshipsRemoved() {
+    ObjectStoreMetadataDto updateMetadataDto = getDtoUnderTest();
+    assertNotNull(updateMetadataDto.getAcDerivedFrom());
+    assertNotNull(updateMetadataDto.getAcSubType());
+
+    updateMetadataDto.setAcDerivedFrom(null);
+    updateMetadataDto.setAcSubType(null);
+
+    objectStoreResourceRepository.save(updateMetadataDto);
+
+    ObjectStoreMetadata result = findUnique(ObjectStoreMetadata.class, "uuid", updateMetadataDto.getUuid());
+    assertNull(result.getAcDerivedFrom());
+    assertNull(result.getAcSubType());
+  }
+
+  private ObjectStoreMetadataDto getDtoUnderTest() {
+    ObjectStoreMetadataDto updateMetadataDto = objectStoreResourceRepository.findOne(
+      testObjectStoreMetadata.getUuid(),
+      new QuerySpec(ObjectStoreMetadataDto.class));
+    return updateMetadataDto;
   }
 
 }
