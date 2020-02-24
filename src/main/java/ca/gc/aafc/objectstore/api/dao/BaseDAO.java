@@ -1,6 +1,9 @@
 package ca.gc.aafc.objectstore.api.dao;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -17,6 +20,7 @@ import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -102,7 +106,24 @@ public class BaseDAO {
       return null;
     }
   }
-  
+
+  public <T> List<T> findAllWhere(Class<T> clazz, Map<String, Object> propertyValueMap) {
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<T> criteria = criteriaBuilder.createQuery(clazz);
+    Root<T> root = criteria.from(clazz);
+
+    List<Predicate> predicates = new ArrayList<>();
+
+    propertyValueMap.forEach((k, v) -> predicates.add(criteriaBuilder.equal(root.get(k), v)));
+
+    criteria.where(predicates.toArray(new Predicate[0]));
+
+    criteria.select(root);
+
+    TypedQuery<T> query = entityManager.createQuery(criteria);
+    return query.getResultList();
+  }
+
   /**
    * Check for the existence of a record by natural id (as uuid).
    * @param uuid
