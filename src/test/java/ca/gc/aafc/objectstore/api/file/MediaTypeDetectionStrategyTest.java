@@ -18,11 +18,9 @@ import javax.annotation.Nullable;
 import com.drew.imaging.ImageProcessingException;
 import com.google.common.io.Resources;
 
-import org.apache.tika.exception.TikaException;
 import org.apache.tika.mime.MimeTypeException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.xml.sax.SAXException;
 
 public class MediaTypeDetectionStrategyTest {
 
@@ -139,20 +137,11 @@ public class MediaTypeDetectionStrategyTest {
       fail(e);
     }
   }
-  
-  @Test
-  public void getMetaDataWithTika() throws IOException, SAXException, TikaException, URISyntaxException {
-    Map<String, String> metadata = MediaTypeDetectionStrategy
-        .getMetaDataWithTika(Resources.getResource("drawing.png").toURI().getPath());
-    assertTrue(!metadata.isEmpty());
-
-    logResult(metadata);
-  }
 
   @Test
   public void getMetaData() throws ImageProcessingException, IOException, URISyntaxException {
     Map<String, String> metadata = MediaTypeDetectionStrategy
-        .getMetaData(Resources.getResource("drawing.png").toURI().getPath());
+        .getMetaData(Resources.getResource("example.tif").toURI().getPath());
     assertTrue(!metadata.isEmpty());
 
     logResult(metadata);
