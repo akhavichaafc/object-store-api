@@ -29,13 +29,12 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
   private static final String METADATA_CREATOR_PROPERTY_NAME = "acMetadataCreator";
   private static final String METADATA_DERIVED_PROPERTY_NAME = "acDerivedFrom";
   private static final String DC_CREATOR_PROPERTY_NAME = "dcCreator";
-  private static final String AC_SUB_TYPE_PROPERTY_NAME = "acSubType";
   
   private ObjectStoreMetadata objectStoreMetadata;
+  private ObjectSubtype oSubtype;
   
   private final UUID agentId = UUID.randomUUID();
   private final UUID metadataId = UUID.randomUUID();
-  private final UUID acSubTypeId = UUID.randomUUID();
 
   @BeforeEach
   public void setup() {
@@ -49,9 +48,8 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
       .fileIdentifier(UUID.randomUUID())
       .build();
 
-    ObjectSubtype oSubtype = ObjectSubtypeFactory
+    oSubtype = ObjectSubtypeFactory
       .newObjectSubtype()
-      .uuid(acSubTypeId)
       .build();
 
     // we need to run the setup in another transaction and commit it otherwise it can't be visible
@@ -69,7 +67,7 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
   @AfterEach
   public void tearDown() {
     deleteEntityByUUID("fileIdentifier", TestConfiguration.TEST_FILE_IDENTIFIER, ObjectStoreMetadata.class);
-    deleteEntityByUUID("uuid", acSubTypeId, ObjectSubtype.class);
+    deleteEntityByUUID("uuid", oSubtype.getUuid(), ObjectSubtype.class);
   }
 
   @Override
@@ -106,6 +104,7 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
        .acHashValue("123")
        .publiclyReleasable(true)
        .notPubliclyReleasableReason("Classified")
+       .acSubType(oSubtype)
        .build();
 
     ObjectStoreMetadataDto objectStoreMetadatadto = mapper.toDto(objectStoreMetadata, null, new CycleAvoidingMappingContext());
@@ -126,8 +125,7 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
     return Arrays.asList(
         Relationship.of(METADATA_CREATOR_PROPERTY_NAME, "agent", agentId.toString()),
         Relationship.of(METADATA_DERIVED_PROPERTY_NAME, "metadata", metadataId.toString()),
-        Relationship.of(DC_CREATOR_PROPERTY_NAME, "agent", agentId.toString()),
-        Relationship.of(AC_SUB_TYPE_PROPERTY_NAME, "object-subtype", acSubTypeId.toString()));
+        Relationship.of(DC_CREATOR_PROPERTY_NAME, "agent", agentId.toString()));
   }
   
   @Test
