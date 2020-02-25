@@ -26,7 +26,7 @@ import io.crnk.core.exception.ResourceNotFoundException;
 @Mapper(componentModel = "spring")
 public abstract class ObjectStoreMetadataMapper {
 
-  public static ObjectStoreMetadataMapper INSTANCE = Mappers.getMapper(ObjectStoreMetadataMapper.class);
+  public static final ObjectStoreMetadataMapper INSTANCE = Mappers.getMapper(ObjectStoreMetadataMapper.class);
 
   @Autowired
   private BaseDAO dao;
