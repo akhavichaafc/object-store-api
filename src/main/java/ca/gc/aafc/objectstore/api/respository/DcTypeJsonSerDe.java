@@ -37,7 +37,7 @@ public final class DcTypeJsonSerDe {
     public void serialize(DcType value, JsonGenerator gen, SerializerProvider serializers)
         throws IOException {
       if (value != null) {
-        gen.writeString(value.getValue());
+        gen.writeString(value.name());
       } else {
         gen.writeNull();
       }
