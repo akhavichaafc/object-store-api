@@ -17,7 +17,7 @@ import ca.gc.aafc.objectstore.api.entities.Agent;
 import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
-import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
+import ca.gc.aafc.objectstore.api.entities.DcType;
 import ca.gc.aafc.objectstore.api.testsupport.factories.AgentFactory;
 import ca.gc.aafc.objectstore.api.testsupport.factories.ManagedAttributeFactory;
 import ca.gc.aafc.objectstore.api.testsupport.factories.MetadataManagedAttributeFactory;

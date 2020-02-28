@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
+import ca.gc.aafc.objectstore.api.entities.DcType;
 
 public final class DcTypeJsonSerDe {
   
@@ -37,7 +37,7 @@ public final class DcTypeJsonSerDe {
     public void serialize(DcType value, JsonGenerator gen, SerializerProvider serializers)
         throws IOException {
       if (value != null) {
-        gen.writeString(value.getValue());
+        gen.writeString(value.name());
       } else {
         gen.writeNull();
       }
