@@ -5,13 +5,14 @@ toDcType:
   MOVING_IMAGE:
     - ^video\/[\w\.-]+$
   SOUND:
-    - ^audio/[\w\.-]+$  
+    - ^audio/[\w\.-]+$
   DATASET:
     - ^text/csv$
     - ^application/vnd.openxmlformats-officedocument.spreadsheetml.sheet$
     - ^application/vnd.oasis.opendocument.spreadsheet$
-    - ^application/json$  
+    - ^application/json$
   TEXT:
     - ^application/pdf$
     - ^application/vnd.openxmlformats-officedocument.wordprocessingml.document$
     - ^application/vnd.oasis.opendocument.text$
+    - ^text/[\w\.-]+$

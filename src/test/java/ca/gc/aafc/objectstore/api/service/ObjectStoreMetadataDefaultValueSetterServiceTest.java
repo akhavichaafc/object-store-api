@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import ca.gc.aafc.objectstore.api.MediaTypeToDcTypeConfiguration;
 import ca.gc.aafc.objectstore.api.ObjectStoreConfiguration;
+import ca.gc.aafc.objectstore.api.entities.DcType;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
-import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
 
 public class ObjectStoreMetadataDefaultValueSetterServiceTest {
   

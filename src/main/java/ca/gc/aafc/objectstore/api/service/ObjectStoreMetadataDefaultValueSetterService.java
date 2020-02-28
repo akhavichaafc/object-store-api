@@ -2,24 +2,26 @@ package ca.gc.aafc.objectstore.api.service;
 
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
 import ca.gc.aafc.objectstore.api.MediaTypeToDcTypeConfiguration;
 import ca.gc.aafc.objectstore.api.ObjectStoreConfiguration;
+import ca.gc.aafc.objectstore.api.entities.DcType;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
-import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata.DcType;
 
 /**
  * 
  * Service that contains logic around setting default values for various fields on {@link ObjectStoreMetadata}.
- * 
  *
  */
+@Service
 public class ObjectStoreMetadataDefaultValueSetterService {
   
   private final ObjectStoreConfiguration config;
@@ -33,11 +35,15 @@ public class ObjectStoreMetadataDefaultValueSetterService {
   }
   
   /**
+   * Assigns default values to a specific {@link ObjectStoreMetadata} instance.
+   * Defaults values are only set if the current value is null or blank.
    * 
    * @param objectMetadata
    * @return
    */
   public ObjectStoreMetadata assignDefaultValues(ObjectStoreMetadata objectMetadata) {
+    Objects.requireNonNull(objectMetadata);
+    
     if (objectMetadata.getDcType() == null) {
       objectMetadata.setDcType(dcTypeFromDcFormat(objectMetadata.getDcFormat()));
     }

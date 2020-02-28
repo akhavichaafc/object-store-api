@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import ca.gc.aafc.objectstore.api.entities.DcType;
+
 @SpringBootTest(classes = ObjectStoreApiLauncher.class)
 @ActiveProfiles("test")
 public class AppStartsIT {
@@ -26,7 +28,7 @@ public class AppStartsIT {
     
     //Make sure we can load the configuration files
     assertNotNull(config.getDefaultCopyright());
-    assertNotNull(mediaTypeToDcTypeConfig.getToDcType().get("IMAGE").get(0));
+    assertNotNull(mediaTypeToDcTypeConfig.getToDcType().get(DcType.IMAGE).get(0));
   }
 
 }
