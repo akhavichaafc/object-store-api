@@ -8,6 +8,8 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.support.DefaultPropertySourceFactory;
 import org.springframework.core.io.support.EncodedResource;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * This class can be used with {@link PropertySource} factory to load the properties from a yaml file.
  *
@@ -15,16 +17,19 @@ import org.springframework.core.io.support.EncodedResource;
 public class YamlPropertyLoaderFactory extends DefaultPropertySourceFactory {
 
   @Override
-  public PropertySource<?> createPropertySource(String name,
-      EncodedResource resource) throws IOException {
-    
+  @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "resource.getResource() can't return null")
+  public PropertySource<?> createPropertySource(String name, EncodedResource resource)
+      throws IOException {
+
     if (resource == null) {
       return super.createPropertySource(name, resource);
     }
 
-    CompositePropertySource propertySource = new CompositePropertySource(resource.getResource().getFilename());
+    CompositePropertySource propertySource = new CompositePropertySource(
+        resource.getResource().getFilename());
     new YamlPropertySourceLoader()
-        .load(resource.getResource().getFilename(), resource.getResource()).stream()
+        .load(resource.getResource().getFilename(), resource.getResource())
+        .stream()
         .forEach(propertySource::addPropertySource);
     return propertySource;
   }
