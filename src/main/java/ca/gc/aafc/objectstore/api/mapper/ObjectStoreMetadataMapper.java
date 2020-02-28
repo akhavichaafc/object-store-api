@@ -16,11 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ca.gc.aafc.objectstore.api.dao.BaseDAO;
 import ca.gc.aafc.objectstore.api.dto.MetadataManagedAttributeDto;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
-import ca.gc.aafc.objectstore.api.entities.DcType;
 import ca.gc.aafc.objectstore.api.entities.MetadataManagedAttribute;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.entities.ObjectSubtype;
-import io.crnk.core.exception.BadRequestException;
 import io.crnk.core.exception.ResourceNotFoundException;
 
 @Mapper(componentModel = "spring")
@@ -41,9 +39,10 @@ public abstract class ObjectStoreMetadataMapper {
   @Mapping(target = "acMetadataCreator", ignore = true)
   @Mapping(target = "acDerivedFrom", ignore = true)
   @Mapping(target = "dcCreator", ignore = true)
-  @Mapping(target = "acSubType", qualifiedByName="objectSubTypeToEntity")
+  @Mapping(source = "dto", target = "acSubType", qualifiedByName = "objectSubTypeToEntity")
   public abstract ObjectStoreMetadata toEntity(ObjectStoreMetadataDto dto);
   
+  @Mapping(source = "dto", target = "acSubType", qualifiedByName = "objectSubTypeToEntity")
   @InheritConfiguration
   public abstract void updateObjectStoreMetadataFromDto(ObjectStoreMetadataDto dto, @MappingTarget ObjectStoreMetadata entity);
    
@@ -72,31 +71,25 @@ public abstract class ObjectStoreMetadataMapper {
     if (entity == null || isAvailable == null || !isAvailable.apply("acSubType")) {
       return null;
     }
-    return entity.getAcSubtype() + "/" + entity.getDcType().getValue();
+    return entity.getAcSubtype();
   }
 
   @Named("objectSubTypeToEntity")
-  protected ObjectSubtype objectSubTypeToEntity(String oSubType) {
+  protected ObjectSubtype objectSubTypeToEntity(ObjectStoreMetadataDto dto) {
 
-    if (oSubType == null) {
+    if (dto == null || dto.getAcSubType() == null || dto.getDcType() == null) {
       return null;
     }
 
-    String[] parsedValue = oSubType.split("/");
-    if (parsedValue.length != 2) {
-      throw new BadRequestException("acSubType malformed, expecting {acSubType/dcType} example thumbnail/Image");
-    }
-
     HashMap<String, Object> propertyMap = new HashMap<>();
-    propertyMap.put("acSubtype", parsedValue[0]);
-    propertyMap.put("dcType", DcType.fromValue(parsedValue[1]).orElse(null));
+    propertyMap.put("acSubtype", dto.getAcSubType());
+    propertyMap.put("dcType", dto.getDcType());
 
-    List<ObjectSubtype> subtypes = dao.findAllWhere(ObjectSubtype.class, propertyMap);
-    if (subtypes.size() == 0) {
-      throw new ResourceNotFoundException("No object-subtype with values " + parsedValue[0] + " : " + parsedValue[1]);
-    }
-
-    return subtypes.get(0);
+    return dao.findAllWhere(ObjectSubtype.class, propertyMap)
+      .stream().findFirst().orElseThrow(
+        () -> new ResourceNotFoundException(
+          "No object-subtype with values " + " AcSubType = '"
+          + dto.getAcSubType() + "' : DcType = '" + dto.getDcType() + "'"));
   }
 
 }

@@ -95,7 +95,8 @@ public class ObjectStoreMetadataRepositoryCRUDIT extends BaseRepositoryTest {
     dto.setBucket(TestConfiguration.TEST_BUCKET);
     dto.setFileIdentifier(TestConfiguration.TEST_FILE_IDENTIFIER);
     dto.setAcDerivedFrom(derived);
-    dto.setAcSubType(acSubType.getAcSubtype() + "/" + acSubType.getDcType().getValue());
+    dto.setAcSubType(acSubType.getAcSubtype());
+    dto.setDcType(acSubType.getDcType());
 
     objectStoreResourceRepository.create(dto);
 
@@ -114,7 +115,7 @@ public class ObjectStoreMetadataRepositoryCRUDIT extends BaseRepositoryTest {
     updateMetadataDto.setBucket(TestConfiguration.TEST_BUCKET);
     updateMetadataDto.setFileIdentifier(TestConfiguration.TEST_FILE_IDENTIFIER);
     updateMetadataDto.setAcDerivedFrom(derived);
-    updateMetadataDto.setAcSubType(acSubType.getAcSubtype() + "/" + acSubType.getDcType().getValue());
+    updateMetadataDto.setAcSubType(acSubType.getAcSubtype());
 
     objectStoreResourceRepository.save(updateMetadataDto);
 
