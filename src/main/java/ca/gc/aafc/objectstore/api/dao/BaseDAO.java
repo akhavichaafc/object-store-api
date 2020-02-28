@@ -112,11 +112,12 @@ public class BaseDAO {
     CriteriaQuery<T> criteria = criteriaBuilder.createQuery(clazz);
     Root<T> root = criteria.from(clazz);
 
-    List<Predicate> predicates = new ArrayList<>();
+    Predicate[] predicates = propertyValueMap.keySet()
+      .stream()
+      .map(k -> criteriaBuilder.equal(root.get(k), propertyValueMap.get(k)))
+      .toArray(Predicate[]::new);
 
-    propertyValueMap.forEach((k, v) -> predicates.add(criteriaBuilder.equal(root.get(k), v)));
-
-    criteria.where(predicates.toArray(new Predicate[0]));
+    criteria.where(predicates);
 
     criteria.select(root);
 
