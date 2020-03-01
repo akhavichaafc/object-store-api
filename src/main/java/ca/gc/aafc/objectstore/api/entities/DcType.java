@@ -1,5 +1,7 @@
 package ca.gc.aafc.objectstore.api.entities;
 import java.util.Optional;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 
 public enum DcType {
@@ -9,6 +11,8 @@ public enum DcType {
   TEXT("Text"),
   DATASET("Dataset"), // Data encoded in a defined structure
   UNDETERMINED("Undetermined");
+  
+  private static final Pattern ALPHA_VALUE_ONLY = Pattern.compile("[^a-zA-Z]");
 
   private final String value;
   private final String dcFormatType;
@@ -47,8 +51,13 @@ public enum DcType {
    *         there is {@link DcType} match.
    */
   public static Optional<DcType> fromValue(String value) {
+    if(StringUtils.isBlank(value)) {
+      return Optional.empty();
+    }
+    
+    String alphaOnlyValue = ALPHA_VALUE_ONLY.matcher(value).replaceAll("");
     for (DcType currType : values()) {
-      if (currType.getValue().equalsIgnoreCase(value)) {
+      if (alphaOnlyValue.equalsIgnoreCase(ALPHA_VALUE_ONLY.matcher(currType.getValue()).replaceAll(""))) {
         return Optional.of(currType);
       }
     }
