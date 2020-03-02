@@ -16,7 +16,7 @@ public enum DcType {
 
   private final String value;
 
-  private DcType(String value) {
+  DcType(String value) {
     this.value = value;
   }
   
