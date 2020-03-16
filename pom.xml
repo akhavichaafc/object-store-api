@@ -49,6 +49,7 @@
 		<rsql-jpa.version>2.0.2</rsql-jpa.version>
 		<crnk.version>3.2.20200205193052</crnk.version>
 		<dina-base-api.version>0.20</dina-base-api.version>
+		<keycloak-spring-boot-starter.version>4.3.0.Final</keycloak-spring-boot-starter.version>
 	</properties>
 	<repositories>
 	    <!-- Required for Crnk 3.0 -->
@@ -87,6 +88,10 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 	
 	   <!--  Database -->
 		<dependency>
@@ -117,6 +122,13 @@
 			<version>${tika.version}</version>
 		</dependency>
 
+		<!-- Keycloak -->
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-spring-boot-starter</artifactId>
+			<version>${keycloak-spring-boot-starter.version}</version>
+		</dependency>
+	
 		<!-- util -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
