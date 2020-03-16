@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.NaturalId;
@@ -66,6 +67,11 @@ public class Agent {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  @PrePersist
+  public void initUuid() {
+    this.uuid = UUID.randomUUID();
   }
 
 }

@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -20,7 +21,7 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
 @Entity
-@Builder(toBuilder=true)
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @RequiredArgsConstructor
 @SuppressFBWarnings(justification = "ok for Hibernate Entity", value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
@@ -28,11 +29,11 @@ public class MetadataManagedAttribute {
 
   private Integer id;
   private UUID uuid;
-  
+
   private ObjectStoreMetadata objectStoreMetadata;
   private ManagedAttribute managedAttribute;
-  private String assignedValue;  
-  
+  private String assignedValue;
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
@@ -43,7 +44,7 @@ public class MetadataManagedAttribute {
   public void setId(Integer id) {
     this.id = id;
   }
-  
+
   @NaturalId
   @NotNull
   @Column(name = "uuid", unique = true)
@@ -54,9 +55,9 @@ public class MetadataManagedAttribute {
   public void setUuid(UUID uuid) {
     this.uuid = uuid;
   }
-  
+
   @NotNull
-  @ManyToOne(cascade = {} )
+  @ManyToOne(cascade = {})
   @JoinColumn(name = "metadata_id", referencedColumnName = "id")
   public ObjectStoreMetadata getObjectStoreMetadata() {
     return objectStoreMetadata;
@@ -76,7 +77,7 @@ public class MetadataManagedAttribute {
   public void setManagedAttribute(ManagedAttribute managedAttribute) {
     this.managedAttribute = managedAttribute;
   }
-  
+
   public String getAssignedValue() {
     return assignedValue;
   }
@@ -84,18 +85,15 @@ public class MetadataManagedAttribute {
   public void setAssignedValue(String assignedValue) {
     this.assignedValue = assignedValue;
   }
-  
+
   public String toString() {
-    return new ToStringBuilder(this)
-        .append("id", id)
-        .append("uuid", uuid)
-        .append("assignedValue", assignedValue)
-        .append("managedAttribute", managedAttribute)
-        .append("objectStoreMetadata", objectStoreMetadata)
-        .toString();
+    return new ToStringBuilder(this).append("id", id).append("uuid", uuid).append("assignedValue", assignedValue)
+        .append("managedAttribute", managedAttribute).append("objectStoreMetadata", objectStoreMetadata).toString();
   }
-  
+
+  @PrePersist
+  public void initUuid() {
+    this.uuid = UUID.randomUUID();
+  }
 
 }
-
-

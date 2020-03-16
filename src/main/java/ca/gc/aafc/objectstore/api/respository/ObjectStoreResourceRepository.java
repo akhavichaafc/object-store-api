@@ -36,6 +36,7 @@ import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.FilterSpec;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
+import io.crnk.core.resource.list.ResourceList;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -77,10 +78,8 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
    */
   @Override
   public <S extends ObjectStoreMetadataDto> S save(S resource) {
+    handleFileRelatedData(resource);
     S dto = super.save(resource);
-
-    ObjectStoreMetadata entity = dao.findOneById(dto.getUuid(), ObjectStoreMetadata.class);
-    handleFileRelatedData(entity);
 
     return (S) this.findOne(
       dto.getUuid(),
@@ -101,6 +100,20 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
   }
 
   @Override
+  public ResourceList<ObjectStoreMetadataDto> findAll(QuerySpec querySpec) {
+    // Omit "managedAttributeMap" from the JPA include spec, because it is a generated object, not on the JPA model.
+    QuerySpec jpaFriendlyQuerySpec = querySpec.clone();
+    jpaFriendlyQuerySpec.getIncludedRelations()
+      .removeIf(include -> include.getPath().toString().equals("managedAttributeMap"));
+
+    if (!querySpec.findFilter(DELETED_PATH_SPEC).isPresent()) {
+      jpaFriendlyQuerySpec.addFilter(DELETED_DATE_IS_NULL);
+    }
+    
+    return super.findAll(jpaFriendlyQuerySpec);
+  }
+
+  @Override
   public Optional<ObjectStoreMetadata> loadObjectStoreMetadata(UUID id) {
     return Optional.ofNullable(dao.findOneById(id, ObjectStoreMetadata.class));
   }
@@ -112,17 +125,15 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
 
   @Override
   public <S extends ObjectStoreMetadataDto> S create(S resource) {
-    ObjectStoreMetadataDto created = super.create(resource);
-    ObjectStoreMetadata entity = dao.findOneById(created.getUuid(), ObjectStoreMetadata.class);
-
-    Function<ObjectStoreMetadata, ObjectStoreMetadata> handleFileDataFct = this::handleFileRelatedData;
+    Function<ObjectStoreMetadataDto, ObjectStoreMetadataDto> handleFileDataFct = this::handleFileRelatedData;
 
     // same as assignDefaultValues(handleFileRelatedData(handleDefaultValues)) but easier to follow in my option (C.G.)
-    entity = handleFileDataFct.andThen(this::assignDefaultValues)
-        .apply(entity);
+    resource = (S) handleFileDataFct.andThen(this::assignDefaultValues).apply(resource);
+
+    ObjectStoreMetadataDto created = super.create(resource);
     
     return (S) this.findOne(
-      entity.getUuid(),
+      created.getUuid(),
       new QuerySpec(ObjectStoreMetadataDto.class)
     );
   }
@@ -145,7 +156,7 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
    * @param objectMetadata
    * @throws ValidationException
    */
-  private ObjectStoreMetadata handleFileRelatedData(ObjectStoreMetadata objectMetadata)
+  private ObjectStoreMetadataDto handleFileRelatedData(ObjectStoreMetadataDto objectMetadata)
       throws ValidationException {
     // we need to validate at least that bucket name and fileIdentifier are there
     if (StringUtils.isBlank(objectMetadata.getBucket())
@@ -181,7 +192,7 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
    * @param objectMetadata
    * @return the provided object with default values set (if required)
    */
-  private ObjectStoreMetadata assignDefaultValues(ObjectStoreMetadata objectMetadata) {
+  private ObjectStoreMetadataDto assignDefaultValues(ObjectStoreMetadataDto objectMetadata) {
     if (objectMetadata.getDcType() == null) {
       objectMetadata.setDcType(DcType.fromDcFormat(objectMetadata.getDcFormat()).orElse(DcType.UNDETERMINED));
     }
