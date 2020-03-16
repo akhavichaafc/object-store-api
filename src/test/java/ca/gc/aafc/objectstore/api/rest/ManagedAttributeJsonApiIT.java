@@ -1,17 +1,14 @@
 package ca.gc.aafc.objectstore.api.rest;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import ca.gc.aafc.objectstore.api.dto.ManagedAttributeDto;
-import ca.gc.aafc.objectstore.api.entities.ManagedAttribute;
-import ca.gc.aafc.objectstore.api.mapper.ManagedAttributeMapper;
-import ca.gc.aafc.objectstore.api.testsupport.factories.ManagedAttributeFactory;
 
 public class ManagedAttributeJsonApiIT extends BaseJsonApiIntegrationTest {
 
-  private ManagedAttributeMapper mapper = ManagedAttributeMapper.INSTANCE;
-  
-  private ManagedAttribute managedAttribute;
+  private ManagedAttributeDto managedAttribute;
   
   @Override
   protected String getResourceUnderTest() {
@@ -30,27 +27,22 @@ public class ManagedAttributeJsonApiIT extends BaseJsonApiIntegrationTest {
 
   @Override
   protected Map<String, Object> buildCreateAttributeMap() {
-    String[] acceptedValues  = new String[] {"CataloguedObject"};
+    List<String> acceptedValues  = Arrays.asList("CataloguedObject");
     
-    managedAttribute = ManagedAttributeFactory.newManagedAttribute()
-      .acceptedValues(acceptedValues)
-      .uuid(null)
-      .build();
-    ManagedAttributeDto managedAttributeDto = mapper.toDto(managedAttribute);
-    return toAttributeMap(managedAttributeDto);
-
+    managedAttribute = new ManagedAttributeDto();
+    managedAttribute.setAcceptedValues(acceptedValues);
+    managedAttribute.setUuid(null);
+    
+    return toAttributeMap(managedAttribute);
   }
 
   @Override
   protected Map<String, Object> buildUpdateAttributeMap() {
-    
-    String[] acceptedValues  = new String[] {"dorsal"};
+    List<String> acceptedValues  = Arrays.asList("dorsal");
     
     managedAttribute.setName("specimen_view");
     managedAttribute.setAcceptedValues(acceptedValues);
     
-    ManagedAttributeDto managedAttributeDto = mapper.toDto(managedAttribute);
-    return toAttributeMap(managedAttributeDto);
-    
+    return toAttributeMap(managedAttribute);
   }
 }

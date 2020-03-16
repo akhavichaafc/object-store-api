@@ -1,6 +1,5 @@
 package ca.gc.aafc.objectstore.api.entities;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -15,7 +14,6 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.NaturalId;
 
-import ca.gc.aafc.objectstore.api.interfaces.UniqueObj;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +24,8 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @SuppressFBWarnings(justification = "ok for Hibernate Entity", value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
-public class MetadataManagedAttribute implements Serializable, UniqueObj {
+public class MetadataManagedAttribute {
 
-  private static final long serialVersionUID = -3484692979076302405L;
   private Integer id;
   private UUID uuid;
   

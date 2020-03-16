@@ -14,14 +14,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
+
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
-
-import ca.gc.aafc.objectstore.api.interfaces.UniqueObj;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,9 +34,8 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NaturalIdCache
-public class ObjectSubtype implements java.io.Serializable, UniqueObj {
+public class ObjectSubtype {
 
-  private static final long serialVersionUID = 1L;
   private Integer id;
   private DcType dcType;
   private String acSubtype;

@@ -19,17 +19,16 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
+
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.vladmihalcea.hibernate.type.array.StringArrayType;
-import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
-
-import ca.gc.aafc.objectstore.api.interfaces.SoftDeletable;
-import ca.gc.aafc.objectstore.api.interfaces.UniqueObj;
+import ca.gc.aafc.dina.entity.SoftDeletable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,10 +46,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NaturalIdCache
-public class ObjectStoreMetadata implements java.io.Serializable, UniqueObj, SoftDeletable {
-
-  /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = -5655824300348079540L;
+public class ObjectStoreMetadata implements SoftDeletable {
 
   private Integer id;
 
