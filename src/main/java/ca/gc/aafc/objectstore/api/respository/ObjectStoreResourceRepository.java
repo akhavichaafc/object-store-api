@@ -122,16 +122,17 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
     return Optional.ofNullable(dao.findOneByProperty(ObjectStoreMetadata.class, "fileIdentifier", fileId));
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public <S extends ObjectStoreMetadataDto> S create(S resource) {
+  public ObjectStoreMetadataDto create(ObjectStoreMetadataDto resource) {
     Function<ObjectStoreMetadataDto, ObjectStoreMetadataDto> handleFileDataFct = this::handleFileRelatedData;
 
     // same as assignDefaultValues(handleFileRelatedData(handleDefaultValues)) but easier to follow in my option (C.G.)
-    resource = (S) handleFileDataFct.andThen(this::assignDefaultValues).apply(resource);
+    handleFileDataFct.andThen(this::assignDefaultValues).apply(resource);
 
     ObjectStoreMetadataDto created = super.create(resource);
     
-    return (S) this.findOne(
+    return this.findOne(
       created.getUuid(),
       new QuerySpec(ObjectStoreMetadataDto.class)
     );

@@ -2,8 +2,6 @@ package ca.gc.aafc.objectstore.api.respository;
 
 import java.util.Arrays;
 
-import javax.transaction.Transactional;
-
 import org.springframework.stereotype.Repository;
 
 import ca.gc.aafc.dina.filter.RsqlFilterHandler;
