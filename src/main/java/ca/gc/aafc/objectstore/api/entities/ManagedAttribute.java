@@ -40,7 +40,6 @@ import lombok.RequiredArgsConstructor;
 @NaturalIdCache
 public class ManagedAttribute {
 
-  private static final long serialVersionUID = 1L;
   private Integer id;
   private UUID uuid;
 

@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import ca.gc.aafc.dina.jpa.BaseDAO;
 import ca.gc.aafc.objectstore.api.TestConfiguration;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;

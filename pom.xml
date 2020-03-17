@@ -89,6 +89,29 @@
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
 		</dependency>
+
+		<!-- crnk -->
+    <dependency>
+      <groupId>io.crnk</groupId>
+      <artifactId>crnk-setup-spring-boot2</artifactId>
+      <version>${crnk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.crnk</groupId>
+      <artifactId>crnk-home</artifactId>
+      <version>${crnk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.crnk</groupId>
+      <artifactId>crnk-meta</artifactId>
+      <version>${crnk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.crnk</groupId>
+      <artifactId>crnk-operations</artifactId>
+      <version>${crnk.version}</version>
+    </dependency>
+
 		<!--  Added for compatability with new liquibase update, ticket: #18663 -->
 		<dependency>
   		    <groupId>com.fasterxml.jackson.module</groupId>

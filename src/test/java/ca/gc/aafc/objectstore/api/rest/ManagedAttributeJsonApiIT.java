@@ -1,15 +1,15 @@
 package ca.gc.aafc.objectstore.api.rest;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
+import ca.gc.aafc.dina.testsupport.factories.TestableEntityFactory;
 import ca.gc.aafc.objectstore.api.dto.ManagedAttributeDto;
+import ca.gc.aafc.objectstore.api.entities.ManagedAttribute.ManagedAttributeType;
 
 public class ManagedAttributeJsonApiIT extends BaseJsonApiIntegrationTest {
 
   private ManagedAttributeDto managedAttribute;
-  
+
   @Override
   protected String getResourceUnderTest() {
     return "managed-attribute";
@@ -27,18 +27,19 @@ public class ManagedAttributeJsonApiIT extends BaseJsonApiIntegrationTest {
 
   @Override
   protected Map<String, Object> buildCreateAttributeMap() {
-    List<String> acceptedValues  = Arrays.asList("CataloguedObject");
+    String[] acceptedValues  = new String[] {"CataloguedObject"};
     
     managedAttribute = new ManagedAttributeDto();
     managedAttribute.setAcceptedValues(acceptedValues);
-    managedAttribute.setUuid(null);
+    managedAttribute.setName(TestableEntityFactory.generateRandomNameLettersOnly(12));
+    managedAttribute.setManagedAttributeType(ManagedAttributeType.STRING);
     
     return toAttributeMap(managedAttribute);
   }
 
   @Override
   protected Map<String, Object> buildUpdateAttributeMap() {
-    List<String> acceptedValues  = Arrays.asList("dorsal");
+    String[] acceptedValues  =  new String[] {"dorsal"};
     
     managedAttribute.setName("specimen_view");
     managedAttribute.setAcceptedValues(acceptedValues);

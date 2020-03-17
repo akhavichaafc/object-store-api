@@ -17,14 +17,13 @@ public class MetadataManagedAttributeJsonApiIT extends BaseJsonApiIntegrationTes
 
   private MetadataManagedAttributeDto mmaCreated;
 
-  private UUID managedAttributeId = UUID.randomUUID();
-  private UUID metadataId = UUID.randomUUID();
+  private UUID managedAttributeId;
+  private UUID metadataId;
 
   @BeforeEach
   public void setup() {
-    ManagedAttribute ma = ManagedAttributeFactory.newManagedAttribute().uuid(managedAttributeId)
-        .build();
-    ObjectStoreMetadata osm = ObjectStoreMetadataFactory.newObjectStoreMetadata().uuid(metadataId).build();
+    ManagedAttribute ma = ManagedAttributeFactory.newManagedAttribute().build();
+    ObjectStoreMetadata osm = ObjectStoreMetadataFactory.newObjectStoreMetadata().build();
 
     // we need to run the setup in another transaction and commit it otherwise it can't be visible
     // to the test web server.
@@ -32,6 +31,9 @@ public class MetadataManagedAttributeJsonApiIT extends BaseJsonApiIntegrationTes
       em.persist(ma);
       em.persist(osm);
     });
+
+    managedAttributeId = ma.getUuid();
+    metadataId = osm.getUuid();
   }
 
   @Override
@@ -56,6 +58,7 @@ public class MetadataManagedAttributeJsonApiIT extends BaseJsonApiIntegrationTes
     mmaCreated.setUuid(null);
     mmaCreated.setManagedAttribute(null);
     mmaCreated.setObjectStoreMetadata(null);
+    mmaCreated.setAssignedValue("test value");
 
     return toAttributeMap(mmaCreated);
   }

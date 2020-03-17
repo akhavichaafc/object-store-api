@@ -11,11 +11,13 @@ import java.util.function.Function;
 
 import javax.transaction.Transactional;
 import javax.validation.ValidationException;
+import javax.ws.rs.BadRequestException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import ca.gc.aafc.dina.entity.SoftDeletable;
+import ca.gc.aafc.dina.filter.FilterHandler;
 import ca.gc.aafc.dina.filter.RsqlFilterHandler;
 import ca.gc.aafc.dina.filter.SimpleFilterHandler;
 import ca.gc.aafc.dina.jpa.BaseDAO;
@@ -31,9 +33,6 @@ import ca.gc.aafc.objectstore.api.file.FileController;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileMetaEntry;
 import ca.gc.aafc.objectstore.api.service.ObjectStoreMetadataReadService;
-import io.crnk.core.exception.BadRequestException;
-import io.crnk.core.queryspec.FilterOperator;
-import io.crnk.core.queryspec.FilterSpec;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.resource.list.ResourceList;
@@ -57,7 +56,7 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
     super(
       ObjectStoreMetadataDto.class,
       dtoRepository,
-      Arrays.asList(simpleFilterHandler, rsqlFilterHandler),
+      Arrays.asList(simpleFilterHandler, rsqlFilterHandler, softDeletedFilterHandler),
       metaInformationProvider
     );
     this.config = config;
@@ -69,8 +68,7 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
   private final BaseDAO dao;
   private final FileInformationService fileInformationService;
 
-  private static PathSpec DELETED_PATH_SPEC = PathSpec.of(SoftDeletable.DELETED_DATE_FIELD_NAME);
-  private static FilterSpec DELETED_DATE_IS_NULL = new FilterSpec(DELETED_PATH_SPEC, FilterOperator.EQ, null);
+  private static PathSpec DELETED_PATH_SPEC = PathSpec.of("softDeleted");
 
   /**
    * @param resource to save
@@ -89,10 +87,15 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
 
   @Override
   public ObjectStoreMetadataDto findOne(Serializable id, QuerySpec querySpec) {
-    ObjectStoreMetadataDto dto = super.findOne(id, querySpec);
+    // Omit "managedAttributeMap" from the JPA include spec, because it is a generated object, not on the JPA model.
+    QuerySpec jpaFriendlyQuerySpec = querySpec.clone();
+    jpaFriendlyQuerySpec.getIncludedRelations()
+      .removeIf(include -> include.getPath().toString().equals("managedAttributeMap"));
+
+    ObjectStoreMetadataDto dto = super.findOne(id, jpaFriendlyQuerySpec);
 
     if( dto.getDeletedDate() != null &&
-        !querySpec.findFilter(DELETED_PATH_SPEC).isPresent() ) {
+        !jpaFriendlyQuerySpec.findFilter(DELETED_PATH_SPEC).isPresent() ) {
       throw new GoneException("Deleted", "ID " + id + " deleted");
     }
 
@@ -106,10 +109,6 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
     jpaFriendlyQuerySpec.getIncludedRelations()
       .removeIf(include -> include.getPath().toString().equals("managedAttributeMap"));
 
-    if (!querySpec.findFilter(DELETED_PATH_SPEC).isPresent()) {
-      jpaFriendlyQuerySpec.addFilter(DELETED_DATE_IS_NULL);
-    }
-    
     return super.findAll(jpaFriendlyQuerySpec);
   }
 
@@ -211,5 +210,14 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
     
     return objectMetadata;
   }
+
+  /**
+   * Shows only non-soft-deleted records by default.
+   * Shows only soft-deleted records if DELETED_PATH_SPEC is present.
+   */
+  private static FilterHandler softDeletedFilterHandler = (querySpec, root, query,
+      cb) -> !querySpec.findFilter(DELETED_PATH_SPEC).isPresent()
+          ? cb.isNull(root.get(SoftDeletable.DELETED_DATE_FIELD_NAME))
+          : cb.isNotNull(root.get(SoftDeletable.DELETED_DATE_FIELD_NAME));
 
 }

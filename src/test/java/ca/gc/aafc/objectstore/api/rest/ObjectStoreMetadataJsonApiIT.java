@@ -32,8 +32,8 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
   
   private ObjectStoreMetadataDto objectStoreMetadata;
   
-  private final UUID agentId = UUID.randomUUID();
-  private final UUID metadataId = UUID.randomUUID();
+  private UUID agentId;
+  private UUID metadataId;
 
   @BeforeEach
   public void setup() {
@@ -53,6 +53,9 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
       em.persist(agent);
       em.persist(metadata);
     });
+
+    agentId = agent.getUuid();
+    metadataId = metadata.getUuid();
   }
 
   /**
@@ -68,7 +71,7 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
       em.createQuery(query).executeUpdate();
     });
   }
-
+  
   @Override
   protected String getResourceUnderTest() {
     return "metadata";
@@ -135,14 +138,14 @@ public class ObjectStoreMetadataJsonApiIT extends BaseJsonApiIntegrationTest {
     responseUpdate.body("data.id", Matchers.not(Matchers.hasItem(Matchers.containsString(id))));
 
     // get list should return deleted resource with deleted filter
-    responseUpdate = sendGet("?filter[deletedDate][NEQ]=null");
+    responseUpdate = sendGet("?filter[softDeleted]");
     responseUpdate.body("data.id", Matchers.hasItem(Matchers.containsString(id)));
 
     // get one throws gone 410 as expected
     sendGet(id, 410);
 
     // get one resource is available with the deleted filter
-    sendGet(id + "?filter[deletedDate][NEQ]=null");
+    sendGet(id + "?filter[softDeleted]");
   }
 
 }
