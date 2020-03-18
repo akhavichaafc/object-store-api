@@ -51,30 +51,41 @@ public class MetadataToManagedAttributeMapRepository
     Map<UUID, ManagedAttributeMapDto> findOneMap = new HashMap<>();
 
     for (UUID metadataUuid : sourceIds) {
-      ObjectStoreMetadata metadata = dao.findOneById(metadataUuid, ObjectStoreMetadata.class);
-      List<MetadataManagedAttribute> attrs = metadata.getManagedAttribute();
-
-      // Build the attribute values map:
-      Map<String, ManagedAttributeMapValue> attrValuesMap = new HashMap<>();
-      for (MetadataManagedAttribute attr : attrs) {
-        attrValuesMap.put(
-          attr.getManagedAttribute().getUuid().toString(),
-          ManagedAttributeMapValue.builder()
-            .name(attr.getManagedAttribute().getName())
-            .value(attr.getAssignedValue())
-            .build()
-        );
-      }
-
-      ManagedAttributeMapDto attrMap = ManagedAttributeMapDto.builder()
-        .id("metadata/" + metadata.getUuid() + "/managedAttributeMap") // This is a generated/derived object, so it doesn't have its own ID.
-        .values(attrValuesMap)
-        .build();
-
+      ManagedAttributeMapDto attrMap = getAttributeMapFromMetadataId(metadataUuid);
       findOneMap.put(metadataUuid, attrMap);
     }
 
     return findOneMap;
+  }
+
+  /**
+   * Gets the ManagedAttributeMapDto for the given metadata.
+   */
+  public ManagedAttributeMapDto getAttributeMapFromMetadataId(UUID metadataId) {
+    ObjectStoreMetadata metadata = dao.findOneById(metadataId, ObjectStoreMetadata.class);
+
+    dao.createWithEntityManager(em -> null);
+
+    List<MetadataManagedAttribute> attrs = metadata.getManagedAttribute();
+
+    // Build the attribute values map:
+    Map<String, ManagedAttributeMapValue> attrValuesMap = new HashMap<>();
+    for (MetadataManagedAttribute attr : attrs) {
+      attrValuesMap.put(
+        attr.getManagedAttribute().getUuid().toString(),
+        ManagedAttributeMapValue.builder()
+          .name(attr.getManagedAttribute().getName())
+          .value(attr.getAssignedValue())
+          .build()
+      );
+    }
+
+    ManagedAttributeMapDto attrMap = ManagedAttributeMapDto.builder()
+      .id("metadata/" + metadata.getUuid() + "/managed-attribute-map") // This is a generated/derived object, so it doesn't have its own ID.
+      .values(attrValuesMap)
+      .build();
+      
+    return attrMap;
   }
 
 }

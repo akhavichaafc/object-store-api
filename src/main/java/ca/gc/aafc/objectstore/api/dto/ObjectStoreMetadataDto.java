@@ -10,7 +10,9 @@ import javax.persistence.Id;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import org.javers.core.metamodel.annotation.DiffIgnore;
 import org.javers.core.metamodel.annotation.PropertyName;
+import org.javers.core.metamodel.annotation.TypeName;
 
 import ca.gc.aafc.objectstore.api.entities.DcType;
 import io.crnk.core.resource.annotations.JsonApiId;
@@ -20,9 +22,12 @@ import io.crnk.core.resource.annotations.LookupIncludeBehavior;
 import lombok.Data;
 
 @Data
-@JsonApiResource(type = "metadata")
+@JsonApiResource(type = ObjectStoreMetadataDto.TYPENAME)
+@TypeName(ObjectStoreMetadataDto.TYPENAME)
 public class ObjectStoreMetadataDto {
   
+  public static final String TYPENAME = "metadata";
+
   @JsonApiId
   @Id
   @PropertyName("id")
@@ -61,16 +66,20 @@ public class ObjectStoreMetadataDto {
   @JsonApiRelation
   private List<MetadataManagedAttributeDto> managedAttribute;
 
+  // AUTOMATICALLY_ALWAYS because it should be fetched using a call to
+  // MetadataToManagedAttributeMapRepository.
   @JsonApiRelation(lookUp = LookupIncludeBehavior.AUTOMATICALLY_ALWAYS)
   private ManagedAttributeMapDto managedAttributeMap;
   
   @JsonApiRelation
+  @DiffIgnore // Agent fields will be replaced with references to external data, so don't audit them yet.
   private AgentDto acMetadataCreator;
   
   @JsonApiRelation
   private ObjectStoreMetadataDto acDerivedFrom;
-
+  
   @JsonApiRelation
+  @DiffIgnore // Agent fields will be replaced with references to external data, so don't audit them yet.
   private AgentDto dcCreator;
 
   private boolean publiclyReleasable;

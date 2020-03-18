@@ -3,6 +3,10 @@ package ca.gc.aafc.objectstore.api.dto;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.javers.core.metamodel.annotation.DiffIgnore;
+import org.javers.core.metamodel.annotation.Id;
+import org.javers.core.metamodel.annotation.TypeName;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiRelation;
@@ -14,12 +18,16 @@ import lombok.NoArgsConstructor;
 
 @SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
 @Data
-@JsonApiResource(type = "managed-attribute-map")
+@JsonApiResource(type = ManagedAttributeMapDto.TYPENAME)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TypeName(ManagedAttributeMapDto.TYPENAME)
 public class ManagedAttributeMapDto {
 
+  public static final String TYPENAME = "managed-attribute-map";
+
+  @Id
   @JsonApiId
   private String id;
 
@@ -34,9 +42,18 @@ public class ManagedAttributeMapDto {
 
   @Data
   @Builder
+  @TypeName(ManagedAttributeMapValue.TYPENAME)
   public static class ManagedAttributeMapValue {
+
+    public static final String TYPENAME = "managed-attribute-map-value";
+
+    // Don't include the attribute name in audits, because it doesn't "belong" to the ManagedAttributeMap.
+    // It can change independently of the Metadata or ManagedAttributeMap.
+    @DiffIgnore
     private String name;
+
     private String value;
+
   }
 
 }
