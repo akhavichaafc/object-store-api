@@ -27,11 +27,11 @@ import ca.gc.aafc.dina.repository.JpaResourceRepository;
 import ca.gc.aafc.dina.repository.meta.JpaMetaInformationProvider;
 import ca.gc.aafc.objectstore.api.ObjectStoreConfiguration;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
-import ca.gc.aafc.objectstore.api.entities.DcType;
 import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.file.FileController;
 import ca.gc.aafc.objectstore.api.file.FileInformationService;
 import ca.gc.aafc.objectstore.api.file.FileMetaEntry;
+import ca.gc.aafc.objectstore.api.service.ObjectStoreMetadataDefaultValueSetterService;
 import ca.gc.aafc.objectstore.api.service.ObjectStoreMetadataReadService;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
@@ -51,7 +51,8 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
     JpaMetaInformationProvider metaInformationProvider,
     ObjectStoreConfiguration config,
     BaseDAO dao,
-    FileInformationService fileInformationService
+    FileInformationService fileInformationService,
+    ObjectStoreMetadataDefaultValueSetterService defaultValueSetterService
   ) {
     super(
       ObjectStoreMetadataDto.class,
@@ -59,14 +60,14 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
       Arrays.asList(simpleFilterHandler, rsqlFilterHandler, softDeletedFilterHandler),
       metaInformationProvider
     );
-    this.config = config;
     this.dao = dao;
     this.fileInformationService = fileInformationService;
+    this.defaultValueSetterService = defaultValueSetterService;
   }
 
-  private final ObjectStoreConfiguration config;
   private final BaseDAO dao;
   private final FileInformationService fileInformationService;
+  private final ObjectStoreMetadataDefaultValueSetterService defaultValueSetterService;
 
   private static PathSpec DELETED_PATH_SPEC = PathSpec.of("softDeleted");
 
@@ -128,7 +129,7 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
     Function<ObjectStoreMetadataDto, ObjectStoreMetadataDto> handleFileDataFct = this::handleFileRelatedData;
 
     // same as assignDefaultValues(handleFileRelatedData(handleDefaultValues)) but easier to follow in my option (C.G.)
-    handleFileDataFct.andThen(this::assignDefaultValues).apply(resource);
+    handleFileDataFct.andThen(defaultValueSetterService::assignDefaultValues).apply(resource);
 
     ObjectStoreMetadataDto created = super.create(resource);
     
@@ -185,32 +186,6 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
     }
 
   }
-  
-  /**
-   * Method to assign default values to mandatory fields not provided at creation time.
-   * If no value can be found, null with be used.
-   * @param objectMetadata
-   * @return the provided object with default values set (if required)
-   */
-  private ObjectStoreMetadataDto assignDefaultValues(ObjectStoreMetadataDto objectMetadata) {
-    if (objectMetadata.getDcType() == null) {
-      objectMetadata.setDcType(DcType.fromDcFormat(objectMetadata.getDcFormat()).orElse(DcType.UNDETERMINED));
-    }
-    
-    if (objectMetadata.getXmpRightsWebStatement() == null) {
-      objectMetadata.setXmpRightsWebStatement(config.getDefaultLicenceURL());
-    }
-
-    if (objectMetadata.getDcRights() == null) {
-      objectMetadata.setDcRights(config.getDefaultCopyright());
-    }
-    
-    if( objectMetadata.getXmpRightsOwner() == null) {
-      objectMetadata.setXmpRightsOwner(config.getDefaultCopyrightOwner());
-    }
-    
-    return objectMetadata;
-  }
 
   /**
    * Shows only non-soft-deleted records by default.
@@ -220,5 +195,4 @@ public class ObjectStoreResourceRepository extends JpaResourceRepository<ObjectS
       cb) -> !querySpec.findFilter(DELETED_PATH_SPEC).isPresent()
           ? cb.isNull(root.get(SoftDeletable.DELETED_DATE_FIELD_NAME))
           : cb.isNotNull(root.get(SoftDeletable.DELETED_DATE_FIELD_NAME));
-
 }
