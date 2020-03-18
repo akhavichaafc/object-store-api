@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Id;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import org.javers.core.metamodel.annotation.PropertyName;
 
 import ca.gc.aafc.objectstore.api.entities.DcType;
 import io.crnk.core.resource.annotations.JsonApiId;
@@ -20,6 +24,8 @@ import lombok.Data;
 public class ObjectStoreMetadataDto {
   
   @JsonApiId
+  @Id
+  @PropertyName("id")
   private UUID uuid;
   
   private String bucket;
