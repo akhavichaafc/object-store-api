@@ -89,16 +89,14 @@ public class ObjectStoreMetadataRepositoryCRUDIT extends BaseRepositoryTest {
   @Test
   public void create_ValidResource_ResourcePersisted() {
 
-    UUID dtoUuid = UUID.randomUUID();
     ObjectStoreMetadataDto dto = new ObjectStoreMetadataDto();
-    dto.setUuid(dtoUuid);
     dto.setBucket(TestConfiguration.TEST_BUCKET);
     dto.setFileIdentifier(TestConfiguration.TEST_FILE_IDENTIFIER);
     dto.setAcDerivedFrom(derived);
     dto.setAcSubType(acSubType.getAcSubtype());
     dto.setDcType(acSubType.getDcType());
 
-    objectStoreResourceRepository.create(dto);
+    UUID dtoUuid = objectStoreResourceRepository.create(dto).getUuid();
 
     ObjectStoreMetadata result = findUnique(ObjectStoreMetadata.class, "uuid", dtoUuid);
     assertEquals(dtoUuid, result.getUuid());
