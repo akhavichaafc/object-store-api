@@ -14,7 +14,12 @@ import ca.gc.aafc.objectstore.api.dto.RelatedEntity;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class DtoEntityMapping {
+public final class DtoEntityMapping {
+  
+  /**
+   * Utility class
+   */
+  private DtoEntityMapping() {}
   
   /**
    * Get the mapping between dto and entity classes.
