@@ -100,6 +100,8 @@ public class AuditListener implements PostUpdateEventListener, PostInsertEventLi
       metadata.setManagedAttributeMap(attributeMap);
 
       return metadata;
+    } else {
+      // More 'else' blocks should be added here to audit other entity types.
     }
 
     return null;

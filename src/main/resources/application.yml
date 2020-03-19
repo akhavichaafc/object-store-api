@@ -38,5 +38,6 @@ logging:
     com.github.tennaito.rsql: ERROR
 #JaVers audit framework config:
 javers:
+  packagesToScan: ca.gc.aafc.objectstore.api
   sqlSchema: objectstore
   sqlSchemaManagementEnabled: true
