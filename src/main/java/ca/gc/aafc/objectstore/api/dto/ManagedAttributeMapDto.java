@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.javers.core.metamodel.annotation.DiffIgnore;
-import org.javers.core.metamodel.annotation.Id;
 import org.javers.core.metamodel.annotation.TypeName;
+import org.javers.core.metamodel.annotation.Value;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.resource.annotations.JsonApiId;
@@ -23,11 +23,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @TypeName(ManagedAttributeMapDto.TYPENAME)
+@Value // This class is considered a "value" belonging to an ObjectStoreMetadataDto.
 public class ManagedAttributeMapDto {
 
   public static final String TYPENAME = "managed-attribute-map";
 
-  @Id
+  /** ID required by Crnk but not by Javers. */
+  @DiffIgnore
   @JsonApiId
   private String id;
 
@@ -37,6 +39,7 @@ public class ManagedAttributeMapDto {
   @Builder.Default
   private Map<String, ManagedAttributeMapValue> values = new HashMap<>();
 
+  @DiffIgnore
   @JsonApiRelation
   private ObjectStoreMetadataDto metadata;
 
