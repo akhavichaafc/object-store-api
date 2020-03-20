@@ -40,4 +40,3 @@ logging:
 javers:
   packagesToScan: ca.gc.aafc.objectstore.api
   sqlSchema: objectstore
-  sqlSchemaManagementEnabled: true
