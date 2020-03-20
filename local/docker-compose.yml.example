@@ -1,0 +1,35 @@
+version: '3'
+services:
+  db:
+    image: "postgres:9.6"
+    container_name: "objectstore_test_postgres"
+    environment:
+      POSTGRES_DB: object_store_test
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./src/test/resources/create-test-users.sql:/docker-entrypoint-initdb.d/1-init-schema.sql
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    volumes:
+       - ./minio-data:/data
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server /data
+    
+  object-store-api:
+    build: .
+    restart: always
+    volumes:
+      - ./local/test-configuration.yml:/test-configuration.yml
+    ports:
+      - "8081:8080"
+    environment:
+      spring.config.additional-location: test-configuration.yml
+    links:
+      - "db"
+      - "minio"
+    
+      
