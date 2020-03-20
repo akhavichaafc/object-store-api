@@ -14,6 +14,7 @@ import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @SuppressFBWarnings({ "EI_EXPOSE_REP", "EI_EXPOSE_REP2" })
@@ -30,29 +31,30 @@ public class ManagedAttributeMapDto {
 
   /** ID required by Crnk but not by Javers. */
   @DiffIgnore
+  @EqualsAndHashCode.Exclude // "equals(...)" comparisons should ignore this generated field.
   @JsonApiId
   private String id;
-
+  
   /**
    * Map of ManagedAttribute UUIDs to values.
    */
   @Builder.Default
   private Map<String, ManagedAttributeMapValue> values = new HashMap<>();
-
+  
   @DiffIgnore
+  @EqualsAndHashCode.Exclude // "equals(...)" comparisons should ignore this generated field.
   @JsonApiRelation
   private ObjectStoreMetadataDto metadata;
 
   @Data
   @Builder
-  @TypeName(ManagedAttributeMapValue.TYPENAME)
+  @Value
   public static class ManagedAttributeMapValue {
-
-    public static final String TYPENAME = "managed-attribute-map-value";
 
     // Don't include the attribute name in audits, because it doesn't "belong" to the ManagedAttributeMap.
     // It can change independently of the Metadata or ManagedAttributeMap.
     @DiffIgnore
+    @EqualsAndHashCode.Exclude // "equals(...)" comparisons should ignore this generated field.
     private String name;
 
     private String value;
