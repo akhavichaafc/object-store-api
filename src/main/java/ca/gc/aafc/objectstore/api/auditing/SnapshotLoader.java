@@ -1,10 +1,13 @@
 package ca.gc.aafc.objectstore.api.auditing;
 
-import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
 
 import javax.inject.Named;
 
-import org.springframework.context.ApplicationContext;
+import com.google.common.collect.ImmutableMap;
+
+import org.springframework.web.context.annotation.RequestScope;
 
 import ca.gc.aafc.dina.mapper.JpaDtoMapper;
 import ca.gc.aafc.objectstore.api.dto.ManagedAttributeMapDto;
@@ -13,40 +16,49 @@ import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.respository.managedattributemap.MetadataToManagedAttributeMapRepository;
 import io.crnk.core.engine.registry.ResourceRegistry;
 import io.crnk.core.queryspec.QuerySpec;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Provides entity-specific loading of audit snapshots.
+ * Auditable DTOs must have snapshot loaders defined in this class.
  */
 @Named
 @RequiredArgsConstructor
+@RequestScope
 public class SnapshotLoader {
 
   private final JpaDtoMapper jpaDtoMapper;
-  private final ApplicationContext ctx;
   private final MetadataToManagedAttributeMapRepository managedAttributeMapRepo;
+  private final ResourceRegistry resourceRegistry;
 
-  public Object loadSnapshot(Object entity) {
-    Class<?> clazz = entity.getClass();
-    ResourceRegistry resourceRegistry = ctx.getBean(ResourceRegistry.class);
+  /** Map from entity class to snapshot loader function. */
+  @Getter
+  private final Map<Class<?>, Function<Object, Object>> loaders = ImmutableMap.<Class<?>, Function<Object, Object>>builder()
+      .put(ObjectStoreMetadata.class, this::loadMetadataSnapshot)
+      .build();
 
-    if (Arrays.asList(ObjectStoreMetadata.class).contains(clazz)) {
-      QuerySpec querySpec = new QuerySpec(ObjectStoreMetadataDto.class);
+  public boolean supports(Class<?> entityClass) {
+    return this.loaders.containsKey(entityClass);
+  }
       
-      ObjectStoreMetadataDto metadata = (ObjectStoreMetadataDto) jpaDtoMapper
-          .toDto(entity, querySpec, resourceRegistry);
+  public Object loadSnapshot(Object entity) {
+    Function<Object, Object> loader = this.loaders.get(entity.getClass());
+    return loader.apply(entity);
+  }
 
-      // Fetch the managed attribute map from the repo, because it isn't included through the QuerySpec.
-      ManagedAttributeMapDto attributeMap = managedAttributeMapRepo
-          .getAttributeMapFromMetadataId(metadata.getUuid());
-      metadata.setManagedAttributeMap(attributeMap);
+  private Object loadMetadataSnapshot(Object entity) {
+    QuerySpec querySpec = new QuerySpec(ObjectStoreMetadataDto.class);
+      
+    ObjectStoreMetadataDto metadata = (ObjectStoreMetadataDto) jpaDtoMapper
+        .toDto(entity, querySpec, resourceRegistry);
 
-      return metadata;
-    } else {
-      // More 'else' blocks should be added here to audit other entity types.
-    }
+    // Fetch the managed attribute map from the repo, because it isn't included through the QuerySpec.
+    ManagedAttributeMapDto attributeMap = managedAttributeMapRepo
+        .getAttributeMapFromMetadataId(metadata.getUuid());
+    metadata.setManagedAttributeMap(attributeMap);
 
-    return null;
+    return metadata;
   }
 
 }

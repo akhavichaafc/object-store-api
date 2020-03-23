@@ -64,8 +64,6 @@ public class MetadataToManagedAttributeMapRepository
   public ManagedAttributeMapDto getAttributeMapFromMetadataId(UUID metadataId) {
     ObjectStoreMetadata metadata = dao.findOneById(metadataId, ObjectStoreMetadata.class);
 
-    dao.createWithEntityManager(em -> null);
-
     List<MetadataManagedAttribute> attrs = metadata.getManagedAttribute();
 
     // Build the attribute values map:
