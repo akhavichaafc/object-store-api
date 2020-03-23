@@ -1,2 +1,2 @@
-POSTGRES_HOST=database
-spring.datasource.url=jdbc:postgresql://database/object_store?currentSchema=objectstore
+POSTGRES_HOST=172.33.33.12
+spring.datasource.url=jdbc:postgresql://172.33.33.12/object_store?currentSchema=objectstore

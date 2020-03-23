@@ -1,29 +1,48 @@
 version: '3'
+
+networks:
+  dina-net:
+    ipam:
+      config:
+        - subnet: 172.33.33.0/24
+
 services:
   database:
     image: 'postgres:9.6'
     env_file:
-     - ./postgres_env_var.txt
+      - ./postgres_env_var.txt
+    networks:
+      dina-net:
+        ipv4_address: 172.33.33.12
   minio:
     image: 'minio/minio'
     volumes:
-       - ./minio-data:/data
+      - ./minio-data:/data
     ports:
       - "9000:9000"
     env_file:
-     - ./minio_env_var.txt
+      - ./minio_env_var.txt
     command: server /data
+    networks:
+      dina-net:
+        ipv4_address: 172.33.33.13
   keycloak:
     image: 'jboss/keycloak'
     ports:
       - 9090:8080
+      - 9443:8443
     env_file: './keycloak_env_var.txt'
+    networks:
+      dina-net:
+        ipv4_address: 172.33.33.10
   api:
     image: 'object-store-api:latest'
     ports: 
       - 9080:8080
     env_file:
-     - ./objectstore_env_var.txt
+      - ./objectstore_env_var.txt
     links:
-     - database
-     - keycloak
+      - database
+    networks:
+      dina-net:
+        ipv4_address: 172.33.33.11

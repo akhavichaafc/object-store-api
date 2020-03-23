@@ -128,6 +128,13 @@
 			<artifactId>keycloak-spring-boot-starter</artifactId>
 			<version>${keycloak-spring-boot-starter.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.keycloak.bom</groupId>
+			<artifactId>keycloak-adapter-bom</artifactId>
+			<version>9.0.0</version>
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
 	
 		<!-- util -->
 		<dependency>

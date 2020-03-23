@@ -32,13 +32,17 @@ objectstore:
   defaultCopyrightOwner: Government of Canada
 logging:
   level:
+    Root: INFO
     # Reduce the logging from the rsql-jpa library, which is otherwise too excessive:
     com.github.tennaito.rsql: ERROR
 
 keycloak:
   enabled: true
   realm: object-store
-  auth-server-url: http://localhost:9090/auth
+  # auth-server-url: https://172.33.33.10:8443/auth
+  # confidential-port: 8443
+  auth-server-url: http://172.33.33.10:8080/auth
+  ssl-required: none
   resource: dina
   public-client: true
   principal-attribute: preferred_username
