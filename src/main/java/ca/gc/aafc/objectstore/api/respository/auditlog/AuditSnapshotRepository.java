@@ -123,8 +123,8 @@ public class AuditSnapshotRepository extends ReadOnlyResourceRepositoryBase<Audi
     String baseSql = "select count(*) from jv_snapshot s join jv_commit c on s.commit_fk = c.commit_pk where 1=1 %s %s ;";
     String sql = String.format(
       baseSql,
-      (StringUtils.isNotBlank(authorFilter) ? "and c.author = :author" : ""),
-      (StringUtils.isNotBlank(id) ? "and global_id_fk = (select global_id_pk from jv_global_id where local_id = :id and type_name = :type)" : "")
+      StringUtils.isNotBlank(authorFilter) ? "and c.author = :author" : "",
+      StringUtils.isNotBlank(id) ? "and global_id_fk = (select global_id_pk from jv_global_id where local_id = :id and type_name = :type)" : ""
     );
 
     Long count = jdbcTemplate.queryForObject(sql, parameters, Long.class);

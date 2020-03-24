@@ -3,8 +3,6 @@ package ca.gc.aafc.objecstore.api.repository.auditlog;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.util.ArrayList;
-
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
@@ -37,8 +35,7 @@ public class AuditSnapshotRepositoryIT extends BaseRepositoryTest {
   @BeforeEach
   public void setup() {
     // Create metadata1
-    metadata1 = ObjectStoreMetadataFactory.newObjectStoreMetadata()
-        .managedAttribute(new ArrayList<>()).build();
+    metadata1 = ObjectStoreMetadataFactory.newObjectStoreMetadata().build();
     entityManager.persist(metadata1);
     entityManager.flush();
 
@@ -51,8 +48,7 @@ public class AuditSnapshotRepositoryIT extends BaseRepositoryTest {
     entityManager.flush();
 
     // Create metadata2
-    metadata2 = ObjectStoreMetadataFactory.newObjectStoreMetadata()
-        .managedAttribute(new ArrayList<>()).build();
+    metadata2 = ObjectStoreMetadataFactory.newObjectStoreMetadata().build();
     entityManager.persist(metadata2);
     entityManager.flush();
 

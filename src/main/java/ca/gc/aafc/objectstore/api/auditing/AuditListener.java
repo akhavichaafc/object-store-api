@@ -22,6 +22,7 @@ import org.javers.repository.jql.InstanceIdDTO;
 import ca.gc.aafc.dina.entity.SoftDeletable;
 import ca.gc.aafc.dina.jpa.BaseDAO;
 import ca.gc.aafc.dina.mapper.JpaDtoMapper;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.crnk.core.engine.internal.utils.PropertyUtils;
 import lombok.RequiredArgsConstructor;
 
@@ -30,9 +31,10 @@ import lombok.RequiredArgsConstructor;
  */
 @Named
 @RequiredArgsConstructor
+@SuppressWarnings("serial")
+@SuppressFBWarnings("SE_BAD_FIELD")
 public class AuditListener implements PostUpdateEventListener, PostInsertEventListener, PreDeleteEventListener {
 
-  private static final long serialVersionUID = -1827677058024785128L;
   private final Javers javers;
   private final EntityManagerFactory emf;
   private final BaseDAO baseDao;
@@ -72,7 +74,7 @@ public class AuditListener implements PostUpdateEventListener, PostInsertEventLi
     // Ignore non-audited entities where snapshot loader is not defined.
     if (!snapshotLoader.supports(entity.getClass())) {
       return;
-    };
+    }
 
     // Replace this with the actual user name after we setup authentication:
     String author = "anonymous";

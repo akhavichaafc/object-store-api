@@ -44,6 +44,8 @@ public class ObjectStoreMetadataDto {
   private String acCaption;
 
   private OffsetDateTime acDigitizationDate;
+
+  @DiffIgnore
   private OffsetDateTime xmpMetadataDate;
   
   private String xmpRightsWebStatement;
@@ -55,7 +57,8 @@ public class ObjectStoreMetadataDto {
 
   private String acHashFunction;
   private String acHashValue;
-  
+
+  @DiffIgnore
   private OffsetDateTime createdDate;
   @JsonInclude(Include.NON_EMPTY)
   private OffsetDateTime deletedDate;
