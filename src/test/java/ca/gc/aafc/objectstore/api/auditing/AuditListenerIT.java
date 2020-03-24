@@ -54,7 +54,7 @@ public class AuditListenerIT extends DBBackedIntegrationTest {
     entityManager.flush();
     CdoSnapshot latest = javers.getLatestSnapshot(metadata.getUuid().toString(), ObjectStoreMetadataDto.class).get();
     assertEquals("UPDATE", latest.getType().toString()); // UPDATE snapshot created.
-    assertEquals(Arrays.asList("xmpMetadataDate", "acTags"), latest.getChanged()); // UPDATE snapshot created.
+    assertEquals(Arrays.asList("acTags"), latest.getChanged()); // UPDATE snapshot created.
     assertEquals(2, snapshotCount(metadata));
   }
   
