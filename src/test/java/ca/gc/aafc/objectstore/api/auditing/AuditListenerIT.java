@@ -83,7 +83,6 @@ public class AuditListenerIT extends DBBackedIntegrationTest {
         .managedAttribute(new ArrayList<>()).build();
     entityManager.persist(metadata);
     entityManager.flush();
-    // entityManager.refresh(metadata);
     return metadata;
   }
 

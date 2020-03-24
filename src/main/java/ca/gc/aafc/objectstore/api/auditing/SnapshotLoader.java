@@ -16,7 +16,6 @@ import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import ca.gc.aafc.objectstore.api.respository.managedattributemap.MetadataToManagedAttributeMapRepository;
 import io.crnk.core.engine.registry.ResourceRegistry;
 import io.crnk.core.queryspec.QuerySpec;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -33,7 +32,6 @@ public class SnapshotLoader {
   private final ResourceRegistry resourceRegistry;
 
   /** Map from entity class to snapshot loader function. */
-  @Getter
   private final Map<Class<?>, Function<Object, Object>> loaders = ImmutableMap.<Class<?>, Function<Object, Object>>builder()
       .put(ObjectStoreMetadata.class, this::loadMetadataSnapshot)
       .build();
