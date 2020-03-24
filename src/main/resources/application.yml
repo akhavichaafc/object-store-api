@@ -39,4 +39,5 @@ logging:
 #JaVers audit framework config:
 javers:
   packagesToScan: ca.gc.aafc.objectstore.api
-  sqlSchema: objectstore
+  # Don't let Javers create its tables; let Liquibase create them:
+  sqlSchemaManagementEnabled: false
