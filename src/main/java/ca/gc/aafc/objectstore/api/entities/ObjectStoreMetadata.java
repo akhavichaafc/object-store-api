@@ -1,6 +1,7 @@
 package ca.gc.aafc.objectstore.api.entities;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -76,7 +77,8 @@ public class ObjectStoreMetadata implements SoftDeletable {
   private OffsetDateTime createdDate;
   private OffsetDateTime deletedDate;
 
-  private List<MetadataManagedAttribute> managedAttribute;
+  @Builder.Default
+  private List<MetadataManagedAttribute> managedAttribute = new ArrayList<>();
   private Agent acMetadataCreator;
   private Agent dcCreator;
 

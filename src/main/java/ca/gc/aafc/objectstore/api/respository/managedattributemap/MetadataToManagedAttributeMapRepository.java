@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
@@ -20,6 +19,7 @@ import ca.gc.aafc.objectstore.api.entities.ObjectStoreMetadata;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.OneRelationshipRepositoryBase;
 import io.crnk.core.repository.RelationshipMatcher;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Fetches the ManagedAttributeMap for a given Metadata.
@@ -28,15 +28,11 @@ import io.crnk.core.repository.RelationshipMatcher;
  */
 @Repository
 @Transactional
+@RequiredArgsConstructor
 public class MetadataToManagedAttributeMapRepository
     extends OneRelationshipRepositoryBase<ObjectStoreMetadataDto, UUID, ManagedAttributeMapDto, UUID> {
 
   private final BaseDAO dao;
-
-  @Inject
-  public MetadataToManagedAttributeMapRepository(BaseDAO dao) {
-    this.dao = dao;
-  }
 
   @Override
   public RelationshipMatcher getMatcher() {
@@ -51,7 +47,8 @@ public class MetadataToManagedAttributeMapRepository
     Map<UUID, ManagedAttributeMapDto> findOneMap = new HashMap<>();
 
     for (UUID metadataUuid : sourceIds) {
-      ManagedAttributeMapDto attrMap = getAttributeMapFromMetadataId(metadataUuid);
+      ObjectStoreMetadata metadata = dao.findOneById(metadataUuid, ObjectStoreMetadata.class);
+      ManagedAttributeMapDto attrMap = getAttributeMapFromMetadata(metadata);
       findOneMap.put(metadataUuid, attrMap);
     }
 
@@ -61,9 +58,7 @@ public class MetadataToManagedAttributeMapRepository
   /**
    * Gets the ManagedAttributeMapDto for the given metadata.
    */
-  public ManagedAttributeMapDto getAttributeMapFromMetadataId(UUID metadataId) {
-    ObjectStoreMetadata metadata = dao.findOneById(metadataId, ObjectStoreMetadata.class);
-
+  public ManagedAttributeMapDto getAttributeMapFromMetadata(ObjectStoreMetadata metadata) {
     List<MetadataManagedAttribute> attrs = metadata.getManagedAttribute();
 
     // Build the attribute values map:
@@ -85,5 +80,9 @@ public class MetadataToManagedAttributeMapRepository
       
     return attrMap;
   }
+
+  // public ManagedAttributeMapDto getAttributeMapFromMetadata(ObjectStoreMetadata metadata) {
+
+  // }
 
 }

@@ -71,7 +71,7 @@ public class MetadataToManagedAttributeMapRepositoryCRUDIT extends BaseRepositor
   public void findAttributeMapsByMetadata_when2ValuesExist_returnMapWith2Values() {
     Map<UUID, ManagedAttributeMapDto> resultMap = metadataToManagedAttributeMapRepository.findOneRelations(
       Collections.singletonList(testMetadata.getUuid()),
-      "managedAttributeMap",
+      "managed-attribute-map",
       new QuerySpec(ManagedAttributeMapDto.class)
     );
 

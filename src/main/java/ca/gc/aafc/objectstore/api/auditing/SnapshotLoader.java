@@ -7,8 +7,6 @@ import javax.inject.Named;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.springframework.web.context.annotation.RequestScope;
-
 import ca.gc.aafc.dina.mapper.JpaDtoMapper;
 import ca.gc.aafc.objectstore.api.dto.ManagedAttributeMapDto;
 import ca.gc.aafc.objectstore.api.dto.ObjectStoreMetadataDto;
@@ -24,7 +22,6 @@ import lombok.RequiredArgsConstructor;
  */
 @Named
 @RequiredArgsConstructor
-@RequestScope
 public class SnapshotLoader {
 
   private final JpaDtoMapper jpaDtoMapper;
@@ -53,7 +50,7 @@ public class SnapshotLoader {
 
     // Fetch the managed attribute map from the repo, because it isn't included through the QuerySpec.
     ManagedAttributeMapDto attributeMap = managedAttributeMapRepo
-        .getAttributeMapFromMetadataId(metadata.getUuid());
+        .getAttributeMapFromMetadata((ObjectStoreMetadata) entity);
     metadata.setManagedAttributeMap(attributeMap);
 
     return metadata;
