@@ -12,7 +12,7 @@ spring:
     contexts: schema-change
 minio:
   scheme:  http
-  host:  localhost
+  host:  172.33.33.13
   port:  9000
   accessKey:  minio	
   secretKey:  minio123
