@@ -2,7 +2,6 @@ package ca.gc.aafc.objectstore.api.dto;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
