@@ -3,3 +3,4 @@
 /.settings
 /target/
 docker-compose.yml
+.env
