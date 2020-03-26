@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: ${DB_USER_NAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ${DB_INIT_SCRIPT}:/docker-entrypoint-initdb.d/1-init-schema.sql
+      - ./src/test/resources/create-test-users.sql:/docker-entrypoint-initdb.d/1-init-schema.sql
     ports:
       - "5432:5432"
 
