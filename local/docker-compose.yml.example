@@ -1,35 +1,37 @@
-version: '3'
+version: "3"
 services:
   db:
     image: "postgres:9.6"
     container_name: "objectstore_test_postgres"
     environment:
-      POSTGRES_DB: object_store_test
-      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ./src/test/resources/create-test-users.sql:/docker-entrypoint-initdb.d/1-init-schema.sql
+      - ${DB_INIT_SCRIPT}:/docker-entrypoint-initdb.d/1-init-schema.sql
+    ports:
+      - "5432:5432"
 
   minio:
     image: minio/minio
     container_name: minio
     volumes:
-       - ./minio-data:/data
+      - ./minio-data:/data
     environment:
-      MINIO_ACCESS_KEY: minio
-      MINIO_SECRET_KEY: minio123
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
     command: server /data
-    
+
   object-store-api:
     build: .
     restart: always
-    volumes:
-      - ./local/test-configuration.yml:/test-configuration.yml
     ports:
       - "8081:8080"
     environment:
-      spring.config.additional-location: test-configuration.yml
-    links:
-      - "db"
-      - "minio"
-    
-      
+      spring.datasource.url: ${SPRING_DATASOURCE_URL}
+      spring.datasource.username: ${SPRING_DATASOURCE_USER}
+      spring.datasource.password: ${SPRING_DATASOURCE_PASSWORD}
+      spring.liquibase.user: ${LIQUIBASE_USER}
+      spring.liquibase.password: ${LIQUIBASE_PASSWORD}
+      spring.liquibase.contexts: schema-change
+      minio.host: minio
