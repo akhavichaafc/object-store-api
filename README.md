@@ -15,16 +15,17 @@ A [Minio](https://min.io/) service is also required to run the project (not requ
 For testing purpose or local development a [Docker Compose](https://docs.docker.com/compose/) example file is available in the `local` folder.
 Please note that the jar running in the container will be the jar currently available in the `target` folder.
 
-Create a new docker-compose file from the example:
+Create a new docker-compose file and .env file from the example file in the local directory:
 
 ```
 cp local/docker-compose.yml.example docker-compose.yml
+cp local/.env.example .env
 ```
 
 Start the app (default port is 8081):
 
 ```
-docker-compose up
+docker-compose up --build
 ```
 
 
