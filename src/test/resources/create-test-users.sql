@@ -1,6 +1,3 @@
--- How to use it: awk 'FNR==NR{A[$1]=$2;next}{for(i in A)sub("\\"i,A[i], $0)}1' env.env setup_schema_user_permission.sql
--- env.env file format should be like object_store_test seqdb_test
--- Create Schema and Revoke privileges for PUBLIC user
 REVOKE CONNECT ON DATABASE object_store_test FROM PUBLIC;
 CREATE SCHEMA IF NOT EXISTS object_store;
 REVOKE CREATE ON SCHEMA object_store FROM PUBLIC;
