@@ -9,8 +9,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./src/test/resources/create-test-users.sql:/docker-entrypoint-initdb.d/1-init-schema.sql
-    ports:
-      - "5432:5432"
 
   minio:
     image: minio/minio
@@ -33,5 +31,6 @@ services:
       spring.datasource.password: ${SPRING_DATASOURCE_PASSWORD}
       spring.liquibase.user: ${LIQUIBASE_USER}
       spring.liquibase.password: ${LIQUIBASE_PASSWORD}
-      spring.liquibase.contexts: schema-change
       minio.host: minio
+      minio.accessKey: ${MINIO_ACCESS_KEY}
+      minio.secretKey: ${MINIO_SECRET_KEY}
