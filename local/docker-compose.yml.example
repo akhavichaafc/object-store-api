@@ -31,6 +31,8 @@ services:
       spring.datasource.password: ${SPRING_DATASOURCE_PASSWORD}
       spring.liquibase.user: ${LIQUIBASE_USER}
       spring.liquibase.password: ${LIQUIBASE_PASSWORD}
+      spring.servlet.multipart.max-file-size: ${MULTI_PART_SIZE}
+      spring.servlet.multipart.max-request-size: ${MULTI_PART_SIZE}
       minio.host: minio
       minio.accessKey: ${MINIO_ACCESS_KEY}
       minio.secretKey: ${MINIO_SECRET_KEY}
