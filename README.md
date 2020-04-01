@@ -28,16 +28,33 @@ Start the app (default port is 8081):
 docker-compose up --build
 ```
 
+Once the services have started you can access the endpoints at http://localhost:8081/api/v1
 
 ## Testing
-For testing purpose or local development a [Docker Compose](https://docs.docker.com/compose/) file can be used:
+For testing purposes a [Docker Compose](https://docs.docker.com/compose/) example file is available in the `local` folder.
 
+### 1. Add a `docker-compose.override.yml` file.
+```
+version: "3"
 
+services:
+  db:
+    ports:
+      - 5432:5432
+
+```
+This will expose the postgres service port
+
+### 2. Launch the database service
+
+```
+docker-compose up -d db
+```
 
 To run the integration tests:
 
 ```
- mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/object_store_test -Dspring.datasource.username=test -Dspring.datasource.password=test
+ mvn verify -Dspring.datasource.url=jdbc:postgresql://localhost/object_store_test -Dspring.datasource.username=web_user -Dspring.datasource.password=test
 ```
 
 ## IDE
