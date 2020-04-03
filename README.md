@@ -15,7 +15,7 @@ A [Minio](https://min.io/) service is also required to run the project (not requ
 For testing purpose or local development a [Docker Compose](https://docs.docker.com/compose/) example file is available in the `local` folder.
 Please note that the jar running in the container will be the jar currently available in the `target` folder.
 
-Create a new docker-compose file and .env file from the example file in the local directory:
+Create a new docker-compose.yml file and .env file from the example file in the local directory:
 
 ```
 cp local/docker-compose.yml.example docker-compose.yml
@@ -30,10 +30,17 @@ docker-compose up --build
 
 Once the services have started you can access the endpoints at http://localhost:8081/api/v1
 
+Cleanup:
+```
+docker-compose down
+```
+
 ## Testing
-For testing purposes a [Docker Compose](https://docs.docker.com/compose/) example file is available in the `local` folder.
+For testing purposes use the same docker-compose.yml and .env file (from the section before).
 
 ### 1. Add a `docker-compose.override.yml` file.
+
+Create an override file to expose the postgres port on your host:
 ```
 version: "3"
 
@@ -43,12 +50,11 @@ services:
       - 5432:5432
 
 ```
-This will expose the postgres service port
 
 ### 2. Launch the database service
 
 ```
-docker-compose up -d db
+docker-compose up -d object-store-db
 ```
 
 To run the integration tests:
@@ -63,5 +69,3 @@ To run the integration tests:
 
 Setup documentation for Eclipse: <https://projectlombok.org/setup/eclipse>
 
-## Additional License
-`CycleAvoidingMappingContext` class is licensed under the Apache License, Version 2.0. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
