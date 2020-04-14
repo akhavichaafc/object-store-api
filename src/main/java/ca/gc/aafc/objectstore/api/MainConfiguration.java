@@ -49,8 +49,11 @@ public class MainConfiguration {
   @Bean
   public JpaDtoMapper dtoJpaMapper(SelectionHandler selectionHandler, BaseDAO baseDAO) {
     Map<Class<?>, List<JpaDtoMapper.CustomFieldResolverSpec<?>>> customFieldResolvers = new HashMap<>();
-    return new JpaDtoMapper(DtoEntityMapping.getDtoToEntityMapping(ObjectStoreMetadataDto.class),
-        customFieldResolvers, selectionHandler, baseDAO);
+    return new JpaDtoMapper(
+      DtoEntityMapping.getDtoToEntityMapping(ObjectStoreMetadataDto.class),
+      customFieldResolvers,
+      selectionHandler
+    );
   }
 
 }
